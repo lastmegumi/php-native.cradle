@@ -32,36 +32,6 @@ Class _Controller{
 		return true;
 	}
 
-
-	function get_start($date = null){
-		if(!$date){return "Not set";}
-		return date("m/d/Y", $date);
-	}
-
-	function get_end($date = null){
-		if(!$date){return "Not set";}
-		return date("m/d/Y", $date);
-	}
-
-	protected function getBirthday(){
-		return date('M d Y', $this->dateofbirth);
-	}
-
-	protected function getAge(){
-		$d1 = new DateTime(date('Y-m-d', $this->dateofbirth));
-		$d2 = new DateTime(date('Y-m-d'));
-		$diff = $d2->diff($d1);
-		return $diff->y;
-	}
-
-	protected function getAddress(){
-		return $this->address . ', ' . $this->city . ', ' . $this->state . ', ' . $this->zipcode;
-	}
-
-	protected function getMailAddress(){
-		return $this->mail_address . ', ' . $this->mail_city . ', ' . $this->mail_state . ', ' . $this->mail_zipcode;
-	}
-
 	function delete(){
 		if(!$this->is_allow()){return;}
 		$res = $this->find(_U(3));
@@ -114,9 +84,6 @@ Class _Controller{
 		$db = new _DB();
 		$data = array("id" => $s);
 		$sql = "SELECT * FROM " . $this->table  . " WHERE id = :id";
-		if(in_array($this->table, array("client"))){
-			if(_S("gid")){$data['groups_id'] = _S('gid'); $sql .= " AND groups_id = :groups_id";}	
-		}
 		return $db->selectone($data, $sql);
 	}
 
@@ -139,44 +106,6 @@ Class _Controller{
 				break;
 		}
 		include $this->common_view_folder . "err.php";
-	}
-
-
-	protected function format_birthday($d = null){
-		$d = @$this->dateofbirth? @$this->dateofbirth : $d;
-		if($d){
-			return date("m/d/Y", $d);
-		}else{
-			return date("m/d/Y", strtotime("now"));
-		}
-	}
-
-	protected function format_phone($s = null){
-		try {
-			if(!empty($s) && @isset($s[9])){
-				return  '(' . $s[0] . $s[1] . $s[2] . ')'. $s[3] . $s[4] . $s[5] . '-' .$s[6] . $s[7] . $s[8] . $s[9]; 
-			}
-		} catch (Exception $e) {
-			
-		}
-	}
-
-	protected function format_name($f = null, $l = null){
-		return @$f . ' ' . @$l;
-	}
-
-	protected function format_address($address_arr){
-		$str = array();
-		$key = array("address", "apt", "city", "state", "zipcode");
-		foreach($key as $k => $v):
-			if(@$address_arr[$v]){$str[] = $address_arr[$v];}
-		endforeach;
-		return implode(', ', $str);
-	}
-
-	protected function format_SSN($s = null){
-		if(!$s){$s = "000000000";}
-		return 'xxx-xx-' . @$s[5]  . @$s[6] . @$s[7] . @$s[8]; 
 	}
 
 	protected function json_return(){
