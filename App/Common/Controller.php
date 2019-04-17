@@ -5,9 +5,9 @@ Class _Controller{
 	public $template_dir = "view/";
 	public $common_view_folder = APP . "Common/view/";
 	public $response = array("status" => 0,
-							"status_code" => 401,
-							"data" => null,
-							"message" => null);
+							 "status_code" => 401,
+							 "data" => null,
+							 "message" => null);
 
 	function __construct()	{
 		$method = $_SERVER['REQUEST_METHOD'];
