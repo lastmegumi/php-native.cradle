@@ -114,5 +114,4 @@ Class _Controller{
 		echo json_encode($this->response);
        	die();
 	}
-
 }?>
