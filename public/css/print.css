@@ -1,0 +1,33 @@
+@media print {
+.top-bar, #side-menu, #bottom-bar, .no-print{
+	display: none !important;
+}
+#contents{
+	display: absolute;
+	margin: 0;
+	font-size: 14pt !important;
+	background: white;
+	height: 100%;
+	width: 100%;
+    background: white !important;
+    font-family: serif;
+    line-height: 20pt;
+}
+input[type=checkbox], input[type=radio] {
+    box-sizing: border-box;
+    padding: 0;
+    margin-left: -12pt !important;
+    top: 25%;
+}
+.form-check-label {
+    margin-bottom: 0;
+    padding: 5pt;
+    margin-left: 5pt;
+}
+.title_f{
+	text-align: center;
+}
+hr{
+	margin: 12pt 0 !important;
+}
+}
