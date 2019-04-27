@@ -1,7 +1,8 @@
 <?php
 class _MongoDB{
 	function __construct(){
-		$connect_string = "mongodb+srv://lastzzz:last111@cluster0-wnwag.gcp.mongodb.net/test?retryWrites=true";
+		$password = "last111";
+		$connect_string = "mongodb+srv://lastzzz:{$password}@cluster0-wnwag.gcp.mongodb.net/test?retryWrites=true";
 		//$connect_string = "mongodb://localhost:27017";
 		$this->mcon = new MongoDB\Driver\Manager($connect_string);
 		$this->database = "test";
