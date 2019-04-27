@@ -3,6 +3,8 @@
 Class _Controller{
 	protected $_PUT;
 	protected $_DELETE;
+	protected $_attr = [];
+	protected $model;
 	public $template_dir = "view/";
 	public $common_view_folder = APP . "Common/view/";
 	public $response = array("status" => 0,
@@ -20,37 +22,37 @@ Class _Controller{
 		}
 	}
 
-	function build($l = null){
-		if(!empty($l)){
-			foreach ($l as $key => $value) {
-				$this->$key = $value;
-			}
-		}
-	}
-
-	protected function is_allow(){
-		if(_S('pid') > 3){$this->assign('err_msg', "You are not authorized to access this page"); $this->err("form.php"); return false;}
-		return true;
-	}
-
-	function delete(){
-		if(!$this->is_allow()){return;}
-		$res = $this->find(_U(3));
-		$this->build($res);
-		$db = new _DB();
-		$data = array('id' => $this->id);
-		$sql = "DELETE FROM " . $this->table . " WHERE id = :id LIMIT 1";
-		try{
-			$db->delete($data, $sql);
-			_H(HOME);
-		}catch(Exception $e){
-			echo $e->getMessage();
-		}
-	}
-
 	function assign($k, $v){
 		$this->var[$k] = $v;
 	}
+
+	function build($l = null){
+		// if(!empty($l)){
+		// 	foreach ($l as $key => $value) {
+		// 		$this->$key = $value;
+		// 	}
+		// }
+		if($this->_attr):
+			foreach ($this->_attr as $key => $value):
+				$this->model->$value = isset($l[$value])?$l[$value]:null;
+			endforeach;
+		endif;
+	}
+
+	// function delete(){
+	// 	if(!$this->is_allow()){return;}
+	// 	$res = $this->find(_U(3));
+	// 	$this->build($res);
+	// 	$db = new _DB();
+	// 	$data = array('id' => $this->id);
+	// 	$sql = "DELETE FROM " . $this->table . " WHERE id = :id LIMIT 1";
+	// 	try{
+	// 		$db->delete($data, $sql);
+	// 		_H(HOME);
+	// 	}catch(Exception $e){
+	// 		echo $e->getMessage();
+	// 	}
+	// }
 
 	function render($temp, $design = null){
 		if(@$this->var):
@@ -81,12 +83,49 @@ Class _Controller{
 		if(!$design && !_G('form')){}
 	}
 
-	function find($s){
-		$db = new _DB();
-		$data = array("id" => $s);
-		$sql = "SELECT * FROM " . $this->table  . " WHERE id = :id";
-		return $db->selectone($data, $sql);
+	// Mongoddb
+
+	protected function save(){
+		$db = new _MongoDB();
+		$db->setTable($this->_table);
+		return $db->save(get_object_vars($this->model));
 	}
+
+	protected function find($options){
+		$db = new _MongoDB();
+		$db->setTable($this->_table);
+		if(is_array($options)):
+		else:
+			$doc["_id"] = new MongoDB\BSON\ObjectId($options);
+		endif;
+		return $db->find($doc);
+	}
+
+	protected function findAll($filter = [], $options = []){
+		$db = new _MongoDB();
+		$db->setTable($this->_table);
+		return $db->findAll($filter, $options);
+	}
+
+	protected function delete($filter = [], $options = ['limit' => 1]){
+		$db = new _MongoDB();
+		$db->setTable($this->_table);
+		return $db->delete($filter, $options);
+	}
+
+	protected function deleteAll($filter = [], $options = ['limit' => 0]){
+		$db = new _MongoDB();
+		$db->setTable($this->_table);
+		return $db->delete($filter, $options);
+	}
+
+	// function find($s){
+	// 	$db = new _DB();
+	// 	$data = array("main_key" => $s);
+	// 	$main_key = $this->main_key? $this->main_key : "id";
+	// 	$sql = "SELECT * FROM " . $this->table  . " WHERE " . $main_key ." = :main_key";
+	// 	return $db->selectone($data, $sql);
+	// }
 
 	protected function err_404(){
 		include $this->common_view_folder . "404.php";

@@ -12,21 +12,30 @@ function getheader(){
     if(!defined("HEADER_LOADED")):
     define("HEADER_LOADED", true);
     endif;
-	require_once GPATH ."/temp/header.php";
+    $f = GPATH ."/temp/header.php";
+    if(file_exists($f)){
+        include_once $f;
+    }
 }
 
 function getnav(){
     if(!defined("HEADER_LOADED")){
         return;
     }
-    require_once GPATH ."/temp/head_nav.php";
+    $f = GPATH ."/temp/head_nav.php";
+    if(file_exists($f)){
+        include_once $f;
+    }
 }
 
 function getfooter(){
     if(!defined("HEADER_LOADED") || !HEADER_LOADED){
         return;
     }
-	require_once GPATH ."/temp/footer.php";
+    $f = GPATH ."/temp/footer.php";
+    if(file_exists($f)){
+        include_once $f;
+    }
 }
 
 function getfonts($fm = null){
@@ -177,7 +186,12 @@ function _F($v = null){
 }
 
 function _U($i = 0){
-    if($i){return @$_SESSION['u'][$i];}
+    $s = array_filter(explode('/', $_SERVER["REQUEST_URI"]));
+    if($s){
+        $s[count($s) - 1] = @explode("?", $s[count($s) - 1])[0];
+    }
+    if(!$i){return $s;}
+    if($s){return @$s[$i];}
     else return false;
 }
 
