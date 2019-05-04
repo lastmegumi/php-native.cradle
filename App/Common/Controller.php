@@ -37,6 +37,9 @@ Class _Controller{
 				$this->model->$value = isset($l[$value])?$l[$value]:null;
 			endforeach;
 		endif;
+		if(isset($l["_id"])){
+			$this->model->_id = $l['_id'];
+		}
 	}
 
 	// function delete(){
@@ -78,6 +81,8 @@ Class _Controller{
 		if(!$design && !_G('form')){getheader();getnav();}
 		if(file_exists($this->template_dir . $temp)){
 			include $this->template_dir . $temp;}
+		elseif(file_exists($this->template_dir . $temp . '.php')){
+			include $this->template_dir . $temp . ".php";}
 		else{
 			$this->err_404();}
 		if(!$design && !_G('form')){}
@@ -86,25 +91,27 @@ Class _Controller{
 	// Mongoddb
 
 	protected function save(){
-		$db = new _MongoDB();
-		$db->setTable($this->_table);
-		return $db->save(get_object_vars($this->model));
+		//$db = new _MongoDB();
+		_MongoDB::init()->setTable($this->_table);
+		if(isset($this->model->_id)){
+			//_MongoDB::init()->update(["_id"	=>	$this->model->_id], ['$set'	=>	get_object_vars($this->model)]);
+			return _MongoDB::init()->update(["_id"	=>	$this->model->_id], ['$set'	=>	get_object_vars($this->model)]);;
+		}
+		return _MongoDB::init()->save(get_object_vars($this->model));
 	}
 
 	protected function find($options){
-		$db = new _MongoDB();
 		$db->setTable($this->_table);
 		if(is_array($options)):
 		else:
-			$doc["_id"] = new MongoDB\BSON\ObjectId($options);
+			$doc["_id"] = _MongoDB::_id($options);
 		endif;
-		return $db->find($doc);
+		return _MongoDB::init()->find($doc);
 	}
 
 	protected function findAll($filter = [], $options = []){
-		$db = new _MongoDB();
 		$db->setTable($this->_table);
-		return $db->findAll($filter, $options);
+		return _MongoDB::init()->findAll($filter, $options);
 	}
 
 	protected function delete($filter = [], $options = ['limit' => 1]){

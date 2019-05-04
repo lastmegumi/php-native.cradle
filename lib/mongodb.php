@@ -1,6 +1,8 @@
 <?php
 class _MongoDB{
-	function __construct(){
+	private static $instance = null;
+
+	private function __construct(){
 		$password = "last111";
 		$connect_string = "mongodb+srv://lastzzz:{$password}@cluster0-wnwag.gcp.mongodb.net/test?retryWrites=true";
 		//$connect_string = "mongodb://localhost:27017";
@@ -10,13 +12,32 @@ class _MongoDB{
 		$this->d_t = $this->database . '.' . $this->table;
 	}
 
+	public function __clone(){
+        //throw error
+        trigger_error("Can't clone object",E_USER_ERROR);
+    }    
+
+	//public static function getInstance()
+	public static function init()
+	{
+		if (self::$instance == null)
+		{
+		  self::$instance = new _MongoDB();
+		}
+		return self::$instance;
+	}
+
+	static function _id($id = null){
+		return new MongoDB\BSON\ObjectId($id);
+	}
+
 	function setTable($table){		
-		$this->table = $table;
+		$this->table = $table; 
 		$this->d_t = $this->database . '.' . $this->table;
 	}
 
 	function setDatabase($database){
-		$this->database = "test"; 
+		$this->database = $database; 
 		$this->d_t = $this->database . '.' . $this->table;
 	}
 
@@ -39,7 +60,7 @@ class _MongoDB{
 	}
 
 	function saveAll($documents = array()){
-		if(!$documents){ return;	}
+		if(!$documents){ return;}
 		$bulk = new MongoDB\Driver\BulkWrite;
 		foreach($documents as $doc):
 			$bulk->insert($doc);

@@ -1,11 +1,8 @@
 <?php
 class _DB {
-	private static $instance;
+	private static $instance = null;
 	public $conn = null;
 	public $stmt = null;
-	
-	
-	private function __clone() {}
 	
 	public static function Open() {	
 		#self::gi()->openConnection();
@@ -17,18 +14,32 @@ class _DB {
 		$this->stmt = null;
 	}
 
+
+	public function __clone(){
+        //throw error
+        trigger_error("Can't clone object",E_USER_ERROR);
+    }    
+
+	//public static function getInstance()
+	public static function init()
+	{
+		if (self::$instance == null)
+		{
+		  self::$instance = new _DB();
+		}
+		return self::$instance;
+	}
+
 	function __construct(){
 		$servername = "localhost";
-		$dbname = "gcf_care";
+		$dbname = "ume";
 		$username = "root";
 		$password = "root";
 		$port = 3636;
-
 		
-		$str1 = "mysql:host=$servername;port=$port;dbname=$dbname";
-		
+		$str1 = "mysql:host=$servername;port=$port;dbname=$dbname";		
 		$servername = "localhost";
-		$dbname = "gcf_care";
+		$dbname = "ume";
 		$username = "root";
 		$password = "";
 

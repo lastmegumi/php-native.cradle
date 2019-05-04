@@ -22,3 +22,9 @@ function re_json(data){
 		window.location.href = data.data.url;		
 	}
 }
+
+$(document).ready(()  =>  {
+  $("tbody tr.clickable").click(function() {
+        window.location = $(this).data("href");
+  });
+});

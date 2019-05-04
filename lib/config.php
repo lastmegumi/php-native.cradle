@@ -12,10 +12,11 @@ define("HOME" , $h3);
 define("UPLOAD", "uploads");
 session_start();
 header("Content-Type: text/html;charset=utf-8");
-
 require_once APP . "Common/Controller.php";
+require_once APP . "Common/Base.php";
+require_once APP . "Common/Model.php";
 require_once APP . "Common/Contents.php";
-//require_once GPATH . "/lib/Db.php";
+require_once GPATH . "/lib/Db.php";
 require_once GPATH . "/lib/mongodb.php";
 require "function.php";
 

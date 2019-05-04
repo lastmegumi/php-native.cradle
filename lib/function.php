@@ -188,7 +188,7 @@ function _F($v = null){
 function _U($i = 0){
     $s = array_filter(explode('/', $_SERVER["REQUEST_URI"]));
     if($s){
-        $s[count($s) - 1] = @explode("?", $s[count($s) - 1])[0];
+        $s[count($s)] = @explode("?", $s[count($s)])[0];
     }
     if(!$i){return $s;}
     if($s){return @$s[$i];}

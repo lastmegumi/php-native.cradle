@@ -1,1 +1,11 @@
-﻿
+﻿.wrapper{
+	padding:15px;
+	background: #f8f8f8;
+}
+.d-inline-block{
+	display: inline-block;
+}
+tbody tr.clickable:hover {
+    cursor: pointer;
+    background:wheat !important;
+}
