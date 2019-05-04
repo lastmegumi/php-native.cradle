@@ -32,13 +32,13 @@ Class _Model{
 		_DB::init()->insert($data, $sql);
 	}
 
-	static function find($filter = [], $options = ["limit", 1]){
+	function find($filter = [], $options = ["limit", 1]){
 		$res = $this->findAll($filter, $options);
 		return $res? $res[0] :null;
 	}
 
-	static function findAll($filter = [], $options = []){
-		$sql = "SELECT * FROM " . $this->_table() ." WHERE 1";
+	function findAll($filter = [], $options = []){
+		$sql = "SELECT * FROM `" . $this->_table() ."` WHERE 1";
 		//$data = array("tablestr"	=>	$this->_table);
 		if($filter):
 		foreach($filter as $k => $v){

@@ -1,7 +1,7 @@
 <?php
 class Order extends _Model{
 	public $id;
-	public $buyer_mail;
+	public $buyer_email;
 	public $buyer_name;
 	public $buyer_phone;
 	public $token;
@@ -19,8 +19,8 @@ class Order extends _Model{
 	}
 }
 
-class _Order extends _Controller{
-	protected $_attr = ["id", "main_id", "buyer", "payment", "shipping", "product_ids", "created", "status", "updated"];
+class _Order extends _Base{
+	protected $_attr = ["id",  "buyer_name", "buyer_email", "buyer_phone", "token", "amount_base", "amount_tax", "amount_discount", "amount_paid", "description", "message", "payment_method", "status", "updated"];
 	protected $_table = "order";
 	private $main_key = "id";
 	public $template_dir = "order";
@@ -41,17 +41,55 @@ class _Order extends _Controller{
 	}
 
 	function _route(){
-		$order = new Order();
-		$order->build()->save();
+		if(_G('id')){
+			$order = new Order();
+			$data = $order->find(['id'	=>	['eq'	=>	12]]);
+			$contents[] = $data;
+			$this->show($contents);
+			print_r($data);
+		}
 	}
 
-	function list(){
-		print_r($this->findAll());
+	function list(){		
+		$sql = "SELECT `{$this->_table}`.* FROM `{$this->_table}`
+				WHERE 1";
+		$data = array();
+		$data = _DB::init()->select($data, $sql);
+		$header = $this->_attr;
+		foreach ($data as $k => $v) {
+			$c = [];
+			foreach ($header as $k2 => $v2) {
+				$c[$v2]	=	@$v[$v2];
+			}
+			$table_data[] = $c;
+		}
+		$this->assign("header", $header);
+		$this->assign("data", $table_data);
+		$this->assign("name", $this->_table);
+		$contents[] = $this->cache("action_bar");
+		$contents[] = $this->cache("table");
+		$this->show($contents);
 	}
 
 	function add(){
-		var_dump($this->save());
-
+		$data = array(
+				'id'	=>	'',
+				'buyer_email'	=>	'lastmegumi@gmail.com',
+				'buyer_name'	=>	'yan_ren',
+				'buyer_phone'	=>	'9292453662',
+				'token'	=>	rid('128'),
+				'amount_base'	=>	55,
+				'amount_discount'	=>	10,
+				'amount_paid'	=>	55,
+				'amount_tax'	=>	10,
+				'description'	=>	'第一单',
+				'message'	=>	'烧腊',
+				'payment_method'	=>	'credit_stripe',
+				'status'	=>	1,
+				'updated'	=>	strtotime("now"),
+			);
+		$order = new Order();
+		$order->build($data)->save();
 	}
 
 }

@@ -15,11 +15,12 @@ getheader();
       <a href="#name"><span class="white-text name">John Doe</span></a>
       <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
     </div></li>
-    <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
-    <li><a href="#!">Second Link</a></li>
+    <li><a class="waves-effect" href="/product/list">Product</a></li>
+    <li><a class="waves-effect" href="/category/list">Category</a></li>
+    <li><a class="waves-effect" href="/order/list">Sales</a></li>
     <li><div class="divider"></div></li>
     <li><a class="subheader">Subheader</a></li>
-    <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+    <li><a class="waves-effect" href="#!">Setting</a></li>
   </ul>
 
 <div class="row">
@@ -29,7 +30,7 @@ getheader();
 <?php foreach ($contents as $c) :?>
 	<div class="row">
 		<div class="col s12 white" style="padding:15px;">
-			<?php echo $c;?>
+			<?php print_r($c);?>
 		</div>
 	</div>
 <?php endforeach;?>
@@ -67,14 +68,16 @@ getheader();
 <script type="text/javascript">
   document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.sidenav');
-    var instances = M.Sidenav.init(elems, options);
+    var instances = M.Sidenav.init(elems, null);
+    instances.open();
   });
 
   // Or with jQuery
 
   $(document).ready(function(){
     $('.sidenav').sidenav();
-  });</script>
+  });
+  </script>
 <?php 
 getfooter();
 ?>
