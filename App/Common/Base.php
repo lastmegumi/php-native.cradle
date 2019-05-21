@@ -79,6 +79,7 @@ Class _Base{
 			$$i = $v;
 		}
 		endif;
+		$this->var = array();
 		ob_start();
 		if(file_exists($this->template_dir . $temp)){
 			include $this->template_dir . $temp;}
@@ -108,10 +109,10 @@ Class _Base{
 	}
 
 	function show($contents = [], $temp = "tp1"){
-		if(file_exists(APP. 'template/' . $temp)){
-			include APP. 'template/' . $temp;}
-		elseif(file_exists(APP. 'template/' . $temp . '.php')){
-			include APP. 'template/' . $temp . ".php";}
+		if(file_exists(APP_DIR. 'template/' . $temp)){
+			include APP_DIR. 'template/' . $temp;}
+		elseif(file_exists(APP_DIR. 'template/' . $temp . '.php')){
+			include APP_DIR. 'template/' . $temp . ".php";}
 		else{
 			$this->err_404();}
 	}

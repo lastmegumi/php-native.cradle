@@ -27,4 +27,5 @@ $(document).ready(()  =>  {
   $("tbody tr.clickable").click(function() {
         window.location = $(this).data("href");
   });
+  $('select').formSelect();
 });

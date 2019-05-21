@@ -1,6 +1,7 @@
 <?php
 define("GPATH", dirname(dirname(__FILE__)));
 define("APP", GPATH . "/App/");
+define("PLUGIN", GPATH . "/Plugin/");
 define("HELPER", GPATH . "/Helper/");
 define('HHVM_VERSION', false); 
 define("IMGSERVER" , "imageserver");
@@ -12,6 +13,7 @@ define("HOME" , $h3);
 define("UPLOAD", "uploads");
 session_start();
 header("Content-Type: text/html;charset=utf-8");
+
 require_once APP . "Common/Controller.php";
 require_once APP . "Common/Base.php";
 require_once APP . "Common/Model.php";

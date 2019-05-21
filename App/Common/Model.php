@@ -29,7 +29,7 @@ Class _Model{
 			$arr[] .= $key  . ' = :' . $key;
 		}
 		$sql .= implode(', ', $arr);
-		_DB::init()->insert($data, $sql);
+		return _DB::init()->insert($data, $sql);
 	}
 
 	function find($filter = [], $options = ["limit", 1]){
