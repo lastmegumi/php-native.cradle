@@ -104,7 +104,7 @@ class _Order extends _Base{
 
 	function list(){		
 		$sql = "SELECT `{$this->_table}`.* FROM `{$this->_table}`
-				WHERE 1";
+				WHERE 1 ORDER BY updated DESC";
 		$data = array();
 		$data = _DB::init()->select($data, $sql);
 		$header = $this->_attr;

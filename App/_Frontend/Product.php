@@ -28,8 +28,19 @@ class Product extends _Model{
 		return $this->name;
 	}
 
-	function getPrice(){
-		return $this->price;
+	function getPrice($qty = 1){
+
+		return number_format($this->price * $qty, 2, '.', '');
+	}
+
+	function getTax($qty = 1){
+		$taxrate = 0.08;
+		return number_format($this->price * $taxrate * $qty, 2, '.', '');
+	}
+	
+	function getDiscount($qty = 1){
+		$discount = 0.5;
+		return number_format($discount * $qty, 2, '.', '');
 	}
 
 	function getCurrency(){

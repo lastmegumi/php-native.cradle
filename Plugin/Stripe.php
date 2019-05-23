@@ -93,7 +93,6 @@ class stripe{
 	}
 
 	static function card_token($obj){
-		print_r($obj);
 		try {
 			$token = \Stripe\Token::create([
 			  "card" => [

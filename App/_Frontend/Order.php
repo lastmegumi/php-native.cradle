@@ -26,6 +26,7 @@ class Order_Product extends _Model{
 	public $product_name;
 	public $product_img;
 	public $product_sku;
+	public $product_price;
 	public $product_tax;
 	public $product_discount;
 	public $status;
@@ -39,6 +40,33 @@ class Order_Product extends _Model{
 	function __construct(){
 		return $this;
 	}
+}
+
+class _Address extends _Model{
+	public $address1;
+	public $address2;
+	public $city;
+	public $state;
+	public $zipcode;
+	public $country;
+}
+
+class Order_Address extends _Address{
+
+	protected function _table(){
+		return "order_address";
+	}
+
+	function __construct(){
+		return $this;
+	}
+	public $id;
+	public $first_name;
+	public $last_name;
+	public $order_id;
+	public $type;
+	public $notes;
+	public $phone;
 }
 
 class _Order extends _Base{
@@ -104,7 +132,7 @@ class _Order extends _Base{
 
 	function list(){		
 		$sql = "SELECT `{$this->_table}`.* FROM `{$this->_table}`
-				WHERE 1";
+				WHERE 1 ORDER BY";
 		$data = array();
 		$data = _DB::init()->select($data, $sql);
 		$header = $this->_attr;

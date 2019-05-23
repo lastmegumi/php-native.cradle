@@ -40,7 +40,7 @@ Class _Model{
 	function findAll($filter = [], $options = []){
 		$sql = "SELECT * FROM `" . $this->_table() ."` WHERE 1";
 		//$data = array("tablestr"	=>	$this->_table);
-		if($filter):
+		if(is_array($filter)):
 		foreach($filter as $k => $v){
 			$sql .= " AND " . $k;
 			foreach ($v as $k2 => $v2) {
@@ -50,7 +50,7 @@ Class _Model{
 			}
 		}
 		endif;
-		return _DB::init()->select($data, $sql);
+		return _DB::init()->select(@$data, $sql);
 	}
 
 	function delete($filter = [], $options = ['limit' => 1]){
@@ -64,4 +64,5 @@ Class _Model{
 		$db->setTable($this->_table);
 		return $db->delete($filter, $options);
 	}
+
 }?>

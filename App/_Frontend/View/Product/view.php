@@ -13,8 +13,8 @@ var_dump(session_id());
 		<div class="row">
 			<div class="input-field col s2">
 			    <select class="browser-default" id="product_qty">
-			      <option value="" disabled selected>0</option>
-			      <option value="1">1</option>
+			      <option value="" disabled>0</option>
+			      <option value="1" selected>1</option>
 			      <option value="2">2</option>
 			      <option value="3">3</option>
 			    </select>
