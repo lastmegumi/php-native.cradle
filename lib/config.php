@@ -4,7 +4,7 @@ define("APP", GPATH . "/App/");
 define("PLUGIN", GPATH . "/Plugin/");
 define("HELPER", GPATH . "/Helper/");
 define('HHVM_VERSION', false); 
-define("IMGSERVER" , "imageserver");
+define("UF" , GPATH . "/public/uploads/" );
 #require GPATH . "/vendor/autoload.php";
 $h1 =  "host1";
 $h2 = "host2";

@@ -1,10 +1,10 @@
-<?php
-print_r($product);
-var_dump(session_id());
-?>
 <section class="row">
 	<div class="col s4 white">
-		<?php echo $product->getImgs();?>
+		<?php $img = $product->getImages();
+			if($img):?>
+			<img class="img-responsive" src="<?php echo $img[0]['url'];?>" />
+		<?php endif;
+		?>
 	</div>
 
 	<div class="col s8 white">
@@ -21,7 +21,7 @@ var_dump(session_id());
 			 </div>
 			 <div class="col s4">
 			 	<div class style="padding:1rem">
-					<a class="waves-effect waves-light btn red" id="add-to-cart" data-id="<?php echo $product->id ?>">
+					<a class="waves-effect waves-light btn red add-to-cart" id="add-to-cart" data-id="<?php echo $product->id ?>">
 						<i class="material-icons left">add_shopping_cart</i>Add to cart</a>
 				</div>
 			</div>
@@ -37,25 +37,6 @@ var_dump(session_id());
 </section>
 <script type="text/javascript">
 $(document).ready(() => {
-	$("#add-to-cart").click(function(e){
-		e.preventDefault();
-		let data = {};
-		data.pid = $(this).attr("data-id");
-		data.quantity = $("#product_qty")? $("#product_qty").val():1;
-		data.quantity = data.quantity? data.quantity:0;
-		$.ajax({
-			type: "POST",//方法类型
-			dataType: "HTML",//预期服务器返回的数据类型
-			url: "/cart/add",//url
-			data : data,
-			success: function (result) {
-				alert(result);
-			},
-			error : function() {
-			    alert("异常！");
-			}
-		});
-		return false;
-	});
+
 })
 </script>

@@ -1,11 +1,4 @@
 <?php
-class Invoice{
-	function __construct(){
-		
-	}
-
-}
-
 class _Invoice extends _Controller{
 	protected $_attr = ["id", "order_id", "created", "updated"];
 	protected $_table = "product";

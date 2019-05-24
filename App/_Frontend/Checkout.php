@@ -19,8 +19,6 @@ class _Checkout extends _Base{
 	}
 
 	function placeorder(){
-		$cart = array();
-
 		$billing = new Order_Address();
 		$billing->build(array("address1"	=>	_P("address1"),
 						 "address2"	=>	_P("address2"),
@@ -49,12 +47,15 @@ class _Checkout extends _Base{
 
 		$cart = new Cart();
 		$cart_c = new _Cart();
-		$sql = "SELECT sum(qty) as qty, product_id FROM cart WHERE 1";
-		$sql .= " AND user_id = :user_id group by product_id ORDER BY product_id DESC";
+		$sql = "SELECT sum(qty) as qty, product_id, session_id FROM cart WHERE 1";
+		$sql .= " AND user_id = :user_id group by product_id, session_id ORDER BY product_id DESC";
 		$data = ['user_id'	=>	1];
 		$data = _DB::init()->select($data, $sql);
 		$c = array_column($data, "qty", "product_id");
 		$cartinfo = $cart_c->Calculate($c);
+		$cartinfo['session_id'] = $data[0]['session_id'];
+
+		$shipping_cost = _Shipping::Cost($cartinfo['product_list'], $c, $shipping);
 
 		$user = new User();
 		$user->build($user->find(['id'	=>	['eq'	=>	1]]));
@@ -72,15 +73,17 @@ class _Checkout extends _Base{
 			    "address_zip"	=> _P('zipcode'),
 			    //"address_line1"	=> $obj['address_line1'],
 			  ];
-		$token = $this->check_card($data);		
+		$token = $this->check_card($data);
+
+		$FINAL_AMOUNT = $cartinfo['final_price'] + $shipping_cost;
 		try{
 
 			_DB::init()->conn->beginTransaction();
 			if(!$token['status']){return;}
 			$token = $token['data']->id;
-			$amount = $cartinfo['final_price'] * 100;
+			$FINAL_AMOUNT = $FINAL_AMOUNT * 100;
 			$description  = 'test';
-			$charge = $this->charge($token, $amount, $description);
+			$charge = $this->charge($token, $FINAL_AMOUNT, $description);
 			if(!$charge['status']){throw new Exception("Error Processing Request", 1);
 			}
 
@@ -99,13 +102,19 @@ class _Checkout extends _Base{
 					"message"	=>	"message",
 					"payment_method"	=>	"credit_strpie",
 					"status"	=>	"1",
+					"created"	=>	strtotime("now"),
 					"updated"	=>	strtotime('now'),
 				);
+
+
 			$order_id = $this->create_order($obj);
-			$this->create_address($order_id, $billing, $shipping);
-			$this->create_shipping($order_id);
-			$this->create_payment($order_id, $charge['data']);
+			$this->create_address($order_id, $billing, $shipping);			
+			$this->create_shipping($order_id, $shipping_cost);
+
+			$this->create_payment($order_id, $FINAL_AMOUNT, $charge['data']);
 			$this->create_orderproduct($order_id, $cartinfo['product_list'], $c);
+
+			$cart->deleteAll(["session_id" =>	['eq'	=>	$cartinfo['session_id']]]);
 			_DB::init()->conn->commit();
 		}catch(Exception $e){
 			_DB::init()->conn->rollBack();
@@ -165,31 +174,36 @@ class _Checkout extends _Base{
 		$order->description	=	$obj['description'];
 		$order->message	=	$obj['message'];
 		$order->payment_method	=	$obj['payment_method'];
-		$order->status	=	$obj['status'];
+		$order->status	=	$obj['status'];		
+		$order->created	=	$obj['created'];
 		$order->updated	=	$obj['updated'];
 		return $order->save();
 	}
 
-	private function create_shipping($order_id){
+	private function create_shipping($order_id, $cost){
 		$shipping = new Shipping();
 		$shipping->order_id = $order_id;
-		$shipping->cost = "";
-		$shipping->career_id = "";
+		$shipping->cost = $cost;
+		$shipping->career_id = "default";
 		$shipping->tracking = "";
 		$shipping->notes = "";
 		$shipping->is_mailed = "";
-		$shipping->status = "";
-		$shipping->updated = "";
+		$shipping->status = 0;
+		$shipping->updated = strtotime("now");
 		$shipping->save();
 	}
 
-	private function create_payment($order_id, $data){
+	private function create_payment($order_id, $final_price, $data){
+		if($final_price != $data['amount'] || !$data['captured'] || !$data['paid']){
+			throw new Exception("Error Processing Card Payment", 1);
+			return;			
+		}
 		$payment = new Payment();
 		$payment->order_id	=	$order_id;
-		$payment->type	=	"";
-		$payment->amount	=	"";
-		$payment->status	=	"";
-		$payment->updated	=	"";
+		$payment->type	=	"credit_strpie";
+		$payment->amount	=	$data->amount / 100;
+		$payment->status	=	1;
+		$payment->updated	=	strtotime("now");
 		$payment->track_back = urlencode(json_encode($data));
 		$payment->save();
 	}

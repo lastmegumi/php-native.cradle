@@ -1,57 +1,4 @@
 <?php
-class Product extends _Model{
-	public $id;
-	public $name;
-	public $description;
-	public $sku;
-	public $price;
-	public $category_ids;
-	public $stock;
-	public $seller;
-	public $bundle;
-	public $related;
-	public $updated;
-
-	protected function _table(){
-		return "product";
-	}
-
-	function __construct(){
-		
-	}
-
-	function getImgs(){
-		return "123";
-	}
-
-	function getTitle(){
-		return $this->name;
-	}
-
-	function getPrice($qty = 1){
-
-		return number_format($this->price * $qty, 2, '.', '');
-	}
-
-	function getTax($qty = 1){
-		$taxrate = 0.08;
-		return number_format($this->price * $taxrate * $qty, 2, '.', '');
-	}
-	
-	function getDiscount($qty = 1){
-		$discount = 0.5;
-		return number_format($discount * $qty, 2, '.', '');
-	}
-
-	function getCurrency(){
-		return "$";
-	}
-
-	function getDescription(){
-		return $this->description;
-	}
-}
-
 class _Product extends _Base{
 	protected $_attr = ["id", "name", "description", "sku", "price", "category_ids", "stock", "seller", "bundle", "related", "updated"];
 	protected $_table = "product";
@@ -108,15 +55,14 @@ class _Product extends _Base{
 		$data = array();
 		$data = _DB::init()->select($data, $sql);
 		$header = $this->_attr;
+		$ReflectionClass = new ReflectionClass("Product");
+
 		foreach ($data as $k => $v) {
-			$c = [];
-			foreach ($header as $k2 => $v2) {
-				$c[$v2]	=	@$v[$v2];
-			}
+			$c = $ReflectionClass->newInstanceWithoutConstructor()->build($v);
+			$c->getThumbnail();
 			$table_data[] = $c;
 		}
-		$contents[] = $this->cache("action_bar");
-		
+		$contents[] = $this->cache("action_bar");		
 		$this->assign("data", $table_data);
 		$contents[] = $this->cache("grid_view");
 		$this->show($contents);

@@ -1,20 +1,4 @@
 <?php
-class User extends _Model{
-	public $id;
-	public $uname;
-	public $uemail;
-	public $upassword;
-	public $type;
-	public $status;
-	public $created;
-	public $updated;
-	function __construct(){
-	}
-	protected function _table(){
-		return "user";
-	}
-}
-
 class _User extends _Controller{
 	protected $_attr = ["id", "main_id", "product_ids", "user","created", "status", "updated"];
 	protected $_table = "user";

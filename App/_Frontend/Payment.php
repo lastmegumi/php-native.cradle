@@ -1,22 +1,4 @@
 <?php
-class Payment extends _Model{
-	public $id;
-	public $order_id;
-	public $type;
-	public $amount;
-	public $status;
-	public $updated;
-
-	function __construct(){
-		
-	}
-
-	protected function _table(){
-		return "order_payment";
-	}
-
-}
-
 class _Payment extends _Controller{
 	protected $_attr = ["id", "order_id", "created", "updated"];
 	protected $_table = "order_payment";

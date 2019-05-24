@@ -1,6 +1,10 @@
 <?php
 getheader();
 ?>
+<header class="clearfix">
+  <a class="left" href="/">Home</a>
+  <a class="right btn" href="/cart/mycart">My Cart</a>
+</header>
 <div class="wrapper">
 <!-- Page Layout here -->
 <div class="row">

@@ -54,15 +54,24 @@ Class _Model{
 	}
 
 	function delete($filter = [], $options = ['limit' => 1]){
-		$db = new _MongoDB();
-		$db->setTable($this->_table);
-		return $db->delete($filter, $options);
+		$res = $this->findAll($filter, $options);
+		return $res? $res[0] :null;
 	}
 
 	function deleteAll($filter = [], $options = ['limit' => 0]){
-		$db = new _MongoDB();
-		$db->setTable($this->_table);
-		return $db->delete($filter, $options);
+		$sql = "DELETE FROM `" . $this->_table() ."` WHERE 1";
+		//$data = array("tablestr"	=>	$this->_table);
+		if(is_array($filter)):
+		foreach($filter as $k => $v){
+			$sql .= " AND " . $k;
+			foreach ($v as $k2 => $v2) {
+				$mark = array("eq"	=>	"=", "gt"	=>	">=", "st"	=>	"<=", "lk"	=>	"LIKE");
+				$sql .= " " . $mark[strtolower($k2)] . " :" . $k;
+				$data[$k] = $v2;
+			}
+		}
+		endif;
+		return _DB::init()->delete(@$data, $sql);
 	}
 
 }?>

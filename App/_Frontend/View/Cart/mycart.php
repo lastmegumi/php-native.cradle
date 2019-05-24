@@ -25,5 +25,5 @@
 <p>Discount:<?php echo $Discount;?></p>
 <p>Total:<?php echo $FinalPrice;?></p>
 
-<a class="btn">Check Out</a>
+<a class="btn" href="/checkout">Check Out</a>
 </div>

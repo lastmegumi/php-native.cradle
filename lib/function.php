@@ -200,6 +200,10 @@ function _H($url){
     exit;
 }
 
+function _T($timestamp = null){
+    return Date("Y-m-d H:i:s", $timestamp);
+}
+
 if(_G('lan')){
     switch (_G('lan')) {
         case 'US-en':

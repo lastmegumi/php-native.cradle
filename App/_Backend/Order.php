@@ -1,46 +1,4 @@
 <?php
-class Order extends _Model{
-	public $id;
-	public $buyer_email;
-	public $buyer_name;
-	public $buyer_phone;
-	public $token;
-	public $amount_base;
-	public $amount_discount;
-	public $amount_paid;
-	public $amount_tax;
-	public $description;
-	public $message;
-	public $payment_method;
-	public $status;
-	public $updated;
-	protected function _table(){
-		return "order";
-	}
-}
-
-class Order_Product extends _Model{
-	public $id;
-	public $order_id;
-	public $product_id;
-	public $product_name;
-	public $product_img;
-	public $product_sku;
-	public $product_tax;
-	public $product_discount;
-	public $status;
-	public $notes;
-	public $updated;
-
-	protected function _table(){
-		return "order_product";
-	}
-
-	function __construct(){
-		return $this;
-	}
-}
-
 class _Order extends _Base{
 	protected $_attr = ["id",  "buyer_name", "buyer_email", "buyer_phone", "token", "amount_base", "amount_tax", "amount_discount", "amount_paid", "description", "message", "payment_method", "status", "updated"];
 	protected $_table = "order";
@@ -65,7 +23,7 @@ class _Order extends _Base{
 	function _route(){
 		if(_G('id')){
 			$order = new Order();
-			$data = $order->find(['id'	=>	['eq'	=>	12]]);
+			$data = $order->find(['id'	=>	['eq'	=>	_G("id")]]);
 			$order->build($data);
 			$this->assign("order", $order);
 			$contents[] = $this->cache("status");
@@ -73,20 +31,30 @@ class _Order extends _Base{
 			$user = new User();
 			$udata = $user->find(['id'	=>	["eq" => $data['user_id']]]);
 			$user->build($udata);
-
 			$contents[]	= $this->cache("basic_card");
-			$this->assign("buyer", $user);
+
+			$this->assign("data", $user);
 			$contents[]	= $this->cache("buyer_card");
 
 			$payment = new Payment();
 			$udata = $payment->find(['order_id'	=>	["eq" => $data['id']]]);
-			$payment->build($udata);			
+			$payment->build($udata);
 			$this->assign("payment", $payment);
 			$contents[]	= $this->cache("payment_card");
 			$contents[]	= $this->cache("status_card");
+
+			$billing = new order_address();
+			$billing->build($billing->find(['order_id'	=>	["eq" => $data['id']],'type'	=>	["eq" => "billing"]]));
+			$shipping = new order_address();
+			$shipping->build($shipping->find(['order_id'	=>	["eq" => $data['id']],'type'	=>	["eq" => "shipping"]]));
+			$this->assign("billing", $billing);
+			$this->assign("shipping", $shipping);
+
+
+			$contents[]	= $this->cache("billing_shipping");
 			$shipping = new Shipping();
 			$udata = $shipping->find(['order_id'	=>	["eq" => $data['id']]]);
-			$shipping->build($udata);			
+			$shipping->build($udata);
 			$this->assign("shipping", $shipping);			
 			$contents[]	= $this->cache("shipping_card");
 
@@ -95,8 +63,8 @@ class _Order extends _Base{
 			$udata = $Order_Product->findAll(['order_id'	=>	["eq" => $data['id']]]);
 			foreach ($udata as $k => $v) {
 				$products[] = $ReflectionClass->newInstanceWithoutConstructor()->build($v);	
-			}		
-			$this->assign("order_product", $products);			
+			}
+			$this->assign("data", $products);			
 			$contents[]	= $this->cache("products");
 			$this->show($contents);
 		}
@@ -125,6 +93,7 @@ class _Order extends _Base{
 	}
 
 	function add(){
+		return;
 		$data = array(
 				'id'	=>	'',
 				'buyer_email'	=>	'lastmegumi@gmail.com',

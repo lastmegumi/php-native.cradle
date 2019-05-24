@@ -1,30 +1,9 @@
 <?php
-class Shipping extends _Model{
-	public $id;
-	public $order_id;
-	public $cost;
-	public $career_id;
-	public $tracking;
-	public $notes;
-	public $is_mailed;
-	public $status;
-	public $udpated;
-
-	function __construct(){
-		
-	}
-
-	protected function _table(){
-		return "order_shipping";
-	}
-
-}
-
 class _Shipping extends _Controller{
 	protected $_attr = ["id", "from", "to", "carrear", "tracking", "order_id"];
-	protected $_table = "product";
+	protected $_table = "shipping";
 	private $main_key = "id";
-	public $template_dir = "product";
+	public $template_dir = "shipping";
 	public $title;
 	public $imgs;
 	public $price;

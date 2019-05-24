@@ -15,9 +15,9 @@ getheader();
       <a href="#name"><span class="white-text name">John Doe</span></a>
       <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
     </div></li>
-    <li><a class="waves-effect" href="/product/list">Product</a></li>
-    <li><a class="waves-effect" href="/category/list">Category</a></li>
-    <li><a class="waves-effect" href="/order/list">Sales</a></li>
+    <li><a class="waves-effect" href="/admin/product/list">Product</a></li>
+    <li><a class="waves-effect" href="/admin/category/list">Category</a></li>
+    <li><a class="waves-effect" href="/admin/order/list">Sales</a></li>
     <li><div class="divider"></div></li>
     <li><a class="subheader">Subheader</a></li>
     <li><a class="waves-effect" href="#!">Setting</a></li>

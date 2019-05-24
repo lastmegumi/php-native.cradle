@@ -1,5 +1,6 @@
 <?php
 if(_U(1) === "admin"){
+	define("BACKEND", "admin/");
 	define("APP_DIR" , APP. "_Backend/");
 	$directory = APP_DIR;
 	$_u = 2;
@@ -7,6 +8,12 @@ if(_U(1) === "admin"){
 	define("APP_DIR" , APP. "_Frontend/");
 	$directory = APP_DIR;
 	$_u = 1;
+}
+
+$cons = glob(APP . "Model/" . "*.php");
+foreach($cons as $c)
+{
+  require_once($c);
 }
 
 $cons = glob($directory . "*.php");

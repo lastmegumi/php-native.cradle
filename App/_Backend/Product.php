@@ -1,27 +1,4 @@
 <?php
-class Product extends _Model{
-	public $id;
-	public $name;
-	public $description;
-	public $sku;
-	public $price;
-	public $category_ids;
-	public $stock;
-	public $seller;
-	public $bundle;
-	public $related;
-	public $updated;
-
-	protected function _table(){
-		return "product";
-	}
-
-	function __construct(){
-		
-	}
-
-}
-
 class _Product extends _Base{
 	protected $_attr = ["id", "name", "description", "sku", "price", "category_ids", "stock", "seller", "bundle", "related", "updated"];
 	protected $_table = "product";
@@ -96,12 +73,55 @@ class _Product extends _Base{
 		try{
 			_DB::init()->conn->beginTransaction();
 			$product = new Product();
-			$product->build($data)->save();
+			$id = $product->build($data)->save();
 			_DB::init()->conn->commit();
+			foreach ($data['images'] as $k => $v) {
+				$fn = _Image::Save_From_URL($v);
+				$pi = new Product_Image();
+				$pi->build(array("product_id" => $id, "url"	=> HOME . "uploads/" . $fn));
+				$pi->save();
+			}
 		}catch(Exception $e){			
 			_DB::init()->conn->rollBack();
 			echo $e->getMessage();
 		}
+	}
+
+	function import($datalist = []){
+		foreach ($variable as $key => $value) {
+			$this->save($value);
+		}
+	}
+
+}
+
+class _Image{
+	static function save_from_url($url){
+		$path = UF ;
+		if(!file_exists($path)):	//没有文件夹创建
+			mkdir($path, 0755, true);
+			chmod($path, 0755);
+		endif;
+		$fn = random(16);
+		$fl = explode('.', basename($url));
+		$ext = $fl[count($fl) - 1];
+
+		while(file_exists($path . $fn . '.' . $ext)){
+			$fn = random(16);
+		}
+		$ori = file_get_contents($url);
+
+		// $ori = imagecreatefromwebp($url);
+
+		// // Convert it to a jpeg file with 100% quality
+		// $ori = imagejpeg($im, './example.jpeg', 100);
+
+		file_put_contents($path . $fn . '.' . $ext, $ori);
+		return $fn . '.' . $ext;
+	}
+
+	static function save_from_upload($file){
+
 	}
 
 }

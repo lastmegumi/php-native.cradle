@@ -1,20 +1,4 @@
 <?php
-class Cart extends _Model{
-	public $product_id;
-	public $user_id;
-	public $session_id;
-	public $updated;
-	public $qty;
-
-	protected function _table(){
-		return "cart";
-	}
-
-	function __construct(){
-		
-	}
-}
-
 class _Cart extends _Base{
 	protected $_attr = ["id", "product_ids", "user","created", "status", "updated"];
 	protected $_table = "Cart";
@@ -48,13 +32,16 @@ class _Cart extends _Base{
 					 "updated"		=>	strtotime("now"),
 					);
 		$cart->build($obj);
-		print_r($cart);
-		$cart->save();
+		try{
+			$cart->save();
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
 	}
 
 	function mycart(){
 		$cart = new Cart();
-		$sql = "SELECT sum(qty) as qty, product_id FROM cart WHERE 1";
+		$sql = "SELECT sum(qty) as qty, product_id, session_id FROM cart WHERE 1";
 		$sql .= " AND user_id = :user_id group by product_id ORDER BY product_id DESC";
 		$data = ['user_id'	=>	1];
 		$data = _DB::init()->select($data, $sql);
@@ -71,7 +58,7 @@ class _Cart extends _Base{
 		$this->show($contents);
 	}
 
-	function Calculate($c){
+	function Calculate($data){
 		$subtotal = 0;
 		$tax = 0;
 		$discount = 0;
@@ -79,7 +66,7 @@ class _Cart extends _Base{
 		$product_list = [];
 		// /print_r($data);
 		$ReflectionClass = new ReflectionClass("Product");
-		foreach ($c as $k => $v) {
+		foreach ($data as $k => $v) {
 			$c = $ReflectionClass->newInstanceWithoutConstructor()->find(['id'	=>	["eq" => $k]]);
 			$p =$ReflectionClass->newInstanceWithoutConstructor()->build($c);
 			$product_list[]	= $p;
@@ -112,7 +99,6 @@ class _Cart extends _Base{
 	}
 
 	function clear(){
-		$_SESSION['cart'][session_id()] = array();
 	}
 
 
@@ -121,7 +107,6 @@ class _Cart extends _Base{
 	}
 
 	function list(){
-		print_r($this->findAll());
 	}
 }
 ?>

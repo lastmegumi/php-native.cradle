@@ -24,8 +24,32 @@ function re_json(data){
 }
 
 $(document).ready(()  =>  {
-  $("tbody tr.clickable").click(function() {
-        window.location = $(this).data("href");
-  });
-  $('select').formSelect();
+	$("tbody tr.clickable").click(function() {
+	    window.location = $(this).data("href");
+	});
+	$('select').formSelect();
+
+	$(function() {
+		$('img.lazy').lazy();
+	}); // lazyload       
+	$(".add-to-cart").click(function(e){
+	e.preventDefault();
+	let data = {};
+	data.pid = $(this).attr("data-id");
+	data.quantity = $("#product_qty").length > 0? $("#product_qty").val():1;
+	data.quantity = data.quantity? data.quantity:0;
+		$.ajax({
+			type: "POST",//方法类型
+			dataType: "HTML",//预期服务器返回的数据类型
+			url: "/cart/add",//url
+			data : data,
+			success: function (result) {
+				alert(result);
+			},
+			error : function() {
+			    alert("异常！");
+			}
+		});
+		return false;
+	});
 });

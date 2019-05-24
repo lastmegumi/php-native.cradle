@@ -1,3 +1,3 @@
 <?php
-print_r(@$payment);
+//print_r(json_decode(urldecode($payment->track_back)));
 ?>

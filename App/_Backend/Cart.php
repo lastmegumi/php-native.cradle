@@ -1,11 +1,4 @@
 <?php
-class Cart{
-	function __construct(){
-		
-	}
-
-}
-
 class _Cart extends _Controller{
 	protected $_attr = ["id", "product_ids", "user","created", "status", "updated"];
 	protected $_table = "product";
@@ -44,7 +37,6 @@ class _Cart extends _Controller{
 		//print_r($this->model);
 		//return;
 		var_dump($this->save());
-
 	}
 
 }

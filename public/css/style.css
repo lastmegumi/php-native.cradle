@@ -9,3 +9,12 @@ tbody tr.clickable:hover {
     cursor: pointer;
     background:wheat !important;
 }
+.img-responsive{
+	max-width: 100%;
+}
+
+.grid_view .product_name{
+    height: 3rem;
+    overflow: hidden;
+    line-height: 1.5;
+}

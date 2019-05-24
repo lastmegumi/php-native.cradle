@@ -10,7 +10,7 @@
   <tbody>
       <?php
       foreach ($data as $k => $v) :?>
-    <tr class="clickable" data-href='<?php echo @$name? HOME . $name . '/edit?id=' . $v['id']:"" ?>'>
+    <tr class="clickable" data-href='<?php echo @$name? HOME . BACKEND .  $name . '/edit?id=' . $v['id']:"" ?>'>
       <?php
       foreach($v as $k2 => $v2):?>
       <td><?php echo @$v2?></td>
