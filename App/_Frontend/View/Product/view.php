@@ -1,10 +1,20 @@
-<section class="row">
+<section class="container">
+<div class="row">
 	<div class="col s4 white">
-		<?php $img = $product->getImages();
-			if($img):?>
-			<img class="img-responsive" src="<?php echo $img[0]['url'];?>" />
-		<?php endif;
-		?>
+		<?php $thumbnail = $product->getThumbnail();?>
+		<div class="mail-thumbnail">
+			<img class="img-responsive mb-1" src="<?php echo $thumbnail;?>">
+		</div>
+		<div>
+			<div class="row" style="width:max-content">
+		<?php $imgs = $product->getImages();
+		foreach ($imgs as $k => $v) :?>
+			<a class="fancybox-thumb" style="width:6rem;float:left" rel="fancybox-thumb" href="<?php echo $v['url']?>" title="">
+				<img src="<?php echo $v['url']?>" alt="" class="img-responsive small-thumb"/>
+			</a>
+		<?php endforeach;?>
+			</div>
+		</div>
 	</div>
 
 	<div class="col s8 white">
@@ -27,16 +37,39 @@
 			</div>
 		</div>
 	</div>
-</section>
-<section class="row">
+</div>
+<div class="row">
 	<div class="col s12">
 		<div class="description white">
 			<?php echo $product->getDescription();?>
 		</div>
 	</div>
+</div>
+<div class="row">
+	<div class="col s12">
+		<div class="attribute white p5">
+			<table class="responsive-table striped">
+			<tbody>
+				<?php 
+				$data = $product->getAttributes();
+				foreach($data as $k => $v):?>
+			  <tr>
+			    <td><?php echo $v['name']?></td>
+			    <td><?php echo $v['value']?></td>
+			  </tr>
+			<?php endforeach;?>
+			</tbody>
+			</table>
+		</div>
+	</div>
+</div>
 </section>
 <script type="text/javascript">
-$(document).ready(() => {
+$('img.small-thumb').hover(function(){
+    	try{
+    		$('.mail-thumbnail img').attr('src', $(this).attr('src'));
+    	}catch{
 
-})
+    	}
+    })
 </script>

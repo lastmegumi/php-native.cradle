@@ -69,8 +69,6 @@ if(!$c) {continue;}?>
 <script type="text/javascript">
   document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.sidenav');
-    var instances = M.Sidenav.init(elems, null);
-    instances.open();
   });
 
   // Or with jQuery

@@ -47,7 +47,10 @@ class _Checkout extends _Base{
 
 		$cart = new Cart();
 		$cart_c = new _Cart();
-		$sql = "SELECT sum(qty) as qty, product_id, session_id FROM cart WHERE 1";
+		$sql = "SELECT sum(qty) as qty, product_id, session_id 
+				FROM cart
+				INNER JOIN product ON product.id = cart.product_id
+				WHERE 1";
 		$sql .= " AND user_id = :user_id group by product_id, session_id ORDER BY product_id DESC";
 		$data = ['user_id'	=>	1];
 		$data = _DB::init()->select($data, $sql);

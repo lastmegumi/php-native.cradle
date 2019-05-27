@@ -1,10 +1,22 @@
 <?php
 getheader();
 ?>
-<header class="clearfix">
+<header class="clearfix container">
   <a class="left" href="/">Home</a>
   <a class="right btn" href="/cart/mycart">My Cart</a>
+  <a class="right" href="/user/register">Register</a>
+  <a class="right" href="/user/login">Log In</a>
 </header>
+<nav>
+  <div class="nav-wrapper">
+    <ul id="nav-mobile" class="container hide-on-med-and-down">
+      <li><a href="product/list">Product</a></li>
+      <li><a href="badges.html">Components</a></li>
+      <li><a href="collapsible.html">JavaScript</a></li>
+    </ul>
+  </div>
+</nav>
+
 <div class="wrapper">
 <!-- Page Layout here -->
 <div class="row">
@@ -19,36 +31,34 @@ if(!$c) {continue;}?>
 	</div>
 <?php endforeach;?>
 </div>
-
-
-<?php
-//include GPATH . "/temp/bottom.php";
-?>
 </div>
-<!-- Modal -->
-<style type="text/css">
-@media (min-width: 1440px) {
-  .modal-lg {
-    max-width: unset;
-    width: 75vw;
-  }
-}</style>
-
-<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body bg-light p-0 clearfix">
-        Loading...
-      </div>
-    </div>
-  </div>
 </div>
+
+  <footer class="page-footer grey darken-4">
+          <div class="container">
+            <div class="row">
+              <div class="col l6 s12">
+                <h5 class="white-text">Footer Content</h5>
+                <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+              </div>
+              <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Links</h5>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="footer-copyright black">
+            <div class="container">
+            © 2014 Copyright Text
+            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+            </div>
+          </div>
+</footer>
 <?php 
 getfooter();
 ?>

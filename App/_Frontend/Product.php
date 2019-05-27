@@ -43,6 +43,7 @@ class _Product extends _Base{
 		// $this->assign("category",$c);
 		$id = _G("id");
 		$d = $this->find(['id'	=>	["eq" => $id]]);
+		if(!$d){$this->err_404();return;}
 		$this->build($d);
 		$this->assign("product", $this->model);
 		$contents[] = $this->cache('view');
@@ -52,6 +53,8 @@ class _Product extends _Base{
 	function list(){
 		$sql = "SELECT {$this->_table}.* FROM {$this->_table}
 				WHERE 1";
+		$sql .= " ORDER BY id DESC";
+		$sql .= " LIMIT 0, 20";
 		$data = array();
 		$data = _DB::init()->select($data, $sql);
 		$header = $this->_attr;

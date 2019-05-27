@@ -21,6 +21,8 @@ class _Product extends _Base{
 		$category = new _Category();
 		$c =  $category->findAll(['status'	=>	["eq" => 0]]);
 		$this->assign("category",$c);
+		$product = new Product();
+		$this->assign("data", $product);
 		$contents[] = $this->cache('form');
 		$this->show($contents);
 	}
@@ -30,9 +32,9 @@ class _Product extends _Base{
 		$category = new _Category();
 		$c =  $category->findAll(['status'	=>	["eq" => 0]]);
 		$this->assign("category",$c);
-		$d = $this->find(['id'	=>	["eq" => _G('id')]]);
-		$this->build($d);
-		$this->assign("data", $this->model);
+		$product = new Product();		
+		$d = $product->find(['id'	=>	["eq" => _G('id')]]);
+		$this->assign("data", $product->build($d));
 		$contents[] = $this->cache('form');
 		$this->show($contents);
 	}
@@ -74,13 +76,41 @@ class _Product extends _Base{
 			_DB::init()->conn->beginTransaction();
 			$product = new Product();
 			$id = $product->build($data)->save();
+			$id = $product->id?  $product->id:$id;
+			$product_attr = new Product_attribute();
+			$product_attrs = $_POST['attributes'];
+			if($product_attrs):
+				$product_attr->deleteAll(['product_id' => ['eq'	=>	$product->id]]);
+				foreach ($product_attrs as $k => $v) {				
+					if(!_F($v['name'])){continue;}
+					$product_attr->build(array("product_id"	=>	$id,
+											   "name"		=>	_F($v['name']),
+											   "value"		=>	_F($v['value']),
+											   "type"		=>	"text",
+												));
+					$product_attr->save();
+				}
+			endif;
 			_DB::init()->conn->commit();
+
+			if(@$_POST['images']):
+				$ori= new Product_Image();
+				$ori->deleteAll(['product_id' => ['eq'	=>	$product->id]]);
+			foreach ($_POST['images'] as $k => $v) {
+				$pi = new Product_Image();
+				$pi->build(array("product_id" => $id, "url"	=> $v));
+				$pi->save();
+			}
+			endif;
+
+			if(@$data['images']):
 			foreach ($data['images'] as $k => $v) {
 				$fn = _Image::Save_From_URL($v);
 				$pi = new Product_Image();
 				$pi->build(array("product_id" => $id, "url"	=> HOME . "uploads/" . $fn));
 				$pi->save();
 			}
+			endif;
 		}catch(Exception $e){			
 			_DB::init()->conn->rollBack();
 			echo $e->getMessage();
@@ -93,36 +123,14 @@ class _Product extends _Base{
 		}
 	}
 
-}
-
-class _Image{
-	static function save_from_url($url){
-		$path = UF ;
-		if(!file_exists($path)):	//没有文件夹创建
-			mkdir($path, 0755, true);
-			chmod($path, 0755);
-		endif;
-		$fn = random(16);
-		$fl = explode('.', basename($url));
-		$ext = $fl[count($fl) - 1];
-
-		while(file_exists($path . $fn . '.' . $ext)){
-			$fn = random(16);
-		}
-		$ori = file_get_contents($url);
-
-		// $ori = imagecreatefromwebp($url);
-
-		// // Convert it to a jpeg file with 100% quality
-		// $ori = imagejpeg($im, './example.jpeg', 100);
-
-		file_put_contents($path . $fn . '.' . $ext, $ori);
-		return $fn . '.' . $ext;
+	function upload_image(){
+		$images = _Image::save_from_upload();
+		$this->backend_image_block($images);
 	}
 
-	static function save_from_upload($file){
-
+	function backend_image_block($images){		
+		$this->assign("data", $images);
+		echo $this->cache("backend_image");
 	}
-
 }
 ?>

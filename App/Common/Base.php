@@ -6,7 +6,7 @@ Class _Base{
 	protected $_attr = [];
 	protected $model;
 	public $template_dir = "view/";
-	public $common_view_folder = APP . "Common/view/";
+	static public $common_view_folder = APP . "Common/view/";
 	public $response = array("status" => 0,
 							 "status_code" => 401,
 							 "data" => null,
@@ -71,8 +71,13 @@ Class _Base{
 		}
 	}
 
+	function is_allow(){
+		return true;
+	}
 
 	function cache($temp){
+		if(!$this->is_allow()){return;}
+
 		if(@$this->var):
 		foreach($this->var as $k => $v){
 			$i = $k;
@@ -108,13 +113,13 @@ Class _Base{
 		if(!$design && !_G('form')){}
 	}
 
-	function show($contents = [], $temp = "tp1"){
+	static function show($contents = [], $temp = "tp1"){
 		if(file_exists(APP_DIR. 'template/' . $temp)){
 			include APP_DIR. 'template/' . $temp;}
 		elseif(file_exists(APP_DIR. 'template/' . $temp . '.php')){
 			include APP_DIR. 'template/' . $temp . ".php";}
 		else{
-			$this->err_404();}
+			self::err_404();}
 	}
 
 	// Mongoddb
@@ -171,8 +176,8 @@ Class _Base{
 	// 	return $db->selectone($data, $sql);
 	// }
 
-	protected function err_404(){
-		include $this->common_view_folder . "404.php";
+	static protected function err_404(){
+		include self::$common_view_folder . "404.php";
 	}
 
 	protected function err($err_code = 0){

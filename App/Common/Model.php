@@ -64,11 +64,13 @@ Class _Model{
 		if(is_array($filter)):
 		foreach($filter as $k => $v){
 			$sql .= " AND " . $k;
-			foreach ($v as $k2 => $v2) {
-				$mark = array("eq"	=>	"=", "gt"	=>	">=", "st"	=>	"<=", "lk"	=>	"LIKE");
-				$sql .= " " . $mark[strtolower($k2)] . " :" . $k;
-				$data[$k] = $v2;
-			}
+			if(is_array($v)):
+				foreach ($v as $k2 => $v2) {
+					$mark = array("eq"	=>	"=", "gt"	=>	">=", "st"	=>	"<=", "lk"	=>	"LIKE");
+					$sql .= " " . $mark[strtolower($k2)] . " :" . $k;
+					$data[$k] = $v2;
+				}
+			endif;
 		}
 		endif;
 		return _DB::init()->delete(@$data, $sql);

@@ -1,5 +1,4 @@
 ﻿.wrapper{
-	padding:15px;
 	background: #f8f8f8;
 }
 .d-inline-block{
@@ -17,4 +16,10 @@ tbody tr.clickable:hover {
     height: 3rem;
     overflow: hidden;
     line-height: 1.5;
+}
+header{
+    position: relative;
+    display: block;
+    overflow: hidden;
+    padding:30px 0;
 }

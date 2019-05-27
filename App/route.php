@@ -10,6 +10,9 @@ if(_U(1) === "admin"){
 	$_u = 1;
 }
 
+define("ALLOWED_CON",['product']);
+define("ROUTE_CONTROL", false);
+
 $cons = glob(APP . "Model/" . "*.php");
 foreach($cons as $c)
 {
@@ -29,7 +32,12 @@ foreach($cons as $c)
 }
 
 if(!_U()){
-	require GPATH . "/page/index.php";
+	_Page::showPage();
+	die();
+}
+
+if(!in_array(_U($_u), ALLOWED_CON) && ROUTE_CONTROL){
+	_Page::Page_Not_Found();
 	die();
 }
 

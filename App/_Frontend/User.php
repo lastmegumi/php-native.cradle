@@ -1,5 +1,5 @@
 <?php
-class _User extends _Controller{
+class _User extends _Base{
 	protected $_attr = ["id", "main_id", "product_ids", "user","created", "status", "updated"];
 	protected $_table = "user";
 	private $main_key = "id";
@@ -9,20 +9,21 @@ class _User extends _Controller{
 	public $price;
 
 	function __construct(){
-		$name = "Product";
+		$name = "User";
 		$this->template_dir = APP_DIR . "view/".$name."/";
-		$this->model = new Product();
 		//print_r($this->build(array("title" => "abcde", "price" => 1.22)));
 		//print_r($this->save());
 		//print_r($this->deleteAll());
 	}
 
 	function register(){
-
+		$contents[]	= $this->cache("register");
+		$this->show($contents);
 	}
 
 	function login(){
-
+		$contents[]	= $this->cache("login");
+		$this->show($contents);
 	}
 
 	function cart(){
@@ -30,6 +31,9 @@ class _User extends _Controller{
 	}
 
 	function dashboard(){
+		$this->is_logged();
+		$contents[]	= $this->cache("dashboard");
+		$this->show($contents, $temp = "user_backend");
 
 	}
 

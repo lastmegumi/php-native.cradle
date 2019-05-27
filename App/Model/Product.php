@@ -47,6 +47,11 @@ class Product extends _Model{
 		return $this->description;
 	}
 
+	function getAttributes(){		
+		$Product_attribute = new Product_attribute();
+		return $Product_attribute->findAll(['product_id' => ['eq'	=>	$this->id]]);
+	}
+
 	function getImages(){
 		$product_image = new Product_Image();
 		return $product_image->findAll(['product_id' => ['eq'	=>	$this->id]]);
@@ -70,6 +75,22 @@ class Product_Image extends _Model{
 
 	protected function _table(){
 		return "product_image";
+	}
+
+	function __construct(){
+		
+	}
+}
+
+class Product_attribute extends _Model{
+	public $id;
+	public $name;
+	public $value;
+	public $type;
+	public $product_id;
+
+	protected function _table(){
+		return "product_attribute";
 	}
 
 	function __construct(){
