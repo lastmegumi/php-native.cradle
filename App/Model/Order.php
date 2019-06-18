@@ -1,6 +1,7 @@
 <?php
 class Order extends _Model{
 	public $id;
+	public $user_id;
 	public $buyer_email;
 	public $buyer_name;
 	public $buyer_phone;
@@ -15,7 +16,11 @@ class Order extends _Model{
 	public $status;
 	public $created;
 	public $updated;
-	protected function _table(){
+
+
+	const _table = "order";
+
+	static function _table(){
 		return "order";
 	}
 }
@@ -35,7 +40,9 @@ class Order_Product extends _Model{
 	public $notes;
 	public $updated;
 
-	protected function _table(){
+	const _table = "order_product";
+
+	static function _table(){
 		return "order_product";
 	}
 
@@ -55,7 +62,9 @@ class _Address extends _Model{
 
 class Order_Address extends _Address{
 
-	protected function _table(){
+	const _table = "order_address";
+
+	static function _table(){
 		return "order_address";
 	}
 

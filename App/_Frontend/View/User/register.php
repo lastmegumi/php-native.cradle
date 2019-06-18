@@ -10,34 +10,34 @@
       <div class="row margin">
         <div class="input-field col s12">
           <i class="material-icons prefix pt-2">person_outline</i>
-          <input id="username" type="text">
+          <input id="username" type="text" name="username">
           <label for="username" class="center-align">Username</label>
         </div>
       </div>
       <div class="row margin">
         <div class="input-field col s12">
           <i class="material-icons prefix pt-2">mail_outline</i>
-          <input id="email" type="email">
+          <input id="email" type="email" name="email">
           <label for="email">Email</label>
         </div>
       </div>
       <div class="row margin">
         <div class="input-field col s12">
           <i class="material-icons prefix pt-2">lock_outline</i>
-          <input id="password" type="password">
+          <input id="password" type="password" name="password">
           <label for="password">Password</label>
         </div>
       </div>
       <div class="row margin">
         <div class="input-field col s12">
           <i class="material-icons prefix pt-2">lock_outline</i>
-          <input id="password-again" type="password">
+          <input id="password-again" type="password" name="password_repeat">
           <label for="password-again">Password again</label>
         </div>
       </div>
       <div class="row">
         <div class="input-field col s12">
-          <a href="index.html" class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col s12">Register</a>
+          <a href="javascript:void(0)" id="register" class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col s12">Register</a>
         </div>
       </div>
       <div class="row">

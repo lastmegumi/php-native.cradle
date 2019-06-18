@@ -23,6 +23,7 @@ $card_arr[] = array("title" => "Card Number", "type" => "text", "key" => "card",
 $card_arr[] = array("title" => "Expiration Date", "type" => "text", "key" => "expiration", "class" => "col s6");
 $card_arr[] = array("title" => "CVC/CSC", "type" => "text", "key" => "cvc", "class" => "col s6");
 ?>
+<div class="container">
 <form id="check_out">
 	<div class="row">
 		<h6>Billing Address:</h6>
@@ -38,7 +39,7 @@ $card_arr[] = array("title" => "CVC/CSC", "type" => "text", "key" => "cvc", "cla
 	</div>
 	<button type="submit" class="btn btn-primary float-right">Submit</button>
 </form>
-
+</div>
 <?php
 function form_exp($con_arr){
 	foreach($con_arr as $c):
@@ -84,28 +85,3 @@ function form_exp($con_arr){
 
 }
 ?>
-<script type="text/javascript">
-$(document).ready(function(){
-	$("#check_out").submit(function(e){
-		e.preventDefault();
-		$.ajax({
-			type: "POST",//方法类型
-			dataType: "HTML",//预期服务器返回的数据类型
-			url: "/checkout/placeorder",//url
-			data : $(this).serializeArray(),
-			success: function (result) {
-				alert(result);
-				return;
-			    alert(result.message);
-			    if(result.status){
-			    $("#modal").modal("hide");
-			    window.location.replace(result.url);}
-			},
-			error : function() {
-			    alert("异常！");
-			}
-		});
-		return false;
-	});
-});
-</script>

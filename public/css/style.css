@@ -1,5 +1,5 @@
 ﻿.wrapper{
-	background: #f8f8f8;
+	background: #fff;
 }
 .d-inline-block{
 	display: inline-block;
@@ -18,8 +18,75 @@ tbody tr.clickable:hover {
     line-height: 1.5;
 }
 header{
-    position: relative;
     display: block;
     overflow: hidden;
     padding:30px 0;
 }
+.ck-editor__editable_inline {
+    min-height: 25vh !important;
+}
+
+.clearfix{
+    clear:both;
+    overflow: hidden;
+}
+.p-3{
+    padding: 1rem;
+}
+.p-1{
+    padding: .25rem;
+}
+.m-0{
+    margin: 0;
+}
+.description *{
+    max-width:  100%;
+}
+.bold{
+    font-weight:500;
+}
+.border1{
+    border: 1px solid #aaa
+}
+.small{
+    font-size: 0.85em;
+}
+table.responsive-table.technical-details tr td:first-child ,table.responsive-table.technical-details tr td:nth-child(3){
+    color: #555;
+    font-weight: 500;
+}
+table.responsive-table.technical-details td {
+    padding: 5px;
+    font-size: .9rem;
+}
+
+ul.product_feature li {
+    list-style: disc !important;
+    font-size: .85rem;
+}
+ul.product_feature li .feature_title{
+    font-weight: 500;
+    color: #555;
+}
+ul.product_feature li .feature_des{
+    font-weight: 400;
+    color: #555
+}
+header .material-icons{
+    font-size: 20px;   
+    margin-right: .25em; 
+}
+a{
+    color: #555;
+}
+.v_i_super{
+    vertical-align: super;
+}
+.top-cart-item .row{
+    margin: 0;
+}
+.top-cart-item img{
+    max-width: 4rem;
+}
+
+.top-cart-list .dropdown-content li>a, .dropdown-content li>span {padding: 0;}

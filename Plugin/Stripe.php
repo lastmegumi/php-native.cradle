@@ -1,5 +1,5 @@
 <?php
-  	require PLUGIN . '/stripe/init.php';
+  	require PLUGIN . 'Stripe/init.php';
 class stripe{
 	private static $instance = null;
 	static public $response = array("message" 	=> "",
@@ -10,7 +10,7 @@ class stripe{
 	// static private $_live_key = "sk_live_bbbbbbbbbbbbbbbbbbbbbbbb";	# your live key
 
 	static private $_test_key = "sk_test_CCk5xhyLuNiGlPhK67iV28wO";	# your test key
-	static private $_live_key = "sk_live_bbbbbbbbbbbbbbbbbbbbbbbb";	# your live key
+	static private $_live_key = "sk_live_test";	# your live key
 
 	static private $test_mode = true;
 	static public $_min_pay = 1;
@@ -83,13 +83,13 @@ class stripe{
 				    'amount' => $amount,
 				]);
 			endif;
-			$this->response['status'] 	= 1;
-			$this->response['message']	= "SUCCESS";
-			$this->response['data']	=	$refund;
+			self::$response['status'] 	= 1;
+			self::$response['message']	= "SUCCESS";
+			self::$response['data']	=	$refund;
 		}catch(Exception $e){
-			$this->response['message'] = $e->getMessage();
+			self::$response['message'] = $e->getMessage();
 		}
-		return $this->response;
+		return self::$response;
 	}
 
 	static function card_token($obj){

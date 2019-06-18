@@ -1,6 +1,6 @@
 <?php
 class _Product extends _Base{
-	protected $_attr = ["id", "name", "description", "sku", "price", "category_ids", "stock", "seller", "bundle", "related", "updated"];
+	protected $_attr = ["id", "name", "description", "sku", "price", "for_sale","short_description", "enabled", "in_stock", "category_ids", "stock", "seller", "bundle", "related", "updated"];
 	protected $_table = "product";
 	private $main_key = "id";
 	public $template_dir = "product";
@@ -9,6 +9,7 @@ class _Product extends _Base{
 	public $price;
 
 	function __construct(){
+		parent::__construct();
 		$name = "Product";
 		$this->template_dir = APP_DIR . "view/".$name."/";
 		$this->model = new Product();
@@ -18,7 +19,7 @@ class _Product extends _Base{
 	}
 
 	function new(){
-		$category = new _Category();
+		$category = new Category();
 		$c =  $category->findAll(['status'	=>	["eq" => 0]]);
 		$this->assign("category",$c);
 		$product = new Product();
@@ -29,7 +30,7 @@ class _Product extends _Base{
 
 
 	function edit(){
-		$category = new _Category();
+		$category = new Category();
 		$c =  $category->findAll(['status'	=>	["eq" => 0]]);
 		$this->assign("category",$c);
 		$product = new Product();		
@@ -43,23 +44,18 @@ class _Product extends _Base{
 	}
 
 	function list(){
-		$sql = "SELECT {$this->_table}.* FROM {$this->_table}
-				WHERE 1";
-		$data = array();
-		$data = _DB::init()->select($data, $sql);
-		$header = $this->_attr;
+
+		$ReflectionClass = new ReflectionClass("product");
+		$data = $ReflectionClass
+		->newInstanceWithoutConstructor()
+		->findAll();
+
 		foreach ($data as $k => $v) {
-			$c = [];
-			foreach ($header as $k2 => $v2) {
-				$c[$v2]	=	@$v[$v2];
-			}
-			$table_data[] = $c;
+			$products[] = $ReflectionClass->newInstanceWithoutConstructor()->build($v);	
 		}
 		$contents[] = $this->cache("action_bar");
 		
-		$this->assign("header", $header);
-		$this->assign("data", $table_data);
-		$this->assign("name", $this->_table);
+		$this->assign("data", $products);
 		$contents[] = $this->cache("table");
 		$this->show($contents);
 	}
@@ -76,7 +72,12 @@ class _Product extends _Base{
 			_DB::init()->conn->beginTransaction();
 			$product = new Product();
 			$id = $product->build($data)->save();
-			$id = $product->id?  $product->id:$id;
+			if($product->id){
+				$id = $product->id;
+			}else{
+				$this->response['url']	=	"edit?id=". $id;				
+			}
+
 			$product_attr = new Product_attribute();
 			$product_attrs = $_POST['attributes'];
 			if($product_attrs):
@@ -91,8 +92,23 @@ class _Product extends _Base{
 					$product_attr->save();
 				}
 			endif;
-			_DB::init()->conn->commit();
 
+			$feature = new Product_feature();
+			$features = $_POST['feature'];
+			if(true):
+				$feature->deleteAll(['product_id' => ['eq'	=>	$product->id]]);
+				foreach ($features as $k => $v) {				
+					if(!_F($v['name'])){continue;}
+					$feature->build(array("product_id"	=>	$id,
+											   "name"		=>	_F($v['name']),
+											   "value"		=>	_F($v['value']),
+											   "type"		=>	"text",
+												));
+					$feature->save();
+				}
+			endif;
+
+			_DB::init()->conn->commit();
 			if(@$_POST['images']):
 				$ori= new Product_Image();
 				$ori->deleteAll(['product_id' => ['eq'	=>	$product->id]]);
@@ -111,9 +127,12 @@ class _Product extends _Base{
 				$pi->save();
 			}
 			endif;
+			$this->response['status']	=	1;
+			$this->response['message']	=	"success";
+			$this->json_return();
 		}catch(Exception $e){			
 			_DB::init()->conn->rollBack();
-			echo $e->getMessage();
+			$this->json_return($e->getMessage());
 		}
 	}
 
@@ -126,6 +145,39 @@ class _Product extends _Base{
 	function upload_image(){
 		$images = _Image::save_from_upload();
 		$this->backend_image_block($images);
+	}
+
+	function deletePhoto(){
+		$id = $this->_DELETE["data_id"];
+		$img = new Product_Image();
+		$res = $img->find(["id"	=>	['eq'	=>	$id]]);
+		if($res){ $img->build($res);}
+		$img->delete(["id"	=>	['eq'	=>	$img->id]]);
+		_Image::remove(str_replace(HOME, "", $img->url));
+	}
+
+	function delete(){
+		$id = $this->_DELETE["data_id"];
+		$product = new Product();
+		$res = $product->find(['id'	=>	['eq'	=>	$id]]);
+		if(!$res){return;}
+		$product->build($res);
+
+		try{
+			_DB::init()->conn->beginTransaction();
+			$product->deleteAttribute();
+			$product->deleteFeature();
+			$product->deletePhoto();
+			$res = $product->delete();	
+			_DB::init()->conn->commit();
+
+			$this->response['url']	=	HOME . "admin/product/list";
+			$this->response['status']	=	1;
+			$this->json_return();
+		}catch(Exception $e){
+			_DB::init()->conn->rollBack();
+			$this->json_return("Error on delete product");
+		}
 	}
 
 	function backend_image_block($images){		

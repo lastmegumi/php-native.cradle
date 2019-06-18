@@ -1,11 +1,8 @@
 <?php
 getheader();
+_Page::Block("block/top_bar");
 ?>
-<header class="clearfix">
-  <a class="left" href="/">Home</a>
-  <a class="right btn" href="/cart/mycart">My Cart</a>
-</header>
-<div class="wrapper" style="position:relative;height:100vh">
+<div class="wrapper" style="position:relative;min-height:100vh;background:#efefef;">
   <ul id="slide-out" class="sidenav z-depth-1" style="transform: translateX(0%);position:absolute;float:left;hegiht:100%">
     <li><div class="user-view">
       <div class="background">
@@ -18,10 +15,10 @@ getheader();
     <li><a class="waves-effect" href="#!"><i class="material-icons">person_pin</i>Profile</a></li>
     <li><div class="divider"></div></li>    
     <li><a class="subheader">My Account</a></li>
-    <li><a class="waves-effect" href="#!"><i class="material-icons">dashboard</i>Dashboard</a></li>
-    <li><a class="waves-effect" href="#!"><i class="material-icons">view_list</i>Orders</a></li>
-    <li><a class="waves-effect" href="#!"><i class="material-icons">comments</i>Reviews</a></li>
-    <li><a class="waves-effect" href="#!"><i class="material-icons">exit_to_app</i>Log out</a></li>
+    <li><a class="waves-effect" href="/user/dashboard/"><i class="material-icons">dashboard</i>Dashboard</a></li>
+    <li><a class="waves-effect" href="/user/dashboard/orders/"><i class="material-icons">view_list</i>Orders</a></li>
+    <li><a class="waves-effect" href="/user/dashboard/reviews/"><i class="material-icons">comments</i>Reviews</a></li>
+    <li><a class="waves-effect" href="/user/logout"><i class="material-icons">exit_to_app</i>Log out</a></li>
   </ul>
 <!-- Page Layout here -->
 <div class="content" style="margin-left:300px">

@@ -6,7 +6,9 @@ class Cart extends _Model{
 	public $updated;
 	public $qty;
 
-	protected function _table(){
+	const _table = "cart";
+
+	static function _table(){
 		return "cart";
 	}
 

@@ -1,4 +1,4 @@
-<div class="container cart-list">
+<div class="container cart-list white p-3 clearfix">
 <table class="responsive-table striped">
   <thead>
     <tr>

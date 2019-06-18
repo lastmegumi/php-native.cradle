@@ -5,9 +5,11 @@ class Page extends _Model{
 	public $url;
 	public $updated;
 	public $sort;
+
+	const _table = "cms";
 	
 
-	protected function _table(){
+	static function _table(){
 		return "cms";
 	}
 

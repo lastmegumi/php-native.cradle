@@ -26,7 +26,7 @@ class _Cart extends _Base{
 		if(!$qty || !$d){return;}
 		$cart = new Cart();
 		$obj = array("product_id"	=>	$d['id'],
-					 "user_id"		=> 	1,
+					 "user_id"		=> 	_User::current("id")?_User::current("id") : -1,
 					 "session_id"	=>	session_id(),
 					 "qty"			=>	$qty,
 					 "updated"		=>	strtotime("now"),
@@ -60,12 +60,23 @@ class _Cart extends _Base{
 				FROM cart
 				INNER JOIN product ON product.id = cart.product_id
 				WHERE 1";
-		$sql .= " AND user_id = :user_id group by product_id ORDER BY product_id DESC";
-		$data = ['user_id'	=>	1];
+		if(_User::is_logged()){
+			$sql .= " AND user_id = :user_id group by product_id ORDER BY product_id DESC";
+			$data = ['user_id'	=>	_User::current("id")];
+		}else{
+			$sql .= " AND session_id = :session_id group by product_id ORDER BY product_id DESC";
+			$data = ['session_id'	=>	session_id()];
+		}
 		$data = _DB::init()->select($data, $sql);
+
+		if(!$data){
+			$contents[] = $this->cache('empty_cart');
+			$this->show($contents);
+			return;
+		}
+
 		$c = array_column($data, "qty", "product_id");
 		$cartinfo = $this->Calculate($c);
-
 		$this->assign("cart", $c);
 		$this->assign("product_list", $cartinfo["product_list"]);
 		$this->assign("Subtotal", $cartinfo['subtotal']);
@@ -76,14 +87,58 @@ class _Cart extends _Base{
 		$this->show($contents);
 	}
 
-	function reload(){
+	function get(){
 		$cart = new Cart();
-		$sql = "SELECT sum(qty) as qty, product_id, session_id 
+		$sql = "SELECT sum(qty) as qty, product_id, session_id, user_id
 				FROM cart
 				INNER JOIN product ON product.id = cart.product_id
 				WHERE 1";
-		$sql .= " AND user_id = :user_id group by product_id ORDER BY product_id DESC";
-		$data = ['user_id'	=>	1];
+		if(_User::is_logged()){
+			$sql .= " AND user_id = :user_id group by product_id ORDER BY product_id DESC";
+			$data = ['user_id'	=>	_User::current("id")];
+		}else{
+			$sql .= " AND session_id = :session_id group by product_id ORDER BY product_id DESC";
+			$data = ['session_id'	=>	session_id()];
+		}
+
+		$data = _DB::init()->select($data, $sql);
+
+		if(!$data){
+			$this->json_return("empty cart");
+			return;
+		}
+
+		$c = array_column($data, "qty", "product_id");
+		$cartinfo = $this->Calculate($c);
+
+		foreach ($cartinfo['product_list'] as $key => $value) {
+			$d[] = array("id"	=>	$value->id,
+						 "name"		=>	$value->name,
+						 "price"	=>	$value->price,
+						 "thumbnail"	=>	$value->getThumbnail(),
+						 "qty"	=>	$c[$value->id]
+						 );
+		}
+
+		$this->response['data']	= array("items"	=>	$d, 
+										"subtotal"	=>	 number_format((float)$cartinfo['subtotal'], 2, '.', ''));
+		$this->response['status'] = 1;
+		$this->json_return();
+	}
+
+	function reload(){
+		$cart = new Cart();
+		$sql = "SELECT sum(qty) as qty, product_id, session_id, user_id
+				FROM cart
+				INNER JOIN product ON product.id = cart.product_id
+				WHERE 1";
+		if(_User::is_logged()){
+			$sql .= " AND user_id = :user_id group by product_id ORDER BY product_id DESC";
+			$data = ['user_id'	=>	_User::current("id")];
+		}else{
+			$sql .= " AND session_id = :session_id group by product_id ORDER BY product_id DESC";
+			$data = ['session_id'	=>	session_id()];
+		}
 		$data = _DB::init()->select($data, $sql);
 		$c = array_column($data, "qty", "product_id");
 		$cartinfo = $this->Calculate($c);

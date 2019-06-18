@@ -12,7 +12,7 @@ $h3 = "http://nativephp.test/";
 define("HOME" , $h3);
 define("UPLOAD", "uploads");
 session_start();
-// header("Content-Type: text/html;charset=utf-8");
+header("Content-Type: text/html;charset=utf-8");
 
 require_once APP . "Common/Controller.php";
 require_once APP . "Common/Base.php";

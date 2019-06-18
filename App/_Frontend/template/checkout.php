@@ -1,10 +1,7 @@
 <?php
 getheader();
+_Page::Block("block/top_bar");
 ?>
-<header class="clearfix">
-  <a class="left" href="/">Home</a>
-  <a class="right btn" href="/cart/mycart">My Cart</a>
-</header>
 <div class="wrapper">
   <div class="container">
 <!-- Page Layout here -->

@@ -1,20 +1,18 @@
 <table class="responsive-table striped">
   <thead>
     <tr>
-      <?php
-      foreach ($header as $k => $v) :?>
-      <td><?php echo $v?></td>
-      <?php endforeach;?>
+      <th>Name</th>
+      <th>SKU</th>
+      <th>Price</th>
     </tr>
   </thead>
   <tbody>
       <?php
       foreach ($data as $k => $v) :?>
-    <tr class="clickable" data-href='<?php echo @$name? HOME . BACKEND .  $name . '/edit?id=' . $v['id']:"" ?>'>
-      <?php
-      foreach($v as $k2 => $v2):?>
-      <td><?php echo @$v2?></td>
-    <?php endforeach;?>
+    <tr class="clickable" data-href='<?php echo 'edit?id=' . $v->id?>'>
+      <td><?php echo $v->name;?></td>
+      <td><?php echo $v->sku;?></td>
+      <td><?php echo $v->price;?></td>
     </tr>
       <?php endforeach;?> 
   </tbody>

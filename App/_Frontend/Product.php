@@ -1,6 +1,6 @@
 <?php
 class _Product extends _Base{
-	protected $_attr = ["id", "name", "description", "sku", "price", "category_ids", "stock", "seller", "bundle", "related", "updated"];
+	protected $_attr = ["id", "name", "description", "sku", "price", "for_sale", "category_ids", "stock", "seller", "bundle", "related", "updated"];
 	protected $_table = "product";
 	private $main_key = "id";
 	public $template_dir = "product";
@@ -17,54 +17,71 @@ class _Product extends _Base{
 		//print_r($this->deleteAll());
 	}
 
-	// function new(){
-	// 	$category = new _Category();
-	// 	$c =  $category->findAll(['status'	=>	["eq" => 0]]);
-	// 	$this->assign("category",$c);
-	// 	$contents[] = $this->cache('form');
-	// 	$this->show($contents);
-	// }
-
-
-	// function edit(){
-	// 	$category = new _Category();
-	// 	$c =  $category->findAll(['status'	=>	["eq" => 0]]);
-	// 	$this->assign("category",$c);
-	// 	$d = $this->find(['id'	=>	["eq" => _G('id')]]);
-	// 	$this->build($d);
-	// 	$this->assign("data", $this->model);
-	// 	$contents[] = $this->cache('form');
-	// 	$this->show($contents);
-	// }
-
 	function _route(){
 		// $category = new _Category();
 		// $c =  $category->findAll(['status'	=>	["eq" => 0]]);
 		// $this->assign("category",$c);
+		$product = new Product();
 		$id = _G("id");
-		$d = $this->find(['id'	=>	["eq" => $id]]);
+		$d = $product->find(['id'	=>	["eq" => $id]]);
 		if(!$d){$this->err_404();return;}
-		$this->build($d);
-		$this->assign("product", $this->model);
+		$product->build($d);
+
+		$breadcamp[] = array("title"	=>	"Home",	"url"	=>	HOME);
+		$breadcamp[] = array("title"	=>	"Product",	"url"	=> "/product/list");
+		$breadcamp[] = array("title"	=>	$product->name);
+		_Page::init()->assign("breadcamp", $breadcamp);
+		$contents[] = _Page::init()->cache("block/breadcamp");
+
+		$this->assign("product", $product);
 		$contents[] = $this->cache('view');
 		$this->show($contents);
 	}
 
-	function list(){
-		$sql = "SELECT {$this->_table}.* FROM {$this->_table}
-				WHERE 1";
-		$sql .= " ORDER BY id DESC";
-		$sql .= " LIMIT 0, 20";
-		$data = array();
-		$data = _DB::init()->select($data, $sql);
-		$header = $this->_attr;
+	function product(){
+		$data = Product::findAll();
+		$arr = [];
 		$ReflectionClass = new ReflectionClass("Product");
+		$filter = ['enabled'	=>	['eq'	=>	1]];
+		//$filter = [];
+		$data = $ReflectionClass
+				->newInstanceWithoutConstructor()
+				->findAll($filter);
+
+		foreach ($data as $k => $v) {
+			$c = $ReflectionClass->newInstanceWithoutConstructor()->build($v);
+			$table_data[] = array("id"		=>	intval($c->id),
+								  "name"	=>	$c->name,
+								  "price"	=> 	array("currency"	=>	$c->getCurrency(),
+								  				"amount"	=>	floatval($c->price)),
+								  "url"		=>	HOME . "product?id=" . $c->id,
+								  "forsale"	=>	$c->for_sale?true:false,
+								  "thumbnail"	=> $c->getThumbnail(),
+								);
+		}
+		$this->response['items']	=	$table_data;
+		$this->json_return();
+	}
+
+	function list(){
+		$ReflectionClass = new ReflectionClass("Product");
+		$data = $ReflectionClass
+				->newInstanceWithoutConstructor()
+				->findAll(['enabled'	=>	['eq'	=>	1]]);
+
 
 		foreach ($data as $k => $v) {
 			$c = $ReflectionClass->newInstanceWithoutConstructor()->build($v);
 			$c->getThumbnail();
 			$table_data[] = $c;
 		}
+
+
+		$breadcamp[] = array("title"	=>	"Home",	"url"	=>	HOME);
+		$breadcamp[] = array("title"	=>	"Product",	"url"	=> "/product/list");
+		_Page::init()->assign("breadcamp", $breadcamp);
+		$contents[] = _Page::init()->cache("block/breadcamp");
+
 		$contents[] = $this->cache("action_bar");		
 		$this->assign("data", $table_data);
 		$contents[] = $this->cache("grid_view");
@@ -89,6 +106,7 @@ class _Product extends _Base{
 			echo $e->getMessage();
 		}
 	}
+
 
 }
 ?>

@@ -27,6 +27,7 @@ class _Image{
 
 	static function save_from_upload($file = null){
 		//var_dump($_FILES['data']);
+		if(!@$_FILES['data']['name']){return null;}
 		$count = count($_FILES['data']['name']);
 		#print_r($_FILES['data']);
 		for($i = 0; $i < $count; $i++ ){
@@ -73,34 +74,10 @@ class _Image{
 		return $arr;
 	}
 
-	function remove(){
-		$type = strtolower(_REF(1));
-		switch ($type) {
-			case 'agency':
-				$con = new _Agency();
-				$con->build($con->find(_REF(2)));
-				break;
-			case "client":
-				$con = new _Client();
-				$con->build($con->find(_REF(2)));
-				break;
-			case "user":
-				$con = new _User();
-				$con->build($con->find(_REF(2)));
-				break;
-			default:
-				return false;
-				break;
-		}
-		$data = array("type"	=> $type, "type_id"	=>	$con->id);
+	static function remove($file){
 		try{
-			$db = new _DB();
-			$old = $db->selectone($data, "SELECT * FROM avatar WHERE type = :type AND type_id = :type_id LIMIT 1");
-			$sql = "DELETE FROM avatar WHERE type = :type AND type_id = :type_id LIMIT 1";
-			$res = $db->doDB($data, $sql);
-			$this->render("avatar_form.php");
-			if(file_exists(GPATH . "/public/" . $old['image'])){
-				unlink(GPATH . "/public/" . $old['image']);
+			if(file_exists(GPATH . "/public/" . $file)){
+				unlink(GPATH . "/public/" . $file);
 			}
 		}catch(Excetpion $e){
 			return false;

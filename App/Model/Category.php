@@ -7,7 +7,9 @@ class Category extends _Model{
 	public $updated;
 	public $parent;
 
-	protected function _table(){
+	const _table = "category";
+
+	static function _table(){
 		return "category";
 	}
 

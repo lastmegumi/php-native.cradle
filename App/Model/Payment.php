@@ -11,7 +11,7 @@ class Payment extends _Model{
 		
 	}
 
-	protected function _table(){
+	static function _table(){
 		return "order_payment";
 	}
 

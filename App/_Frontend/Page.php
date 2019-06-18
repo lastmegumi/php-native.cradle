@@ -31,14 +31,35 @@ class _Page extends _Base{
 		return self::$instance;
 	}
 
-	static function showPage($temp = null){
-		$temp = !$temp? "page/index": $temp;
-		$contents[] = self::init()->cache("slide");
-		parent::show($contents, $temp);
+	static function showPage($page = null){
+		if(!$page){
+			$temp = "Page/index";
+			$contents[] = self::init()->cache("index/slide");
+			$contents[] = self::init()->cache("index/new_arrival");
+			parent::show($contents, $temp);
+		}else{
+			$breadcamp[] = array("title"	=>	"Home",	"url"	=>	HOME);
+			$breadcamp[] = array("title"	=>	$page->title,	"url"	=> $page->url);
+			self::init()->assign("breadcamp", $breadcamp);
+			$contents [] = self::init()->cache("block/breadcamp");
+			$contents[] = self::init()->cache($page->url);
+			parent::show($contents);
+		}
+	}
+
+	static function Block($block = null, $arguments = null){
+		if(!$block){
+		}else{
+			echo self::init()->cache($block);
+		}
 	}
 
 	static function Page_Not_Found(){
 		parent::err_404();
+	}
+
+	static function Page_Not_Authorized(){
+		parent::error(401);
 	}
 }
 ?>

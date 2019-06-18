@@ -1,22 +1,19 @@
 <?php
 getheader();
+_Page::Block("block/top_bar");
 ?>
-<header class="clearfix container">
-  <a class="left" href="/">Home</a>
-  <a class="right btn" href="/cart/mycart">My Cart</a>
-  <a class="right" href="/user/register">Register</a>
-  <a class="right" href="/user/login">Log In</a>
-</header>
-<nav>
+<nav class="blue lighten-2 z-depth-0">
   <div class="nav-wrapper">
     <ul id="nav-mobile" class="container hide-on-med-and-down">
-      <li><a href="product/list">Product</a></li>
-      <li><a href="badges.html">Components</a></li>
-      <li><a href="collapsible.html">JavaScript</a></li>
+      <li class="<?php echo Route::Request() == ""? "active": "";?>"><a href="/">Tempest</a></li>
+      <li class="<?php echo Route::Request() == "product"? "active": "";?>"><a href="/product/list">Product</a></li>
+      <li class="<?php echo Route::Request() == "dealers"? "active": "";?>"><a href="/dealers">Authorized Dealer</a></li>
+      <li class="<?php echo Route::Request() == "about"? "active": "";?>"><a href="/about">About Tempest</a></li>
+      <li class="<?php echo Route::Request() == "contact"? "active": "";?>"><a href="/contact">Contact Us</a></li>
+      <li class="<?php echo Route::Request() == "faq"? "active": "";?>"><a href="/faq">FAQ</a></li>
     </ul>
   </div>
 </nav>
-
 <div class="wrapper">
 <!-- Page Layout here -->
 <div class="row">
@@ -33,32 +30,7 @@ if(!$c) {continue;}?>
 </div>
 </div>
 </div>
-
-  <footer class="page-footer grey darken-4">
-          <div class="container">
-            <div class="row">
-              <div class="col l6 s12">
-                <h5 class="white-text">Footer Content</h5>
-                <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
-              </div>
-              <div class="col l4 offset-l2 s12">
-                <h5 class="white-text">Links</h5>
-                <ul>
-                  <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
-                  <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
-                  <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
-                  <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="footer-copyright black">
-            <div class="container">
-            © 2014 Copyright Text
-            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
-            </div>
-          </div>
-</footer>
 <?php 
+_Page::Block("block/bottom_bar");
 getfooter();
 ?>

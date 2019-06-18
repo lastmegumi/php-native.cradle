@@ -4,16 +4,18 @@ $con_arr[] = array("title" => "Name", "type" => "text", "key" => "name", "requir
 $con_arr[] = array("title" => "Price", "type" => "text", "key" => "price", "class" => "");
 $con_arr[] = array("title" => "SKU", "type" => "text", "key" => "sku", "class" => "");
 $con_arr[] = array("title" => "category", "type" => "checkbox_arr", "key" => "categorys", "data_key" => "category_ids", "class" => "col s12", "data_arr"	=>	$category);
-$con_arr[] = array("title" => "Description", "type" => "text-area", "key" => "description", "class" => "");
+$con_arr[] = array("title" => "Short Description", "type" => "text-area", "key" => "short_description", "class" => "");
+$con_arr[] = array("title" => "Description", "type" => "text-area", "key" => "description", "class" => "editor");
 ?>
-	<form id="form">
+	<form id="save_product">
 		  <div class="row">
 		    <div class="col s12">
 		      <ul class="tabs">
-		        <li class="tab col s3"><a class="active" href="#test1">Basic</a></li>
-		        <li class="tab col s3"><a href="#test2">Image</a></li>
-		        <li class="tab col s3"><a href="#test3">Attrbute</a></li>
-		        <li class="tab col s3"><a href="#test4">Options</a></li>
+		        <li class="tab col s2"><a class="active" href="#test1">Basic</a></li>
+		        <li class="tab col s2"><a href="#test2">Image</a></li>
+		        <li class="tab col s2"><a href="#test3">Feature</a></li>
+		        <li class="tab col s2"><a href="#test4">Attrbute</a></li>
+		        <li class="tab col s2"><a href="#test5">Inventory Control</a></li>
 		      </ul>
 		    </div>
 		    <div id="test1" class="col s12">
@@ -31,11 +33,13 @@ $con_arr[] = array("title" => "Description", "type" => "text-area", "key" => "de
 					<?php
 					foreach ($con_arr as $c):
 						if($c['type'] != "text-area"){ continue;}?>
-					<div class="form-group <?php echo $c['class']?$c['class']:'col s12'; ?>">
+					<div class="form-group col s12">
+						<div>
 						<label for="description"><?php echo $c['title'];?></label>
-						<textarea name="description" style="min-height:5rem" class="form-control"><?php 
+						<textarea style="min-height: 500px !important;" name="description" style="min-height:5rem" class="form-control" id="<?php echo $c['class']?$c['class']:''; ?>"><?php 
 						$data_key = $c['key'];
 						echo @$data->$data_key;?></textarea>
+					</div>
 					</div>
 					<?php endforeach;?>
 
@@ -72,12 +76,38 @@ $con_arr[] = array("title" => "Description", "type" => "text-area", "key" => "de
 				        <input type="file" id="product_image_upload" name="image" multiple>
 				      </div>
 				      <div class="file-path-wrapper">
-				        <input class="file-path validate"  type="text" placeholder="Upload one or more files">
+				        <input class="file-path validate" type="text" placeholder="Upload one or more files">
 				      </div>
 				    </div>
 
 		    </div>
 		    <div id="test3" class="col s12">
+		    	<div class="feature_block">
+		    	<?php
+		    	$attrs = $data->getFeature();
+		    	if(!$attrs):
+		    		$attrs[] = ['name'	=>	"",	'value'	=>	""];
+		    	endif;
+	    		$attr_count = 0;
+	    		foreach ($attrs as $k => $v) :?>
+	    		<div class="row product-feature">
+			        <div class="input-field col s6">
+			          <input id="feature_name_0" name="feature[<?php echo $attr_count;?>][name]" type="text" class="validate" value="<?php echo @$v['name']?>">
+			          <label for="feature_name_0">Name</label>
+			        </div>
+			        <div class="input-field col s6">
+			          <input id="feature_value_0" type="text" name="feature[<?php echo $attr_count;?>][value]" class="validate" value="<?php echo @$v['value']?>">
+			          <label for="feature_value_0">Value</label>
+			        </div>
+			    </div>
+	    		<?php
+	    		$attr_count++;
+	    		endforeach;
+		    	?>
+				</div>
+			    <button type="button" class="btn" id="add-feature">Add</button>
+		    </div>
+		    <div id="test4" class="col s12">
 		    	<div class="attribute_block">
 		    	<?php
 		    	$attrs = $data->getAttributes();
@@ -103,14 +133,40 @@ $con_arr[] = array("title" => "Description", "type" => "text-area", "key" => "de
 				</div>
 			    <button type="button" class="btn" id="add-attribute">Add</button>
 		    </div>
-		    <div id="test4" class="col s12">Test 4</div>
+		    <div id="test5" class="col s12">
+		    	<div class="input-field col s12">
+				    <select name="for_sale">
+				      <option value="" disabled selected>Choose your option</option>
+				      <option value="1" <?php echo $data->for_sale == 1? "selected" : ""?>>Start Sale</option>
+				      <option value="0" <?php echo $data->for_sale == 0? "selected" : ""?>>Hide Price</option>
+				    </select>
+				    <label>Is Salable</label>
+				  </div>
+		    	<div class="input-field col s12">
+				  <select name="enabled">
+				      <option value="" disabled selected>Choose your option</option>
+				      <option value="1" <?php echo $data->enabled == 1? "selected" : ""?>>Enabled</option>
+				      <option value="0" <?php echo $data->enabled == 0? "selected" : ""?>>Disabled</option>
+				    </select>
+				    <label>Status</label>
+				</div>
+		    	<div class="input-field col s12">
+				  <select name="in_stock">
+				      <option value="" disabled selected>Choose your option</option>
+				      <option value="1" <?php echo $data->in_stock == 1? "selected" : ""?>>Out of stock</option>
+				      <option value="0" <?php echo $data->in_stock == 0? "selected" : ""?>>Instock</option>
+				    </select>
+				    <label>Inventory</label>
+				</div>
 		  </div>
 		<input type="hidden" name="id" value="<?php echo @$data->id;?>" />
 		<button type="submit" class="btn btn-primary float-right">Save</button>
+		<a href="javascript:void(0)" class="btn btn-primary right red lighten-2 delete_product" data-id="<?php echo @$data->id?>">Delete</a>
 	</form>
 <script type="text/javascript">
 $(document).ready(() => {
-	var i = <?php echo count($attrs);?>
+	var i = $(".product-attribute").length;
+	var j = $(".product-feature").length
 
 	$('.tabs').tabs();
 
@@ -131,76 +187,18 @@ $(document).ready(() => {
         });
         $('.attribute_block').append(newitem);
 	});
-
-	$("form#form").submit(function(e){
-		e.preventDefault();
-		$.ajax({
-			type: "POST",//方法类型
-			dataType: "HTML",//预期服务器返回的数据类型
-			url: "save",//url
-			data : $(this).serializeArray(),
-			success: function (result) {
-				alert(result);
-				return;
-			    alert(result.message);
-			    if(result.status){
-			    $("#modal").modal("hide");
-			    window.location.replace(result.url);}
-			},
-			error : function() {
-			    alert("异常！");
-			}
-		});
-		return false;
+	$("#add-feature").click(function(){
+	    let newitem= $(".product-feature").eq(0).clone(true, true);
+	    ++i;
+        newitem.find('input').each(function() {
+            this.name = this.name.replace('[0]', '['+ i+1 +']');
+            this.id = this.id.replace('0', i );
+            this.value = null;
+        });
+        newitem.find('label').each(function() {
+            $(this).attr("for", $(this).attr("for").replace('0', i ));
+        });
+        $('.feature_block').append(newitem);
 	});
-
-
-	$("#product_image_upload").change(function(e){
-		e.preventDefault();		
-        var file_data = $('#product_image_upload').prop('files');
-        var form_data = new FormData();
-        var data = [];
-        for(let i = 0; i < file_data.length; i++){
-			form_data.append('data[]', file_data[i]);
-        }
-        
-        	
-		$.ajax({
-                // xhr: function() {
-                //     var xhr = new window.XMLHttpRequest();
-                //     xhr.upload.addEventListener("progress", function(evt) {
-                //         if (evt.lengthComputable) {
-                //             var percentComplete = (evt.loaded / evt.total) * 100;
-                //             //Do something with upload progress here
-                //              $("#upload_progress").width(percentComplete + '%');
-                //         }
-                //    }, false);
-                //    return xhr;
-                // },
-                type: "POST",//方法类型
-                dataType: "HTML",//预期服务器返回的数据类型
-                url: "upload_image",//url
-            	cache: false,
-	            contentType: false,
-	            processData: false,
-                data : form_data,
-                beforeSend: function(result){
-                    $(".progress").show();
-                    $("form#upload_photo").html("Uploading...");
-                },
-                success: function (result) {
-                    try {
-					  $("#product_images").append(result);
-					}
-					catch(err) {
-					  //
-					}
-                },
-                error : function() {
-                    alert("异常！");
-                }
-              });
-		return false;
-	})
 })
 </script>

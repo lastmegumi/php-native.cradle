@@ -15,7 +15,10 @@ class _Checkout extends _Base{
 
 		$name = "Checkout";
 		$this->template_dir = APP_DIR . "view/".$name."/";
-		$this->model = new Product();
+
+		if(!_User::is_logged()){
+			_H(HOME . 'user/login');
+		}
 	}
 
 	function placeorder(){
@@ -52,8 +55,12 @@ class _Checkout extends _Base{
 				INNER JOIN product ON product.id = cart.product_id
 				WHERE 1";
 		$sql .= " AND user_id = :user_id group by product_id, session_id ORDER BY product_id DESC";
-		$data = ['user_id'	=>	1];
+		$data = ['user_id'	=>	_User::current("id")];
 		$data = _DB::init()->select($data, $sql);
+
+		if(!$data){
+			$this->json_return("noitem");
+		return;}
 		$c = array_column($data, "qty", "product_id");
 		$cartinfo = $cart_c->Calculate($c);
 		$cartinfo['session_id'] = $data[0]['session_id'];
@@ -61,7 +68,7 @@ class _Checkout extends _Base{
 		$shipping_cost = _Shipping::Cost($cartinfo['product_list'], $c, $shipping);
 
 		$user = new User();
-		$user->build($user->find(['id'	=>	['eq'	=>	1]]));
+		$user->build($user->find(['id'	=>	['eq'	=>	_User::current("id")]]));
 
 		$data = [
 			    "number"		=> _P('card'),
@@ -82,7 +89,7 @@ class _Checkout extends _Base{
 		try{
 
 			_DB::init()->conn->beginTransaction();
-			if(!$token['status']){return;}
+			if(!$token['status']){return; $this->json_return("notoken");}
 			$token = $token['data']->id;
 			$FINAL_AMOUNT = $FINAL_AMOUNT * 100;
 			$description  = 'test';
@@ -108,9 +115,8 @@ class _Checkout extends _Base{
 					"created"	=>	strtotime("now"),
 					"updated"	=>	strtotime('now'),
 				);
-
-
-			$order_id = $this->create_order($obj);
+				
+			$order_id = $this->create_order($obj);			
 			$this->create_address($order_id, $billing, $shipping);			
 			$this->create_shipping($order_id, $shipping_cost);
 
@@ -119,9 +125,13 @@ class _Checkout extends _Base{
 
 			$cart->deleteAll(["session_id" =>	['eq'	=>	$cartinfo['session_id']]]);
 			_DB::init()->conn->commit();
+			$this->response['status'] =	 1;
+			$this->response['url']	=	"/user/dashboard/orders?id=" . $order_id;
+			$this->json_return();
 		}catch(Exception $e){
 			_DB::init()->conn->rollBack();
-			echo $e->getMessage();
+			#$this->json_return("failed");
+			$this->json_return($e->getMessage());
 		}
 
 	}
@@ -180,7 +190,12 @@ class _Checkout extends _Base{
 		$order->status	=	$obj['status'];		
 		$order->created	=	$obj['created'];
 		$order->updated	=	$obj['updated'];
-		return $order->save();
+		$order->user_id	=	_User::current("id");
+		$res = $order->save();
+		if(!$res):
+			throw new Exception("Error on create order", 1);
+		endif;
+		return $res;		
 	}
 
 	private function create_shipping($order_id, $cost){
@@ -197,10 +212,16 @@ class _Checkout extends _Base{
 	}
 
 	private function create_payment($order_id, $final_price, $data){
-		if($final_price != $data['amount'] || !$data['captured'] || !$data['paid']){
+		// print_r($final_price);
+		// print_r($data);
+		if(intval($final_price) != intval($data['amount']) || $data['captured'] != 1 || $data['paid'] != 1){
+			stripe::init()::refund($data['id'], $data['amount']);
 			throw new Exception("Error Processing Card Payment", 1);
 			return;			
 		}
+		// stripe::init()::refund($data['id'], $data['amount']);
+		// throw new Exception("Error Processing Card Payment", 1);
+		return;
 		$payment = new Payment();
 		$payment->order_id	=	$order_id;
 		$payment->type	=	"credit_strpie";
@@ -235,7 +256,7 @@ class _Checkout extends _Base{
 
 	function _route(){
 		$contents[] = $this->cache("form");
-		$this->show($contents, "checkout");
+		$this->show($contents);
 	}
 }
 ?>

@@ -11,17 +11,28 @@ class Product extends _Model{
 	public $bundle;
 	public $related;
 	public $updated;
+	public $for_sale;
+	public $enabled;
+	public $in_stock;
+	public $review_open;
+	public $short_description;
 
-	protected function _table(){
+	const _table = "product";
+
+	static function _table(){
 		return "product";
 	}
 
 	function __construct(){
-		
+		//parent::__construct();
 	}
 
 	function getTitle(){
 		return $this->name;
+	}
+
+	function getShortdescription(){
+		return $this->short_description;
 	}
 
 	function getPrice($qty = 1){
@@ -47,9 +58,32 @@ class Product extends _Model{
 		return $this->description;
 	}
 
+	function getFeature(){		
+		$feature = new Product_feature();
+		return $feature->findAll(['product_id' => ['eq'	=>	$this->id]]);
+	}
+
+
 	function getAttributes(){		
 		$Product_attribute = new Product_attribute();
 		return $Product_attribute->findAll(['product_id' => ['eq'	=>	$this->id]]);
+	}
+
+	function getReview(){
+		$ReflectionClass = new ReflectionClass("Product_Review");
+		$data = $ReflectionClass
+				->newInstanceWithoutConstructor()
+				->findAll(['product_id'	=>	['eq'	=>	$this->id]], ["ORDER BY" => ["timestamp DESC", "parent_id ASC"]]);
+		if($data){
+			foreach ($data as $k => $v) {
+				$r = $ReflectionClass
+				->newInstanceWithoutConstructor()->build($v);
+				$r->getUser();
+				$reviews[] = $r;
+			}
+			return $reviews;
+		}
+		return false;
 	}
 
 	function getImages(){
@@ -63,8 +97,31 @@ class Product extends _Model{
 		return $res?$res['url']: HOME . "imgs/default.jpg";
 	}
 
+	function deleteAttribute(){
+		$_Model = new Product_attribute();
+		$_Model->delete(['product_id'	=>	['eq'	=>	$this->id]]);
+	}
+
+	function deleteFeature(){
+		$_Model = new Product_feature();
+		$_Model->delete(['product_id'	=>	['eq'	=>	$this->id]]);
+	}
+
+	function deletePhoto(){
+		$_Model = new Product_Image();
+		$_Model->delete(['product_id'	=>	['eq'	=>	$this->id]]);
+	}
+
 	function default_img(){
 		return HOME . "imgs/default.jpg";
+	}
+
+	function is_forsale(){
+		return $this->for_sale == 1? true: false;
+	}
+
+	function getLink(){
+		return HOME . "product?id=" . $this->id;
 	}
 }
 
@@ -72,8 +129,9 @@ class Product_Image extends _Model{
 	public $id;
 	public $product_id;
 	public $url;
+	const _table = "product_image";
 
-	protected function _table(){
+	static function _table(){
 		return "product_image";
 	}
 
@@ -88,9 +146,60 @@ class Product_attribute extends _Model{
 	public $value;
 	public $type;
 	public $product_id;
+	const _table = "product_attribute";
 
-	protected function _table(){
+	static function _table(){
 		return "product_attribute";
+	}
+
+	function __construct(){
+		
+	}
+}
+
+class Product_feature extends _Model{
+	public $id;
+	public $name;
+	public $value;
+	public $type;
+	public $product_id;
+
+	const _table = "product_feature";
+
+	static function _table(){
+		return "product_feature";
+	}
+
+	function __construct(){
+		
+	}
+}
+class Product_Review extends _Model{
+	public $id;
+	public $rate;
+	public $parent_id;
+	public $content;
+	public $user_id;
+	public $timestamp;
+	public $product_id;
+	const _table = "product_review";
+
+	static function _table(){
+		return "product_review";
+	}
+
+	function getUser(){
+		$ReflectionClass = new ReflectionClass("User");
+		$data = $ReflectionClass
+				->newInstanceWithoutConstructor()
+				->find(['id'	=>	['eq'	=>	$this->user_id]]);
+		if($data){
+			$this->user = $ReflectionClass
+				->newInstanceWithoutConstructor()->build($data);
+		}else{			
+			$this->user = $ReflectionClass
+				->newInstanceWithoutConstructor()->build([]);
+		}
 	}
 
 	function __construct(){
