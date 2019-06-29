@@ -22,8 +22,9 @@ class _Order extends _Base{
 
 	function _route(){
 		if(_G('id')){
-			$contents[] = $this->cache("action_bar");
 			$order = Order::find(['id'	=>	['eq'	=>	_G("id")]],['class'	=>	true]);
+			$this->assign("order", $order);
+			$contents[] = $this->cache("action_bar");
 			$this->assign("order", $order);
 			$contents[] = $this->cache("status");
 			$contents[]	= $this->cache("basic_card");
@@ -88,6 +89,32 @@ class _Order extends _Base{
 		$this->response['url']	= $_SERVER['HTTP_REFERER'];
 		$this->response['status']	=	1;
 		$this->json_return();
+	}
+
+	function refund(){
+		$id = _G("id");
+		$order = Order::find(['id'	=>	['eq'	=>	$id]], ['class'	=>	true]);
+		try{
+			$payment = Payment::find(['order_id'	=>	['eq'	=>	$order->id],'status'	=>	['eq'	=>	1]], ['class'	=>	true]);
+			if($payment->refund());
+			$order->status = -1;
+			$order->save();
+		}catch(Exception $e){
+		}
+		header('Location: ' .  $_SERVER['HTTP_REFERER']);
+	}
+
+	function cancel(){
+		$id = _G("id");
+		$order = Order::find(['id'	=>	['eq'	=>	$id]], ['class'	=>	true]);
+		try{
+			$payment = Payment::find(['order_id'	=>	['eq'	=>	$order->id],'status'	=>	['eq'	=>	1]], ['class'	=>	true]);
+			if($payment->refund());
+			$order->status = -2;
+			$order->save();
+		}catch(Exception $e){
+		}
+		header('Location: ' .  $_SERVER['HTTP_REFERER']);
 	}
 
 	function add(){

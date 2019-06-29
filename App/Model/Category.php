@@ -13,6 +13,10 @@ class Category extends _Model{
 		return "category";
 	}
 
+	function getName(){
+		return $this->name;
+	}
+
 	function __construct(){
 		
 	}

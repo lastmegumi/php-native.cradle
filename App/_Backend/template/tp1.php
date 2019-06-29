@@ -25,8 +25,10 @@ getheader();
 <?php foreach ($contents as $c) :
 if(!$c) {continue;}?>
 	<div class="row">
-		<div class="col s12 white" style="padding:15px;">
+		<div class="col s12">
+      <div class="p-3 white clearfix">
 			<?php print_r($c);?>
+      </div>
 		</div>
 	</div>
 <?php endforeach;?>

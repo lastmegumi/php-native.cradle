@@ -55,8 +55,11 @@ Class _Model{
 
 	static function total($filter = [], $options = []){
 		$options['count']	=	true;
+		$options['class']	=	true;
 		$total = self::findAll($filter, $options);
-		return intval($total[0][0]);
+		//return $total->_total_count;
+		return $total[0]->_total_count;
+		//return intval($total[0][0]);
 	}
 
 	static function findAll($filter = [], $options = []){
@@ -66,7 +69,7 @@ Class _Model{
 			$field = '*';
 		}
 		if(isset($options['count'])	&& $options['count'] === true){
-			$field = 'COUNT(' . $field . ')';
+			$field = 'COUNT(' . $field . ') as _total_count';
 		}
 		$sql = "SELECT {$field} FROM `" . static::_table ."` WHERE 1";
 		//$data = array("tablestr"	=>	$this->_table);
@@ -118,6 +121,7 @@ Class _Model{
 		if(isset($options['class']) && $options['class'] === true){
 			return _DB::init()->select(@$data, $sql, get_called_class());
 		}else{
+			return _DB::init()->select(@$data, $sql, get_called_class());
 			return _DB::init()->select(@$data, $sql);
 		}
 	}

@@ -42,12 +42,10 @@ if(!_U()){
 
 if(!defined("BACKEND")):
 if(_U(1)){
-	$p = new Page();
-	$page = $p->find(['url'	=>	['eq'	=>	_U(1)]]);
+	$page = Page::find(['url'	=>	['eq'	=>	_U(1)]]);
 	if($page){
-		$p->build($page);
-		_Page::showPage($p);
-		unset($p);
+		_Page::showPage($page);
+		unset($page);
 		die();
 	}
 }

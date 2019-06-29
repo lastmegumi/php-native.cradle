@@ -51,12 +51,12 @@ $con_arr[] = array("title" => "Description", "type" => "text-area", "key" => "de
 							    <div class>
 							      <label>
 							        <input type="checkbox" name="<?php echo $c['key'];?>[]"
-							        value="<?php echo $value['id']?>"
+							        value="<?php echo $value->id?>"
 							        <?php 
 							        $data_key = $c['data_key'];
-							        echo in_array( $value['id'], explode(",", @$data->$data_key))? "checked":"";?>
+							        echo in_array( $value->id, explode(",", @$data->$data_key))? "checked":"";?>
 							        />
-							        <span><?php echo $value['name'] ?></span>
+							        <span><?php echo $value->name ?></span>
 							      </label>
 							    </div>
 						<?php endforeach;?>
@@ -92,11 +92,11 @@ $con_arr[] = array("title" => "Description", "type" => "text-area", "key" => "de
 	    		foreach ($attrs as $k => $v) :?>
 	    		<div class="row product-feature">
 			        <div class="input-field col s6">
-			          <input id="feature_name_0" name="feature[<?php echo $attr_count;?>][name]" type="text" class="validate" value="<?php echo @$v['name']?>">
+			          <input id="feature_name_0" name="feature[<?php echo $attr_count;?>][name]" type="text" class="validate" value="<?php echo @$v->name?>">
 			          <label for="feature_name_0">Name</label>
 			        </div>
 			        <div class="input-field col s6">
-			          <input id="feature_value_0" type="text" name="feature[<?php echo $attr_count;?>][value]" class="validate" value="<?php echo @$v['value']?>">
+			          <input id="feature_value_0" type="text" name="feature[<?php echo $attr_count;?>][value]" class="validate" value="<?php echo @$v->value?>">
 			          <label for="feature_value_0">Value</label>
 			        </div>
 			    </div>
@@ -118,11 +118,11 @@ $con_arr[] = array("title" => "Description", "type" => "text-area", "key" => "de
 	    		foreach ($attrs as $k => $v) :?>
 	    		<div class="row product-attribute">
 			        <div class="input-field col s6">
-			          <input id="attribute_name_0" name="attributes[<?php echo $attr_count;?>][name]" type="text" class="validate" value="<?php echo @$v['name']?>">
+			          <input id="attribute_name_0" name="attributes[<?php echo $attr_count;?>][name]" type="text" class="validate" value="<?php echo @$v->name?>">
 			          <label for="attribute_name_0">Name</label>
 			        </div>
 			        <div class="input-field col s6">
-			          <input id="attribute_value_0" type="text" name="attributes[<?php echo $attr_count;?>][value]" class="validate" value="<?php echo @$v['value']?>">
+			          <input id="attribute_value_0" type="text" name="attributes[<?php echo $attr_count;?>][value]" class="validate" value="<?php echo @$v->value?>">
 			          <label for="attribute_value_0">Value</label>
 			        </div>
 			    </div>
@@ -160,8 +160,13 @@ $con_arr[] = array("title" => "Description", "type" => "text-area", "key" => "de
 				</div>
 		  </div>
 		<input type="hidden" name="id" value="<?php echo @$data->id;?>" />
-		<button type="submit" class="btn btn-primary float-right">Save</button>
-		<a href="javascript:void(0)" class="btn btn-primary right red lighten-2 delete_product" data-id="<?php echo @$data->id?>">Delete</a>
+	</div>
+	<div class="row">
+		<div class="col s12">
+			<button type="submit" class="btn red lighten-2 float-right">Save</button>
+			<a href="javascript:void(0)" class="btn btn-primary right grey delete_product" data-id="<?php echo @$data->id?>">Delete</a>
+		</div>
+	</div>
 	</form>
 <script type="text/javascript">
 $(document).ready(() => {

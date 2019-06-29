@@ -35,8 +35,6 @@ class _Product extends _Base{
 	function product(){
 		$data = Product::findAll();
 		$arr = [];
-		$ReflectionClass = new ReflectionClass("Product");
-
 		$page_size = 12;
 		$page_index = _G("page") && is_numeric(_G("page")) ? _G("page") - 1 : 0;
 

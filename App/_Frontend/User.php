@@ -190,15 +190,20 @@ class _User extends _Base{
 			$products = Order_Product::findAll(['order_id'	=>	["eq" => $order->id]],['class'	=>	true]);
 			$this->assign("data", $products);			
 			$contents[]	= $this->cache("order/products");
-
+			$this->assign("order",	$order);
 			$contents[] = $this->cache("order/action_bar");
 			//$this->show($contents, $temp = "user_backend");
 		else:			
-			$data = Order::findAll(['user_id'	=>	['eq'	=>	self::current("id")]],['class'	=>	true]);
+			$data = Order::findAll(['user_id'	=>	['eq'	=>	self::current("id")]],['order by'	=>['created DESC'], 'class'	=>	true]);
 			$this->assign("data", @$data);
 			$contents[] = $this->cache("orders");		
 		endif;
 			self::show($contents, $temp = "user_backend");
+	}
+
+	public function invoice(){
+		$invoice = new _Invoice();
+		$invoice->_route();
 	}
 
 	protected function profile(){

@@ -34,6 +34,12 @@ class Order extends _Model{
 			case 3:
 				return "Delivered.";
 				break;
+			case -1:
+				return "refunded";
+				break;
+			case -2:
+				return "canceled";
+				break;
 			default:
 				return "N/A";
 				break;

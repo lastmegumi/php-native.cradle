@@ -27,6 +27,10 @@ class Product extends _Model{
 		//parent::__construct();
 	}
 
+	function getStock(){
+		return $this->stock;
+	}
+
 	function save($update = false){
 		$same = Product::find(['sku'	=>	['eq'	=>	$this->sku]]);
 		if($same && !$this->id && $update === true){
@@ -76,27 +80,18 @@ class Product extends _Model{
 
 	function getFeature(){		
 		$feature = new Product_feature();
-		return $feature->findAll(['product_id' => ['eq'	=>	$this->id]]);
+		return Product_feature::findAll(['product_id' => ['eq'	=>	$this->id]]);
 	}
 
 
 	function getAttributes(){		
 		$Product_attribute = new Product_attribute();
-		return $Product_attribute->findAll(['product_id' => ['eq'	=>	$this->id]]);
+		return Product_attribute::findAll(['product_id' => ['eq'	=>	$this->id]]);
 	}
 
 	function getReview(){
-		$ReflectionClass = new ReflectionClass("Product_Review");
-		$data = $ReflectionClass
-				->newInstanceWithoutConstructor()
-				->findAll(['product_id'	=>	['eq'	=>	$this->id]], ["ORDER BY" => ["timestamp DESC", "parent_id ASC"]]);
-		if($data){
-			foreach ($data as $k => $v) {
-				$r = $ReflectionClass
-				->newInstanceWithoutConstructor()->build($v);
-				$r->getUser();
-				$reviews[] = $r;
-			}
+		$reviews = Product_Review::findAll(['product_id'	=>	['eq'	=>	$this->id]], ["ORDER BY" => ["timestamp DESC", "parent_id ASC"]]);
+		if($reviews){
 			return $reviews;
 		}
 		return false;
@@ -104,13 +99,13 @@ class Product extends _Model{
 
 	function getImages(){
 		$product_image = new Product_Image();
-		return $product_image->findAll(['product_id' => ['eq'	=>	$this->id]]);
+		return Product_Image::findAll(['product_id' => ['eq'	=>	$this->id]]);
 	}
 
 	function getThumbnail(){
 		$product_image = new Product_Image();
-		$res = $product_image->find(['product_id' => ['eq'	=>	$this->id]]);
-		return $res?$res['url']: HOME . "imgs/default.jpg";
+		$res = Product_Image::find(['product_id' => ['eq'	=>	$this->id]]);
+		return $res?$res->url : HOME . "imgs/default.jpg";
 	}
 
 	function deleteAttribute(){

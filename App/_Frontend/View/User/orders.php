@@ -6,19 +6,19 @@
     <tr>
       <td>Order ID</td>
       <td>Order Status</td>
-      <td>Order Price</td>
-      <td>Order Date</td>
+      <td class="right-align">Order Price</td>
+      <td class="right-align">Order Date</td>
     </tr>
   </thead>
   <tbody>
     <?php
     if($data):
       foreach($data as $k => $v):?>
-    <tr class="clickable" data-href='<?php echo "?id=" . $v->id?>'>
+    <tr class="clickable" data-href='<?php echo "/user/dashboard/orders?id=" . $v->id?>'>
       <td><?php echo @$v->id?></td>
       <td><?php echo @$v->getStatus()?></td>
-      <td><?php echo Product::getCurrency() . Product::format_price(@$v->getAmount())?></td>
-      <td><?php echo _T(@$v->created)?></td>
+      <td class="right-align"><?php echo Product::getCurrency() . Product::format_price(@$v->getAmount())?></td>
+      <td class="right-align"><?php echo _T(@$v->created)?></td>
     </tr>
     <?php endforeach;
     endif;?>

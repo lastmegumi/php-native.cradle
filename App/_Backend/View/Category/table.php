@@ -1,20 +1,16 @@
 <table class="responsive-table striped">
   <thead>
     <tr>
-      <?php
-      foreach ($header as $k => $v) :?>
-      <td><?php echo $v?></td>
-      <?php endforeach;?>
+      <th>Name</tn>
+      <th>Updated</tn>
     </tr>
   </thead>
   <tbody>
       <?php
       foreach ($data as $k => $v) :?>
     <tr class="clickable" data-href='<?php echo @$name? HOME . $name . '/edit?id=' . $v['id']:"" ?>'>
-      <?php
-      foreach($v as $k2 => $v2):?>
-      <td><?php echo @$v2?></td>
-    <?php endforeach;?>
+      <td><?php echo $v->getName();?></td>
+      <td><?php echo _T($v->updated);?></td>
     </tr>
       <?php endforeach;?> 
   </tbody>

@@ -1,14 +1,17 @@
 <?php
 getheader();
-_Page::Block("block/top_bar");
+_Page::Block("block/user_backend");
 ?>
 <div class="wrapper" style="position:relative;min-height:100vh;background:#efefef;">
   <ul id="slide-out" class="sidenav z-depth-0" style="transform: translateX(0%);position:absolute;float:left;hegiht:100%">
-    <li><div class="user-view">
-      <a href="#name"><span class="white-text name"><?php echo _User::current("name");?></span></a>
-      <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
-    </div></li>
-    <li><a class="waves-effect" href="#!"><i class="material-icons">person_pin</i>Profile</a></li>
+    <li>
+    <div class="user-view p-3">
+      <a href="#name"><span class="name">Username: <span class="right"><?php echo _User::current("uname");?></span></span></a>
+      <a href="#email"><span class="email">My Email <span class="right">:<?php echo _User::current("email");?></span></span></a>
+    </div>
+    </li>
+    <li class="<?php echo parse_url($_SERVER['REQUEST_URI'])['path']=="/user/dashboard/profile"? "active":""; ?>">
+      <a class="waves-effect" href="/user/dashboard/profile"><i class="material-icons">person_pin</i>Profile</a></li>
     <li><div class="divider"></div></li>    
     <li><a class="subheader">My Account</a></li>
     <li class="<?php echo parse_url($_SERVER['REQUEST_URI'])['path']=="/user/dashboard/"? "active":""; ?>">

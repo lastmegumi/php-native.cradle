@@ -109,7 +109,7 @@ class _DB {
 			$stmt = $this->conn->prepare($sql);
 			$stmt->execute($data); 
 
-			if(!$class):
+			if($class === null):
 				$rs = $stmt->fetchall();
 			else:
 				$rs =  $stmt->fetchall(PDO::FETCH_CLASS, $class);

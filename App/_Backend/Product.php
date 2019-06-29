@@ -20,7 +20,7 @@ class _Product extends _Base{
 
 	function new(){
 		$category = new Category();
-		$c =  $category->findAll(['status'	=>	["eq" => 0]]);
+		$c =  Category::findAll(['status'	=>	["eq" => 0]]);
 		$this->assign("category",$c);
 		$product = new Product();
 		$this->assign("data", $product);
@@ -30,12 +30,10 @@ class _Product extends _Base{
 
 
 	function edit(){
-		$category = new Category();
-		$c =  $category->findAll(['status'	=>	["eq" => 0]]);
+		$c =  Category::findAll(['status'	=>	["eq" => 0]]);
 		$this->assign("category",$c);
-		$product = new Product();		
-		$d = $product->find(['id'	=>	["eq" => _G('id')]]);
-		$this->assign("data", $product->build($d));
+		$d = Product::find(['id'	=>	["eq" => _G('id')]]);
+		$this->assign("data", $d);
 		$contents[] = $this->cache('form');
 		$this->show($contents);
 	}
@@ -44,10 +42,26 @@ class _Product extends _Base{
 	}
 
 	function list(){
-		$data = Product::findAll([],['class'	=>	true]);
-		$contents[] = $this->cache("action_bar");		
+		$page_size = 20;
+		$page_index = _G("page") && is_numeric(_G("page")) ? _G("page") - 1 : 0;
+		$options = ['class'	=>	true, 
+					'order by'	=>	['id DESC'], 
+					'limit'	=>	$page_index * $page_size . ',' . $page_size];
+
+		$data = Product::findAll([], $options);
+		$total = Product::total();
+
+		$contents[] = $this->cache("action_bar");
 		$this->assign("data", $data);
 		$contents[] = $this->cache("table");
+
+
+		$pages	=	intval(($total + $page_size - 1) / $page_size );
+
+		$this->assign("index", $page_index + 1);
+		$this->assign("pages", $pages);
+		$this->assign("total", $total);
+		$contents[] = $this->cache("pages");
 		$this->show($contents);
 	}
 
@@ -141,7 +155,7 @@ class _Product extends _Base{
 	function deletePhoto(){
 		$id = $this->_DELETE["data_id"];
 		$img = new Product_Image();
-		$res = $img->find(["id"	=>	['eq'	=>	$id]]);
+		$res = Product_Image::find(["id"	=>	['eq'	=>	$id]]);
 		if($res){ $img->build($res);}
 		$img->delete(["id"	=>	['eq'	=>	$img->id]]);
 		_Image::remove(str_replace(HOME, "", $img->url));
@@ -150,7 +164,7 @@ class _Product extends _Base{
 	function delete(){
 		$id = $this->_DELETE["data_id"];
 		$product = new Product();
-		$res = $product->find(['id'	=>	['eq'	=>	$id]]);
+		$res = Product::find(['id'	=>	['eq'	=>	$id]]);
 		if(!$res){return;}
 		$product->build($res);
 

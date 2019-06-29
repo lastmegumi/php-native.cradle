@@ -221,22 +221,18 @@ class _Checkout extends _Base{
 
 	private function create_payment($order_id, $final_price, $data){
 		// print_r($final_price);
-		// print_r($data);
 		if(intval($final_price) != intval($data['amount']) || $data['captured'] != 1 || $data['paid'] != 1){
 			stripe::init()::refund($data['id'], $data['amount']);
 			throw new Exception("Error Processing Card Payment", 1);
 			return;			
 		}
-		// stripe::init()::refund($data['id'], $data['amount']);
-		// throw new Exception("Error Processing Card Payment", 1);
-		return;
 		$payment = new Payment();
 		$payment->order_id	=	$order_id;
 		$payment->type	=	"credit_strpie";
 		$payment->amount	=	$data->amount / 100;
 		$payment->status	=	1;
 		$payment->updated	=	strtotime("now");
-		$payment->track_back = urlencode(json_encode($data));
+		$payment->track_back = serialize($data);
 		$payment->save();
 	}
 

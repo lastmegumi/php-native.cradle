@@ -35,10 +35,10 @@ class _Reviews extends _Base{
 			foreach ($data as $k => $v) {	
 				$this->response['data'][]	=	$this->Build_Json($v);
 			}
-				$this->response['product_id']	=	$product_id;
-				$this->response['page_index']	=	$page_index + 1;
+				$this->response['product_id']	=	intval($product_id);
+				$this->response['page_index']	=	intval($page_index + 1);
 				$this->response['pages']	=	intval(($total + $page_size - 1) / $page_size );
-				$this->response['total']	=	$total;
+				$this->response['total']	=	intval($total);
 			$this->json_return();
 		endif;
 

@@ -32,5 +32,11 @@ class _Payment extends _Controller{
 
 	}
 
+	function charge(){
+
+	}
+
+
+
 }
 ?>

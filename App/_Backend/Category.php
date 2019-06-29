@@ -36,24 +36,9 @@ class _Category extends _Base{
 	function _route(){
 	}
 
-	function list(){		
-		$sql = "SELECT {$this->_table}.* FROM {$this->_table}
-				WHERE 1";
-		$data = array();
-		$data = _DB::init()->select($data, $sql);
-		$header = $this->_attr;
-		foreach ($data as $k => $v) {
-			$c = [];
-			foreach ($header as $k2 => $v2) {
-				$c[$v2]	=	@$v[$v2];
-			}
-			$table_data[] = $c;
-		}
-		$contents[] = $this->cache("action_bar");
-		
-		$this->assign("header", $header);
-		$this->assign("data", $table_data);
-		$this->assign("name", $this->_table);
+	function list(){
+		$data = Category::findAll();
+		$this->assign("data", $data);
 		$contents[] = $this->cache("table");
 		$this->show($contents);
 	}
