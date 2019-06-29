@@ -22,19 +22,30 @@ Class _Model{
 
 	function save($data = array()){
 		$data = $data?  $data:get_object_vars($this);
-
 		if(!$data || !array_filter($data)){
         	throw new Exception("Can't not save empty object");
 		}
 
 		$sql = "INSERT INTO `" . $this->_table() . "` (" . implode(", ",  array_keys($data)) . ") VALUES (:" . implode(', :', array_keys($data)) .")";
-		$sql .= " ON DUPLICATE KEY UPDATE ";
-		$arr = array();
-		foreach ($data as $key => $value) {
-			$arr[] .= $key  . ' = :' . $key;
+		if(isset($this->id) && $this->id):
+			$sql .= " ON DUPLICATE KEY UPDATE ";
+			$arr = array();
+			foreach ($data as $key => $value) {
+				$arr[] .= $key  . ' = :' . $key;
+			}
+			$sql .= implode(', ', $arr);
+		endif;
+		$res = _DB::init()->insert($data, $sql);
+
+		//if(!$res){throw new Exception("Error on save object");}
+
+		if(isset($this->id) && $this->id){
+		}else{
+			$this->id = $res;
 		}
-		$sql .= implode(', ', $arr);
-		return _DB::init()->insert($data, $sql);
+		return $this;
+		//return this::find(['id'	=>	['eq'	=>	$this->id]);
+		//return _DB::init()->insert($data, $sql);
 	}
 
 	static function find($filter = [], $options = ["limit" => 1]){
@@ -42,9 +53,22 @@ Class _Model{
 		return $res? $res[0] :null;
 	}
 
-	static function findAll($filter = [], $options = []){
+	static function total($filter = [], $options = []){
+		$options['count']	=	true;
+		$total = self::findAll($filter, $options);
+		return intval($total[0][0]);
+	}
 
-		$sql = "SELECT * FROM `" . static::_table ."` WHERE 1";
+	static function findAll($filter = [], $options = []){
+		if(isset($options['field'])){
+			$field = implode(',', $options['field']);
+		}else{
+			$field = '*';
+		}
+		if(isset($options['count'])	&& $options['count'] === true){
+			$field = 'COUNT(' . $field . ')';
+		}
+		$sql = "SELECT {$field} FROM `" . static::_table ."` WHERE 1";
 		//$data = array("tablestr"	=>	$this->_table);
 		if(is_array($filter)):
 		foreach($filter as $k => $v){
@@ -72,23 +96,30 @@ Class _Model{
 			}
 		}
 		endif;
-
 		if(array_filter($options)):
 		foreach(array_filter($options) as $k => $v){
 			switch(strtolower($k)){
-				case "limit":
-					$sql .= " " . $k . " " . $v;
+				case 'group by':
+					$sql .= " GROUP BY ";
+					$sql .= implode(' , ', $v);
 					break;
 				case 'order by':
 					$sql .= " ORDER BY ";
 					$sql .= implode(' , ', $v);
+					break;
+				case "limit":
+					$sql .= " " . $k . " " . $v;
 					break;
 				default:
 					break;
 			}
 		}
 		endif;
-		return _DB::init()->select(@$data, $sql);
+		if(isset($options['class']) && $options['class'] === true){
+			return _DB::init()->select(@$data, $sql, get_called_class());
+		}else{
+			return _DB::init()->select(@$data, $sql);
+		}
 	}
 
 	function delete($filter = [], $options = ['limit' => 1]){
@@ -116,6 +147,14 @@ Class _Model{
 		}
 		endif;
 		return _DB::init()->delete(@$data, $sql);
+	}
+
+	function __Call($method, $args){
+		return false;
+	}
+
+	function __get($prop){
+		return null;
 	}
 
 }?>

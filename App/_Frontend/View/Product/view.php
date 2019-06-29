@@ -3,7 +3,7 @@
 	<div class="col s-12 ">
 <div class="product white">
 	<div class="row">
-	<div class="col s4">
+	<div class="col s12 m4">
 		<div class="image p-3 white">
 		<?php $thumbnail = $product->getThumbnail();?>
 		<div class="mail-thumbnail">
@@ -22,7 +22,7 @@
 		</div>
 	</div>
 
-	<div class="col s8">
+	<div class="col s12 m8">
 		<div class="information white p-3">
 		<h4 style="margin-top:0"><?php echo $product->getTitle();?></h4>
 		<span>SKU: <?php echo $product->sku;?></span>

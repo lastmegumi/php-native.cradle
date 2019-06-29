@@ -28,6 +28,24 @@ function _init(){
 		return false;
 	});
 
+	$("#mark_shipping").unbind().click(function(e){
+		e.preventDefault();
+		let data = {};
+		data.order_id = $(this).attr('data-id');
+		let x = new ume()
+		x.shipping(data).done(handleback);
+		return false;
+	});
+
+	$("#mark_delivered").unbind().click(function(e){
+		e.preventDefault();
+		let data = {};
+		data.order_id = $(this).attr('data-id');
+		let x = new ume()
+		x.deliver(data).done(handleback);
+		return false;				
+	});
+
 	$("#login").unbind().click(function(e){
 		e.preventDefault();
 		let data = $(this).parents("form").serializeArray();

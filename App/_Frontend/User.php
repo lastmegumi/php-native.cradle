@@ -11,9 +11,6 @@ class _User extends _Base{
 	function __construct(){
 		$name = "User";
 		$this->template_dir = APP_DIR . "view/".$name."/";
-		//print_r($this->build(array("title" => "abcde", "price" => 1.22)));
-		//print_r($this->save());
-		//print_r($this->deleteAll());
 	}
 
 	function register(){
@@ -45,7 +42,6 @@ class _User extends _Base{
 		}else{
 			return array("uid"=>	-1, "name"	=>	"Guest");
 		}
-
 	}
 
 	function login(){
@@ -60,7 +56,7 @@ class _User extends _Base{
 
 	private function setLogin($user){		
 			$_SESSION['user']['id']	=		$user->id;
-			$_SESSION['user']['uname']	=		$user->uname;
+			$_SESSION['user']['uname']	=	$user->uname;
 			$_SESSION['user']['email']	=	$user->uemail;
 			$_SESSION['user']['token']	=	$user->token;
 
@@ -113,13 +109,8 @@ class _User extends _Base{
 
 		try{
 			$user = new User();
-			$options = [
-			    'cost' => 12 // the default cost is 10
-			];
-			$data['upassword'] = password_hash($data['upassword'], PASSWORD_DEFAULT, $options);
-			$data['token']	=	random("128");
-
-			$user->build($data);
+			$user->token	=	random("128");
+			$user->upassword = $this->make_password(_P("password"));
 			$user->save();
 			$user->create_token();
 			$this->json_return('ok');
@@ -133,6 +124,13 @@ class _User extends _Base{
 		$res = $user->find(['uemail'	=>	['eq'	=>	$email]]);
 		if($res){return false;}
 		return true;
+	}
+
+	private function make_password($string){		
+			$options = [
+			    'cost' => 12 // the default cost is 10
+			];
+			return password_hash($string, PASSWORD_DEFAULT, $options);
 	}
 
 	function cart(){
@@ -150,89 +148,108 @@ class _User extends _Base{
 		$func = _U(3);
 		try{
 			if(method_exists($this, $func)):
-			$this->$func();
+				$this->$func();
 			else:
 				throw new Exception("Error Processing Request", 1);
 			endif;				
 		}catch(Exception $e){
+			//echo $e->getMessage();
 			_PAGE::Page_Not_Found();
 		}
 	}
 
 	protected function orders(){
 		$order = new Order();
-
 		if(_G("id")):
 			$id = _G("id");
-			$res = $order->find(['user_id'	=>	['eq'	=>	self::current("id")],
-									"id"	=>	['eq'	=>	$id]]);
-			if($res):
-				$order->build($res);
-				//$contents[] = $this->cache("user_order");
-			endif;
-			$contents[] = $this->cache("status");
-			$user = new User();
-			$udata = $user->find(['id'	=>	["eq" => $order->user_id]]);
-			$user->build($udata);
-			$contents[]	= $this->cache("order/basic_card");
+			$order = Order::find(['user_id'	=>	['eq'	=>	self::current("id")],
+									"id"	=>	['eq'	=>	$id]],['class'	=>	true]);
 
-			$this->assign("data", $user);
+			$contents[] = $this->cache("status");
+			$user = User::find(['id'	=>	["eq" => $order->user_id]]);
+			//$contents[]	= $this->cache("order/basic_card");
+			$this->assign("data", clone($order));
 			$contents[]	= $this->cache("order/buyer_card");
 
-			$payment = new Payment();
-			$udata = $payment->find(['order_id'	=>	["eq" => $order->id]]);
-			$payment->build($udata);
+			$payment = Payment::find(['order_id'	=>	["eq" => $order->id]],['class'	=>	true]);
 			$this->assign("payment", $payment);
 			$contents[]	= $this->cache("order/payment_card");
 			$contents[]	= $this->cache("order/status_card");
 
-			$billing = new order_address();
-			$billing->build($billing->find(['order_id'	=>	["eq" => $order->id],'type'	=>	["eq" => "billing"]]));
-			$shipping = new order_address();
-			$shipping->build($shipping->find(['order_id'	=>	["eq" => $order->id],'type'	=>	["eq" => "shipping"]]));
+			$billing = Order_Address::find(['order_id'	=>	["eq" => $order->id],'type'	=>	["eq" => "billing"]],['class'	=>	true]);
+			$shipping = Order_Address::find(['order_id'	=>	["eq" => $order->id],'type'	=>	["eq" => "shipping"]],['class'	=>	true]);
+
 			$this->assign("billing", $billing);
 			$this->assign("shipping", $shipping);
 			$contents[]	= $this->cache("order/billing_shipping");
 
-			$shipping = new Shipping();
-			$udata = $shipping->find(['order_id'	=>	["eq" => $order->id]]);
-			$shipping->build($udata);
+			$shipping = Shipping::find(['order_id'	=>	["eq" => $order->id]],['class'	=>	true]);
 			$this->assign("shipping", $shipping);			
 			$contents[]	= $this->cache("order/shipping_card");
 
-			$Order_Product = new Order_Product();
-			$ReflectionClass = new ReflectionClass("Order_Product");
-			$udata = $Order_Product->findAll(['order_id'	=>	["eq" => $order->id]]);
-			foreach ($udata as $k => $v) {
-				$products[] = $ReflectionClass->newInstanceWithoutConstructor()->build($v);	
-			}
+			$products = Order_Product::findAll(['order_id'	=>	["eq" => $order->id]],['class'	=>	true]);
 			$this->assign("data", $products);			
 			$contents[]	= $this->cache("order/products");
+
+			$contents[] = $this->cache("order/action_bar");
 			//$this->show($contents, $temp = "user_backend");
 		else:			
-			$res = $order->findAll(['user_id'	=>	['eq'	=>	self::current("id")]]);
-			$ReflectionClass = new ReflectionClass("Order");
-			foreach ($res as $k => $v) {
-				$c = $ReflectionClass->newInstanceWithoutConstructor()->build($v);
-				$data[]	=	$c;
-			}
+			$data = Order::findAll(['user_id'	=>	['eq'	=>	self::current("id")]],['class'	=>	true]);
 			$this->assign("data", @$data);
 			$contents[] = $this->cache("orders");		
 		endif;
-			$this->show($contents, $temp = "user_backend");
-
+			self::show($contents, $temp = "user_backend");
 	}
 
-	function info(){
-
+	protected function profile(){
+		$user = User::find(["id"	=>	['eq'	=>	self::current("id")]],['class'	=>	true]);
+		$this->assign('data', $user);
+		$contents[] = $this->cache("profile");
+		self::show($contents, $temp = "user_backend");
 	}
+
+	protected function changepassword(){
+		if(_R() == "POST"):
+			$user = User::find(['id'	=>	['eq'	=> self::current("id")]],['class'	=>	true]);
+			if(!password_verify(_P("cur_password"), $user->upassword)){
+				$_SESSION['message'][]	=	"Wrong Password";
+				header("Location: " . $_SERVER['HTTP_REFERER']);
+				return;
+			}
+			if(_P("password") !== _P("rep_password")){
+				$_SESSION['message'][]	=	"Password not match on repeat";
+				header("Location: " . $_SERVER['HTTP_REFERER']);
+				return;
+			}
+
+			$user->upassword = $this->make_password(_P("password"));
+			$user->save();
+			$_SESSION['message'][]	=	"Password changed";
+		endif;
+
+		$contents[] = $this->cache("newpassword");
+		self::show($contents, $temp = "user_backend");
+	}
+	
 	
 	function address(){
 
 	}
 
-	function review(){
-
+	function reviews(){
+		if(!_G("id")):
+			$data = Product_Review::findAll(["user_id"	=>	['eq'	=>	self::current("id")]],['class'	=>	true]);
+			$this->assign('data', $data);
+			$contents[] = $this->cache("reviews");
+		else:
+			$data = Product_Review::find(["user_id"	=>	['eq'	=>	self::current("id")],
+										 'id'	=>	['eq'	=> _G("id")]],['class'	=>	true]);
+			$product = Product::find(["id"	=>	['eq'	=>	$data->product_id]],['class'	=>	true]);
+			$this->assign('data', $data);
+			$this->assign("product", $product);
+			$contents[] = $this->cache("review/review_detail");
+		endif;
+		self::show($contents, $temp = "user_backend");
 	}
 
 	function newsletters(){
@@ -240,6 +257,7 @@ class _User extends _Base{
 	}
 
 	function new(){
+
 		$this->display('form');
 	}
 
@@ -247,7 +265,6 @@ class _User extends _Base{
 	}
 
 	function list(){
-		print_r($this->findAll());
 	}
 
 	function add(){

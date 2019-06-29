@@ -15,25 +15,30 @@ class _Reviews extends _Base{
 	}
 
 	function _route(){
-
 		if(_R() == "GET"):
 			$product_id = _G("product_id");
 			$reviews = new Product_Review();
+
+			$total = $reviews->total(['product_id'	=>	['eq'	=>	$product_id]]);
 			$data = $reviews->findAll(['product_id'	=>	['eq'	=>	$product_id]]);
 			$this->response['status']	=	1;
 			$this->response['message']	=	"successful";
+			
+			$page_size = 5;
+			$page_index = _G("page") && is_numeric(_G("page")) ? _G("page") - 1 : 0;
 
-			$ReflectionClass = new ReflectionClass("Product_Review");
-			$data = $ReflectionClass
-					->newInstanceWithoutConstructor()
-					->findAll(['product_id'	=>	['eq'	=>	$product_id]]);
+			$data = Product_Review:: findAll(['product_id'	=>	['eq'	=>	$product_id]],
+							  ['limit'	=> $page_index * $page_size . ',' . $page_size,
+							  	'class'	=>	true]);
 
 
-			foreach ($data as $k => $v) {
-				$c = $ReflectionClass->newInstanceWithoutConstructor()->build($v);		
-				$this->response['data'][]	=	$this->Build_Json($c);
+			foreach ($data as $k => $v) {	
+				$this->response['data'][]	=	$this->Build_Json($v);
 			}
 				$this->response['product_id']	=	$product_id;
+				$this->response['page_index']	=	$page_index + 1;
+				$this->response['pages']	=	intval(($total + $page_size - 1) / $page_size );
+				$this->response['total']	=	$total;
 			$this->json_return();
 		endif;
 

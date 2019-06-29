@@ -1,5 +1,5 @@
 <?php
-class _Shipping extends _Controller{
+class _Shipping extends _Base{
 	protected $_attr = ["id", "from", "to", "carrear", "tracking", "order_id"];
 	protected $_table = "shipping";
 	private $main_key = "id";
@@ -22,23 +22,19 @@ class _Shipping extends _Controller{
 	}
 
 	function _route(){
+		if(_R() == "POST"):
+			$shipping = Shipping::find(["id"	=>	['eq'	=>	_P("id")],
+										"order_id"	=>	['eq'	=>	_P('order_id')],
+										],['class'	=>	true]);
+			$shipping->tracking = _P('tracking');
+			$shipping->notes = _P("notes");
+			$shipping->save();
+			header("location: ". $_SERVER['HTTP_REFERER']);
+		endif;
 	}
 
 	function list(){
 		print_r($this->findAll());
 	}
-
-	function add(){
-		$p = array(
-			"title"	=>	"titl22222_dddee",
-		);
-		_MongoDB::init()->setDatabase('test52');
-		$this->build($p);
-		//print_r($this->model);
-		//return;
-		var_dump($this->save());
-
-	}
-
 }
 ?>

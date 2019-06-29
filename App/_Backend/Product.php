@@ -44,18 +44,9 @@ class _Product extends _Base{
 	}
 
 	function list(){
-
-		$ReflectionClass = new ReflectionClass("product");
-		$data = $ReflectionClass
-		->newInstanceWithoutConstructor()
-		->findAll();
-
-		foreach ($data as $k => $v) {
-			$products[] = $ReflectionClass->newInstanceWithoutConstructor()->build($v);	
-		}
-		$contents[] = $this->cache("action_bar");
-		
-		$this->assign("data", $products);
+		$data = Product::findAll([],['class'	=>	true]);
+		$contents[] = $this->cache("action_bar");		
+		$this->assign("data", $data);
 		$contents[] = $this->cache("table");
 		$this->show($contents);
 	}

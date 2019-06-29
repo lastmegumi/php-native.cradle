@@ -1,0 +1,1 @@
+<a class="btn red lighten-2 right" href="sendemail?order_id=<?php echo $order->id;?>">Send E-mail</a>

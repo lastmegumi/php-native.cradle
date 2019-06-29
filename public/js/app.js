@@ -1,7 +1,7 @@
 requirejs.config({
     paths: {
         'ume': '/js/ume',
-        'act': '/js/act'
+        'act': '/js/act',
     }
 });
 　　require(['ume' ,'act'], function (ume, act){

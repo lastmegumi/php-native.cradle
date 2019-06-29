@@ -1,6 +1,6 @@
 <div class="row">
 <?php foreach($data as $d):?>
-    <div class="col s6 m6">
+    <div class="col s12 m6">
       <div class="card">
         <div class="card-image">
           <img class="img-responsive" src="<?php echo $d->getThumbnail();?>">

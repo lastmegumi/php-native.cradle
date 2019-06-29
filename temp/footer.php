@@ -6,6 +6,8 @@
 
 	<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
 	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.0.1/react-router-dom.js" crossorigin></script>
+
 	<script src="/js/babel.min.js"></script>
 	<script type="text/babel" src="/js/templete.js"></script>
 	<!-- <script type="module" src="/js/ume.js"></script> -->
@@ -18,5 +20,6 @@
 	<script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
 
 	<script data-main="/js/app" src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
+
 </body>
 </html>

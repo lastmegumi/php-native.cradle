@@ -29,4 +29,12 @@ class User extends _Model{
 	function getName(){
 		return $this->uname;
 	}
+
+	function getUsername(){
+		return $this->uname;
+	}
+
+	function getEmail(){
+		return $this->uemail;
+	}
 }

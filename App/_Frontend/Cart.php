@@ -11,10 +11,6 @@ class _Cart extends _Base{
 	function __construct(){
 		$name = "Cart";
 		$this->template_dir = APP_DIR . "view/".$name."/";
-		$this->model = new Product();
-		//print_r($this->build(array("title" => "abcde", "price" => 1.22)));
-		//print_r($this->save());
-		//print_r($this->deleteAll());
 	}
 
 	function add(){
@@ -158,11 +154,8 @@ class _Cart extends _Base{
 		$discount = 0;
 		$final = 0;
 		$product_list = [];
-		// /print_r($data);
-		$ReflectionClass = new ReflectionClass("Product");
 		foreach ($data as $k => $v) {
-			$c = $ReflectionClass->newInstanceWithoutConstructor()->find(['id'	=>	["eq" => $k]]);
-			$p =$ReflectionClass->newInstanceWithoutConstructor()->build($c);
+			$p = Product::find(['id'	=>	["eq" => $k]], ['class'	=>	true]);
 			$product_list[]	= $p;
 			$subtotal += $p->getPrice($v);
 			$discount += $p->getDiscount($v);

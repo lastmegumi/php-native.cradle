@@ -1,10 +1,7 @@
 <?php
 $c = new _Product();
-$ReflectionClass = new ReflectionClass("product");
-$data = $ReflectionClass->newInstanceWithoutConstructor()->findAll(['id'	=>	['in'	=>	[901, 904]]]);
-foreach ($data as $k => $v) {
-	$products[] = $ReflectionClass->newInstanceWithoutConstructor()->build($v);	
-}
+$products = Product::findAll(['id'	=>	['in'	=>	[901, 904]]],['class'	=>	true]);
+
 if(!$products){return;}
 ?>
 <div class="container">

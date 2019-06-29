@@ -27,6 +27,18 @@ class Product extends _Model{
 		//parent::__construct();
 	}
 
+	function save($update = false){
+		$same = Product::find(['sku'	=>	['eq'	=>	$this->sku]]);
+		if($same && !$this->id && $update === true){
+			$this->id = intval($same['id']);
+		}
+		return parent::save();
+	}
+
+	function getLink(){
+		return HOME . "product?id=".$this->id;
+	}
+
 	function getTitle(){
 		return $this->name;
 	}
@@ -50,8 +62,12 @@ class Product extends _Model{
 		return number_format($discount * $qty, 2, '.', '');
 	}
 
-	function getCurrency(){
+	static function getCurrency(){
 		return "$";
+	}
+
+	static function format_price($price){
+		return number_format($price, 2, '.', '');
 	}
 
 	function getDescription(){
@@ -118,10 +134,6 @@ class Product extends _Model{
 
 	function is_forsale(){
 		return $this->for_sale == 1? true: false;
-	}
-
-	function getLink(){
-		return HOME . "product?id=" . $this->id;
 	}
 }
 
@@ -200,6 +212,14 @@ class Product_Review extends _Model{
 			$this->user = $ReflectionClass
 				->newInstanceWithoutConstructor()->build([]);
 		}
+	}
+
+	function getRate(){
+		return $this->rate . ' star';
+	}
+
+	function getContent(){
+		return $this->content;
 	}
 
 	function __construct(){

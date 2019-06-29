@@ -63,7 +63,7 @@ class _DB {
 		return $stmt->fetch();
 	}
 
-	function findall($table, $k, $v, $order = null){
+	function findall($table, $k, $v, $order = null, $class = null){
 		$sql = "SELECT * FROM {$table} WHERE {$k}=?";
 		if(!$order){
 			$sql .= " ORDER BY {$k} ASC";
@@ -72,7 +72,11 @@ class _DB {
 		}
 		$stmt = $this->conn->prepare($sql);
 		$stmt->execute([$v]); 
-		return $stmt->fetchall();
+		if(!$class):
+			return $stmt->fetchall();
+		else:
+			return $stmt->fetchall(PDO::FETCH_CLASS, $class);
+		endif;
 	}
 
 	function selectone($data = array(), $sql = null){
@@ -81,7 +85,7 @@ class _DB {
 		return $stmt->fetch();
 	}
 
-	function select($data = array(), $sql = null){
+	function select($data = array(), $sql = null, $class = null){
 		$redis= new Redis();
 		$redis->connect('localhost',6379);
 		//接收查询参数
@@ -104,14 +108,21 @@ class _DB {
 		}else{
 			$stmt = $this->conn->prepare($sql);
 			$stmt->execute($data); 
-			$rs = $stmt->fetchall();
+
+			if(!$class):
+				$rs = $stmt->fetchall();
+			else:
+				$rs =  $stmt->fetchall(PDO::FETCH_CLASS, $class);
+			endif;
+			
 			if (is_array($rs)) {
 				    	//查询完成，以json格式写入Redis中。
 						$redis->set($MY_NODE_KEY_.$id,json_encode($rs));
 						//print_r($rs);
 						//error_log($date."read from mysql \r\n", 3, './debug.txt');
-				    }
+			}
 			return $rs;
+
 		}
 
 	}

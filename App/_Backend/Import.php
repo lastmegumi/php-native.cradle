@@ -6422,13 +6422,76 @@ public $datastr = '{"items": [
     public $price;
 
     function __construct(){
-        $name = "Product";
-        $this->template_dir = APP_DIR . "view/".$name."/";
-        $this->model = new Product();
         //print_r($this->build(array("title" => "abcde", "price" => 1.22)));
         //print_r($this->save());
         //print_r($this->deleteAll());
     }
+
+    function importCSV(){
+        $file = fopen(GPATH . "/import/Aegis Jobber Sheet.csv","r");
+        $keys = [];
+        $arr = [];
+        while(! feof($file)){
+          $keys = $keys? $keys : fgetcsv($file);
+          $data = @array_combine($keys, fgetcsv($file));
+
+            $product = new Product();
+            $product->name = $data['List Title'];
+            $product->description = '';
+            $product->sku = $data['Part Number'];
+            $product->price = $data['MAP']?$data['MAP']:999;
+            $product->stock = 999;
+            $product->updated = strtotime($data['Date Modified']);
+            $product->for_sale = 1;
+            $product->enabled = $data['Activity'] == "Launch"? 1:0;
+            $product->in_stock = 1;
+            $product->review_open = 1;
+            $product->short_description = $data['List Title'];
+
+            try{
+                _DB::init()->conn->beginTransaction();
+                $product->save($update = true);
+                $product->deleteFeature();
+                $product->deleteAttribute();
+                $product->deletePhoto();
+
+                $attr = ['Part Number', 'UPC', 'Year From', 'Year To', 'Make', 'Model', 'Submodel', 'Bed Size', 'Type', 'Color', 'Material',
+                        'Warranty'];
+
+                foreach ($attr as $key => $value) {
+                    if(@$data[$value]);
+                    $product_attribute = new Product_attribute();
+                    $product_attribute->product_id = $product->id;
+                    $product_attribute->name = $value;
+                    $product_attribute->value = $data[$value];
+                    $product_attribute->save();
+                }
+
+                $fea = ['Benefit 1', 'Benefit 2', 'Benefit 3', 'Installation Note'];
+                foreach ($fea as $key => $value) {
+                    if(@$data[$value]);
+                    $product_feature = new Product_feature();
+                    $product_feature->product_id = $product->id;
+                    $product_feature->name = $data[$value];
+                    $product_feature->save();
+                }
+
+                $img = new Product_Image();
+                $img->url = HOME . "/uploads/" . _Image::save_from_url(GPATH . '/import/1.jpg');
+                $img->product_id = $product->id;
+                $img->save();
+
+                _DB::init()->conn->commit();
+            }catch(Exception $e){
+                _DB::init()->conn->rollBack();
+                echo $e->getMessage();
+            }
+            //print_r($product);
+            //break;
+        }
+        fclose($file);
+    }
+
 
     function import_from_json(){
         $data = json_decode($this->datastr);
@@ -6448,6 +6511,10 @@ public $datastr = '{"items": [
                 $a['images'][] = "https://cdn.yamibuy.net" . $v->image_url;
                 $P->save($a);
         }
+    }
+
+    function import_from_csv_tc(){
+
     }
 }
 ?>

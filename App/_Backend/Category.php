@@ -11,10 +11,6 @@ class _Category extends _Base{
 	function __construct(){
 		$name = "Category";
 		$this->template_dir = APP_DIR . "view/".$name."/";
-		$this->model = new Product();
-		//print_r($this->build(array("title" => "abcde", "price" => 1.22)));
-		//print_r($this->save());
-		//print_r($this->deleteAll());
 	}
 
 	function new(){

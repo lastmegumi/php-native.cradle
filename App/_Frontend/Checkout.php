@@ -21,6 +21,11 @@ class _Checkout extends _Base{
 		}
 	}
 
+	function _route(){
+		$contents[] = $this->cache("form");
+		$this->show($contents);
+	}
+
 	function placeorder(){
 		$billing = new Order_Address();
 		$billing->build(array("address1"	=>	_P("address1"),
@@ -61,6 +66,7 @@ class _Checkout extends _Base{
 		if(!$data){
 			$this->json_return("noitem");
 		return;}
+
 		$c = array_column($data, "qty", "product_id");
 		$cartinfo = $cart_c->Calculate($c);
 		$cartinfo['session_id'] = $data[0]['session_id'];
@@ -87,7 +93,6 @@ class _Checkout extends _Base{
 
 		$FINAL_AMOUNT = $cartinfo['final_price'] + $shipping_cost;
 		try{
-
 			_DB::init()->conn->beginTransaction();
 			if(!$token['status']){return; $this->json_return("notoken");}
 			$token = $token['data']->id;
@@ -116,7 +121,9 @@ class _Checkout extends _Base{
 					"updated"	=>	strtotime('now'),
 				);
 				
-			$order_id = $this->create_order($obj);			
+			$order = $this->create_order($obj);
+			$order_id = $order->id;
+
 			$this->create_address($order_id, $billing, $shipping);			
 			$this->create_shipping($order_id, $shipping_cost);
 
@@ -125,6 +132,7 @@ class _Checkout extends _Base{
 
 			$cart->deleteAll(["session_id" =>	['eq'	=>	$cartinfo['session_id']]]);
 			_DB::init()->conn->commit();
+
 			$this->response['status'] =	 1;
 			$this->response['url']	=	"/user/dashboard/orders?id=" . $order_id;
 			$this->json_return();
@@ -252,11 +260,6 @@ class _Checkout extends _Base{
 			  ];
 		$token = stripe::init()->card_token($data);
 		return $token;
-	}
-
-	function _route(){
-		$contents[] = $this->cache("form");
-		$this->show($contents);
 	}
 }
 ?>

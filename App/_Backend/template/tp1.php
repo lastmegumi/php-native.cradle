@@ -3,29 +3,24 @@ getheader();
 ?>
 <div class="wrapper">
 <!-- Page Layout here -->
-
-  <a href="#" data-target="slide-out" class="sidenav-trigger waves-effect waves-light btn-small red left-align"><i class="material-icons">menu</i></a>
-
-  <ul id="slide-out" class="sidenav">
+  <ul id="slide-out" class="sidenav" style="transform: translateX(0);">
     <li><div class="user-view">
       <div class="background">
         <img src="images/office.jpg">
       </div>
-      <a href="#user"><img class="circle" src="images/yuna.jpg"></a>
-      <a href="#name"><span class="white-text name">John Doe</span></a>
-      <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
     </div></li>
-    <li><a class="waves-effect" href="/admin/product/list">Product</a></li>
-    <li><a class="waves-effect" href="/admin/category/list">Category</a></li>
-    <li><a class="waves-effect" href="/admin/order/list">Sales</a></li>
+
+    <li class="<?php echo strpos(parse_url($_SERVER['REQUEST_URI'])['path'], "product")? "active":"";?>"><a class="waves-effect" href="/admin/product/list">Product</a></li>
+    <li class="<?php echo strpos(parse_url($_SERVER['REQUEST_URI'])['path'], "category")? "active":"";?>"><a class="waves-effect" href="/admin/category/list">Category</a></li>
+    <li class="<?php echo strpos(parse_url($_SERVER['REQUEST_URI'])['path'], "order")? "active":"";?>"><a class="waves-effect" href="/admin/order/list">Sales</a></li>
     <li><div class="divider"></div></li>
     <li><a class="subheader">Subheader</a></li>
     <li><a class="waves-effect" href="#!">Setting</a></li>
   </ul>
 
-<div class="row">
+<div class="row" style="margin-left: 300px;">
 
-<div class="col s12">
+<div class="col s12 grey lighten-3">
 <!-- Teal page content  -->
 <?php foreach ($contents as $c) :
 if(!$c) {continue;}?>
@@ -50,31 +45,9 @@ if(!$c) {continue;}?>
     width: 75vw;
   }
 }</style>
-
-<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body bg-light p-0 clearfix">
-        Loading...
-      </div>
-    </div>
-  </div>
-</div>
 <script type="text/javascript">
   document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.sidenav');
-  });
-
-  // Or with jQuery
-
-  $(document).ready(function(){
-    $('.sidenav').sidenav();
   });
   </script>
 <?php 

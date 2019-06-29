@@ -41,6 +41,30 @@ class ume{
 			data : data
 		});
 	}
+	shipping(data){
+		return $.ajax({
+			type: "POST",//方法类型
+			dataType: "JSON",//预期服务器返回的数据类型
+			url: "shipped",//url
+			data : data,
+		});
+	}
+	deliver(data){
+		return $.ajax({
+			type: "POST",//方法类型
+			dataType: "JSON",//预期服务器返回的数据类型
+			url: "delivered",//url
+			data : data,
+			             //    beforeSend: function(result){
+                //     //$(".progress").show();
+                //     //$("form#upload_photo").html("Uploading...");
+                // },
+                // success: function (result) {
+                // },
+                // error : function(err) {
+                // }
+		});
+	}
 	deleteProduct(data){
 		return $.ajax({
 			type: "DELETE",//方法类型
@@ -85,14 +109,6 @@ class ume{
 	            contentType: false,
 	            processData: false,
                 data : data,
-                beforeSend: function(result){
-                    //$(".progress").show();
-                    //$("form#upload_photo").html("Uploading...");
-                },
-                success: function (result) {
-                },
-                error : function() {
-                }
               });
 		return false;
 	}

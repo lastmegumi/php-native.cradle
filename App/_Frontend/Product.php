@@ -12,15 +12,9 @@ class _Product extends _Base{
 		$name = "Product";
 		$this->template_dir = APP_DIR . "view/".$name."/";
 		$this->model = new Product();
-		//print_r($this->build(array("title" => "abcde", "price" => 1.22)));
-		//print_r($this->save());
-		//print_r($this->deleteAll());
 	}
 
 	function _route(){
-		// $category = new _Category();
-		// $c =  $category->findAll(['status'	=>	["eq" => 0]]);
-		// $this->assign("category",$c);
 		$product = new Product();
 		$id = _G("id");
 		$d = $product->find(['id'	=>	["eq" => $id]]);
@@ -42,14 +36,20 @@ class _Product extends _Base{
 		$data = Product::findAll();
 		$arr = [];
 		$ReflectionClass = new ReflectionClass("Product");
+
+		$page_size = 12;
+		$page_index = _G("page") && is_numeric(_G("page")) ? _G("page") - 1 : 0;
+
 		$filter = ['enabled'	=>	['eq'	=>	1]];
 		//$filter = [];
-		$data = $ReflectionClass
-				->newInstanceWithoutConstructor()
-				->findAll($filter);
+		$options = ['limit'	=> $page_index * $page_size . ',' . $page_size,
+					'class'	=>	true];
+		$data = Product::findAll($filter, $options);
 
-		foreach ($data as $k => $v) {
-			$c = $ReflectionClass->newInstanceWithoutConstructor()->build($v);
+		$options['field']	=	['id'];
+		$total = Product::total($filter, ['filed'	=>	['id']]);
+
+		foreach ($data as $k => $c) {
 			$table_data[] = array("id"		=>	intval($c->id),
 								  "name"	=>	$c->name,
 								  "price"	=> 	array("currency"	=>	$c->getCurrency(),
@@ -60,30 +60,19 @@ class _Product extends _Base{
 								);
 		}
 		$this->response['items']	=	$table_data;
+		$this->response['page_index']	=	$page_index + 1;
+		$this->response['pages']	=	intval(($total + $page_size - 1) / $page_size );
+		$this->response['total']	=	$total;
+
 		$this->json_return();
 	}
 
 	function list(){
-		$ReflectionClass = new ReflectionClass("Product");
-		$data = $ReflectionClass
-				->newInstanceWithoutConstructor()
-				->findAll(['enabled'	=>	['eq'	=>	1]]);
-
-
-		foreach ($data as $k => $v) {
-			$c = $ReflectionClass->newInstanceWithoutConstructor()->build($v);
-			$c->getThumbnail();
-			$table_data[] = $c;
-		}
-
-
 		$breadcamp[] = array("title"	=>	"Home",	"url"	=>	HOME);
 		$breadcamp[] = array("title"	=>	"Product",	"url"	=> "/product/list");
 		_Page::init()->assign("breadcamp", $breadcamp);
 		$contents[] = _Page::init()->cache("block/breadcamp");
-
-		$contents[] = $this->cache("action_bar");		
-		$this->assign("data", $table_data);
+		$contents[] = $this->cache("action_bar");
 		$contents[] = $this->cache("grid_view");
 		$this->show($contents);
 	}

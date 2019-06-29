@@ -1,6 +1,7 @@
 <?php
-define("ALLOWED_CON",['product', 'cart', 'reviews', 'user', 'mail']);
-define("ROUTE_CONTROL", true);
+define("ALLOWED_CON",['product', 'cart', 'reviews', 'mail']);
+define("ALLOWED_ALL",true);
+define("ROUTE_CONTROL", false);
 define("SALE_ENABLED", 1);
 define("ALLOWED_BACKEND", 1);
 

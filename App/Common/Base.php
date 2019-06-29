@@ -42,20 +42,6 @@ Class _Base{
 		}
 	}
 
-	// function delete(){
-	// 	if(!$this->is_allow()){return;}
-	// 	$res = $this->find(_U(3));
-	// 	$this->build($res);
-	// 	$db = new _DB();
-	// 	$data = array('id' => $this->id);
-	// 	$sql = "DELETE FROM " . $this->table . " WHERE id = :id LIMIT 1";
-	// 	try{
-	// 		$db->delete($data, $sql);
-	// 		_H(HOME);
-	// 	}catch(Exception $e){
-	// 		echo $e->getMessage();
-	// 	}
-	// }
 
 	function render($temp, $design = null){
 		if(@$this->var):
@@ -119,7 +105,8 @@ Class _Base{
 		elseif(file_exists(APP_DIR. 'template/' . $temp . '.php')){
 			@include APP_DIR. 'template/' . $temp . ".php";}
 		else{
-			self::err_404();}
+			self::err_404();
+		}
 	}
 
 	// Mongoddb

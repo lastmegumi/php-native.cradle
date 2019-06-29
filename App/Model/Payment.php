@@ -7,6 +7,8 @@ class Payment extends _Model{
 	public $status;
 	public $updated;
 
+	const _table = "order_payment";
+
 	function __construct(){
 		
 	}

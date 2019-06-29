@@ -11,10 +11,6 @@ class _Cart extends _Controller{
 	function __construct(){
 		$name = "Product";
 		$this->template_dir = APP_DIR . "view/".$name."/";
-		$this->model = new Product();
-		//print_r($this->build(array("title" => "abcde", "price" => 1.22)));
-		//print_r($this->save());
-		//print_r($this->deleteAll());
 	}
 
 	function new(){

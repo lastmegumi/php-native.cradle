@@ -18,6 +18,7 @@ require_once APP . "Common/Controller.php";
 require_once APP . "Common/Base.php";
 require_once APP . "Common/Model.php";
 require_once APP . "Common/Contents.php";
+require_once APP . "Common/Mail.php";
 require_once GPATH . "/lib/Db.php";
 require_once GPATH . "/lib/mongodb.php";
 require "function.php";

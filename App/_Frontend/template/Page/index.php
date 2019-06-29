@@ -30,3 +30,4 @@ if(!$c) {continue;}?>
 _Page::Block("block/bottom_bar");
 getfooter();
 ?>
+

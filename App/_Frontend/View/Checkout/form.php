@@ -24,22 +24,62 @@ $card_arr[] = array("title" => "Expiration Date", "type" => "text", "key" => "ex
 $card_arr[] = array("title" => "CVC/CSC", "type" => "text", "key" => "cvc", "class" => "col s6");
 ?>
 <div class="container">
+<h6>Payment</h6>
 <form id="check_out">
-	<div class="row">
-		<h6>Billing Address:</h6>
+  <ul class="collapsible z-depth-0">
+    <li class="active">
+      <div class="collapsible-header"><i class="material-icons">local_shipping</i>Shipping Address</div>
+      <div class="collapsible-body">
+      	<div class="row">
+			<?php form_exp($shipping);?>
+		</div>
+      </div>
+    </li>
+    <li>
+      <div class="collapsible-header"><i class="material-icons">featured_play_list</i>Billing Address</div>
+      <div class="collapsible-body">
+      	<div class="row">
 		<?php form_exp($con_arr);?>
-	</div>
-	<div class="row">
-		<h6>Shipping Address:</h6>
-		<?php form_exp($shipping);?>
-	</div>
-	<div class="row">
-		<h6>Payment:</h6>
+		</div>
+      </div>
+    </li>
+    <li>
+      <div class="collapsible-header"><i class="material-icons">credit_card</i>Payment Information</div>
+      <div class="collapsible-body">
+      	<div class="row">
 		<?php form_exp($card_arr);?>
-	</div>
-	<button type="submit" class="btn btn-primary float-right">Submit</button>
+		</div>
+      </div>
+    </li>
+    <li>
+      <div class="collapsible-header"><i class="material-icons">shopping_basket</i>Order Confirmation</div>
+      <div class="collapsible-body">
+      	<div class="row">
+		<?php
+    
+		$c = Cart::mycart();
+
+		$cartinfo = Cart::Calculate($c);
+		$this->assign("product_list", $cartinfo["product_list"]);
+		$this->assign("Subtotal", $cartinfo['subtotal']);
+		$this->assign("Tax", $cartinfo['tax']);
+		$this->assign("Discount", $cartinfo['discount']);
+		$this->assign("FinalPrice", $cartinfo['subtotal'] + $cartinfo["tax"] - $cartinfo['discount']);
+		$this->assign("cart", $c);
+		echo $this->cache('cart_status');
+		?>
+		</div>
+      </div>
+    </li>
+  </ul>
+	<button type="submit" class="btn red lighten-2 right">Order</button>
 </form>
 </div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.collapsible').collapsible();
+  });
+</script>
 <?php
 function form_exp($con_arr){
 	foreach($con_arr as $c):

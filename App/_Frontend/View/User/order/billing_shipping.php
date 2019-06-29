@@ -1,5 +1,5 @@
 <section class="row">
-<div class="address col s6">
+<div class="address col s6 p-3">
 	<div class="p-3 white">
 	<h6 class="title">Billing to</h6>
 	<p class="clearfix"><?php echo $billing->first_name . $billing->last_name?></p>
@@ -9,7 +9,7 @@
 </div>
 </div>
 
-<div class="address col s6">
+<div class="address col s6 p-3">
 	<div class="p-3 white">
 	<h6 class="title">Shipping to</h6>
 	<p class="clearfix"><?php echo $shipping->first_name . $shipping->last_name?></p>

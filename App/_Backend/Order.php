@@ -22,74 +22,72 @@ class _Order extends _Base{
 
 	function _route(){
 		if(_G('id')){
-			$order = new Order();
-			$data = $order->find(['id'	=>	['eq'	=>	_G("id")]]);
-			$order->build($data);
+			$contents[] = $this->cache("action_bar");
+			$order = Order::find(['id'	=>	['eq'	=>	_G("id")]],['class'	=>	true]);
 			$this->assign("order", $order);
 			$contents[] = $this->cache("status");
-
-			$user = new User();
-			$udata = $user->find(['id'	=>	["eq" => $data['user_id']]]);
-			$user->build($udata);
 			$contents[]	= $this->cache("basic_card");
 
+			$user = User::find(['id'	=>	["eq" => $order->user_id]],['class'	=>	true]);
 			$this->assign("data", $user);
 			$contents[]	= $this->cache("buyer_card");
 
-			$payment = new Payment();
-			$udata = $payment->find(['order_id'	=>	["eq" => $data['id']]]);
-			$payment->build($udata);
+			$payment = Payment::find(['order_id'	=>	["eq" => $order->id]], ['class'	=>	true]);
 			$this->assign("payment", $payment);
 			$contents[]	= $this->cache("payment_card");
 			$contents[]	= $this->cache("status_card");
 
-			$billing = new order_address();
-			$billing->build($billing->find(['order_id'	=>	["eq" => $data['id']],'type'	=>	["eq" => "billing"]]));
-			$shipping = new order_address();
-			$shipping->build($shipping->find(['order_id'	=>	["eq" => $data['id']],'type'	=>	["eq" => "shipping"]]));
+			$billing = order_address::find(['order_id'	=>	["eq" => $order->id],'type'	=>	["eq" => "billing"]],['class'	=>	true]);
+			$shipping = order_address::find(['order_id'	=>	["eq" => $order->id],'type'	=>	["eq" => "shipping"]],['class'	=>	true]);
 			$this->assign("billing", $billing);
 			$this->assign("shipping", $shipping);
 
 
 			$contents[]	= $this->cache("billing_shipping");
-			$shipping = new Shipping();
-			$udata = $shipping->find(['order_id'	=>	["eq" => $data['id']]]);
-			$shipping->build($udata);
+			$shipping = Shipping::find(['order_id'	=>	["eq" => $order->id]],['class'	=>	true]);
 			$this->assign("shipping", $shipping);			
 			$contents[]	= $this->cache("shipping_card");
 
-			$Order_Product = new Order_Product();
-			$ReflectionClass = new ReflectionClass("Order_Product");
-			$udata = $Order_Product->findAll(['order_id'	=>	["eq" => $data['id']]]);
-			foreach ($udata as $k => $v) {
-				$products[] = $ReflectionClass->newInstanceWithoutConstructor()->build($v);	
-			}
-			$this->assign("data", $products);			
+			$Order_Product = Order_Product::findAll(['order_id'	=>	["eq" => $order->id]],['class'	=>	true]);
+			$this->assign("data", $Order_Product);			
 			$contents[]	= $this->cache("products");
 			$this->show($contents);
 		}
 	}
 
-	function list(){		
-		$sql = "SELECT `{$this->_table}`.* FROM `{$this->_table}`
-				WHERE 1 ORDER BY updated DESC";
-		$data = array();
-		$data = _DB::init()->select($data, $sql);
-		$header = $this->_attr;
-		foreach ($data as $k => $v) {
-			$c = [];
-			foreach ($header as $k2 => $v2) {
-				$c[$v2]	=	@$v[$v2];
-			}
-			$table_data[] = $c;
-		}
-		$contents[] = $this->cache("action_bar");
-		
-		$this->assign("header", $header);
-		$this->assign("data", $table_data);
-		$this->assign("name", $this->_table);
+	function list(){
+		$data = Order::findAll([],["order by"	=>	["created DESC"],'class'	=>	true]);
+		$this->assign("data", $data);
 		$contents[] = $this->cache("table");
 		$this->show($contents);
+	}
+
+	function shipped(){
+		$id = _P('order_id');
+		$order = Order::find(['id'	=>	['eq'	=>	$id]],['class'	=>	true]);
+		$order->status = 2;
+		$order->save();
+		$shipping = Shipping::find(['order_id'	=>	['eq'	=>	$order->id]],['class'	=>	true]);
+		$shipping->status = 1;
+		$shipping->updated = strtotime('now');
+		$shipping->save();
+		$this->response['url']	= $_SERVER['HTTP_REFERER'];
+		$this->response['status']	=	1;
+		$this->json_return();
+	}
+
+	function delivered(){
+		$id = _P('order_id');
+		$order = Order::find(['id'	=>	['eq'	=>	$id]],['class'	=>	true]);
+		$order->status = 3;
+		$order->save();
+		$shipping = Shipping::find(['order_id'	=>	['eq'	=>	$order->id]],['class'	=>	true]);
+		$shipping->status = 2;
+		$shipping->updated = strtotime('now');
+		$shipping->save();
+		$this->response['url']	= $_SERVER['HTTP_REFERER'];
+		$this->response['status']	=	1;
+		$this->json_return();
 	}
 
 	function add(){

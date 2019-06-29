@@ -1,4 +1,5 @@
-<section class="row">
+<section class="p-3 white">
+<div class="row m-0">
 <div class="address col s6">
 	<h6 class="title">Billing to</h6>
 	<p class="clearfix"><?php echo $billing->first_name . $billing->last_name?></p>
@@ -14,5 +15,5 @@
 	<p class="clearfix"><?php echo $shipping->address1 . $shipping->address2?></p>	
 	<p class="clearfix"><?php echo $shipping->city . ' ' . $shipping->state . ' ' . $shipping->zipcode?></p>
 </div>
-
+</div>
 </section>
