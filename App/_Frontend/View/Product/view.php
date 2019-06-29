@@ -13,8 +13,8 @@
 			<div class="clearfix" style="width:max-content">
 				<?php $imgs = $product->getImages();
 				foreach ($imgs as $k => $v) :?>
-					<a class="fancybox-thumb border1" style="width:4rem;float:left;margin:.25rem" rel="fancybox-thumb" href="<?php echo $v['url']?>" title="">
-						<img src="<?php echo $v['url']?>" alt="" class="img-responsive small-thumb"/>
+					<a class="fancybox-thumb border1" style="width:4rem;float:left;margin:.25rem" rel="fancybox-thumb" href="<?php echo $v->url?>" title="">
+						<img src="<?php echo $v->url?>" alt="" class="img-responsive small-thumb"/>
 					</a>
 				<?php endforeach;?>
 			</div>
@@ -52,8 +52,8 @@
 					$data = $product->getFeature();
 					for($i = 0; $i < count($data); $i++):?>
 				  <li>
-				    <span class="feature_title"><?php echo @$data[$i]['name']?></span><br/>
-				    <span class="feature_des"><?php echo @$data[$i]['value']?></span>
+				    <span class="feature_title"><?php echo @$data[$i]->name?></span><br/>
+				    <span class="feature_des"><?php echo @$data[$i]->value?></span>
 				  </li>
 				<?php endfor;?>
 				</ul>
@@ -75,10 +75,10 @@
 				$data = $product->getAttributes();
 				for($i = 0; $i < count($data); $i = $i + 2):?>
 			  <tr>
-			    <td class="grey lighten-2 center"><?php echo @$data[$i]['name']?></td>
-			    <td class="right"><?php echo @$data[$i]['value']?></td>
-			    <td class="grey lighten-2 center"><?php echo @$data[$i + 1]['name']?></td>
-			    <td class="right"><?php echo @$data[$i + 1]['value']?></td>
+			    <td class="grey lighten-2 center"><?php echo @$data[$i]->name?></td>
+			    <td class="right"><?php echo @$data[$i]->value?></td>
+			    <td class="grey lighten-2 center"><?php echo @$data[$i + 1]->name?></td>
+			    <td class="right"><?php echo @$data[$i + 1]->value?></td>
 			  </tr>
 			<?php endfor;?>
 			</tbody>

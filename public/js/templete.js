@@ -18,7 +18,7 @@ class Topshoppingcart extends React.Component {
     }
     if(!this.props.data){
       return(
-        <div className="p-3">
+        <div className="p-3 center-align">
         Empty Cart</div>
         );
     }

@@ -17,17 +17,15 @@ class _Cart extends _Base{
 		$id = _P("pid");
 		$qty = _P("quantity");
 		$product = new Product();
-		$d = $product->find(['id'	=>	['eq'	=>	$id]]);
+		$d = Product::find(['id'	=>	['eq'	=>	$id]]);
 
 		if(!$qty || !$d){return;}
 		$cart = new Cart();
-		$obj = array("product_id"	=>	$d['id'],
-					 "user_id"		=> 	_User::current("id")?_User::current("id") : -1,
-					 "session_id"	=>	session_id(),
-					 "qty"			=>	$qty,
-					 "updated"		=>	strtotime("now"),
-					);
-		$cart->build($obj);
+		$cart->product_id	=	$d->id;
+		 $cart->user_id		= 	_User::current("id")?_User::current("id") : -1;
+		 $cart->session_id =	session_id();
+		 $cart->qty		=	$qty;
+		 $cart->updated	=	strtotime("now");
 		try{
 			$cart->save();
 			echo "add to cart";
@@ -39,11 +37,14 @@ class _Cart extends _Base{
 	function remove(){
 		$id = _P("pid");
 		$product = new Product();
-		$d = $product->find(['id'	=>	['eq'	=>	$id]]);
-		#if(!$d){return;}
+		$d = Product::find(['id'	=>	['eq'	=>	$id]]);
 		$cart = new Cart();
 		try{
-			$cart->deleteAll(['product_id'	=>	['eq'	=>	$id], "session_id"	=>	session_id()]);
+			if(_User::is_logged()){
+				$cart->deleteAll(['product_id'	=>	['eq'	=>	$id], "user_id"	=>	_User::current("id")]);
+			}else{
+				$cart->deleteAll(['product_id'	=>	['eq'	=>	$id], "session_id"	=>	session_id()]);
+			}
 			echo "removed";
 		}catch(Exception $e){
 			echo $e->getMessage();

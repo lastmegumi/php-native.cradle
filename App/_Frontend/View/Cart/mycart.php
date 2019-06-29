@@ -28,25 +28,25 @@
   <tr>
     <td class="p-0">Subtatal:</td>
     <td class="right p-0">
-      <p><?php echo Product::getCUrrency() . Product::format_price($Subtotal);?></p>
+      <p><?php echo Product::getCurrency() . Product::format_price($Subtotal);?></p>
     </td>
   </tr>
   <tr>
     <td class="p-0">Tax:</td>
     <td class="right p-0">
-      <p><?php echo  Product::getCUrrency() . Product::format_price($Tax);?></p>
+      <p><?php echo  Product::getCurrency() . Product::format_price($Tax);?></p>
     </td>
   </tr>
   <tr>
     <td class="p-0">Discount:</td>
     <td class="right p-0">
-      <p>:<?php echo Product::getCUrrency() . Product::format_price($Discount);?></p>
+      <p>:<?php echo Product::getCurrency() . Product::format_price($Discount);?></p>
     </td>
   </tr>
   <tr>
     <td class="p-0">Total:</td>
     <td class="right p-0">
-      <p><?php echo Product::getCUrrency() . Product::format_price($FinalPrice);?></p>
+      <p><?php echo Product::getCurrency() . Product::format_price($FinalPrice);?></p>
     </td>
   </tr>
 </table>

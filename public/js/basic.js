@@ -150,6 +150,18 @@ function appendtotopcart(data){
 	ReactDOM.render(e(Topshoppingcart, data), domContainer);
 }
 
+function print(id) {
+	var prtContent = document.getElementById(id);
+	var WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+	WinPrint.document.write(prtContent.innerHTML);
+	WinPrint.document.close();
+	WinPrint.focus();
+	WinPrint.print();
+	WinPrint.close();
+	// body...
+}
+
+
 $(document).ready(()  =>  {
 	$("tbody tr.clickable").on("click", function() {
 	    window.location = $(this).data("href");
@@ -184,7 +196,7 @@ $(document).ready(()  =>  {
 	    } );
 
     var elems = document.querySelectorAll('.dropdown-trigger');
-    var instances = M.Dropdown.init(elems, {hover: true,constrainWidth:false});
+    var instances = M.Dropdown.init(elems, {hover: false,constrainWidth:true});
 
 
 });
