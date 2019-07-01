@@ -76,6 +76,8 @@ Class _Base{
 			include $this->template_dir . $temp;}
 		elseif(file_exists($this->template_dir . $temp . '.php')){
 			include $this->template_dir . $temp . ".php";}
+		elseif(file_exists(APP . "View/" . $temp . '.php')){
+			include APP . "View/"  . $temp . ".php";}
 		else{
 		
 		}

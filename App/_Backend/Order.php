@@ -57,9 +57,26 @@ class _Order extends _Base{
 	}
 
 	function list(){
-		$data = Order::findAll([],["order by"	=>	["created DESC"],'class'	=>	true]);
+
+		$page_size = 20;
+		$page_index = _G("page") && is_numeric(_G("page")) ? _G("page") - 1 : 0;
+
+		$options = ['class'	=>	true, 
+					'order by'	=>	['id DESC'], 
+					'limit'	=>	$page_index * $page_size . ',' . $page_size];
+
+		$data = Order::findAll([],$options);
+		$total = Order::total();
 		$this->assign("data", $data);
 		$contents[] = $this->cache("table");
+
+
+		$pages	=	intval(($total + $page_size - 1) / $page_size );
+		$this->assign("index", $page_index + 1);
+		$this->assign("pages", $pages);
+		$this->assign("total", $total);
+		
+		$contents[] = $this->cache("Helper/pages");
 		$this->show($contents);
 	}
 

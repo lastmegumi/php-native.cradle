@@ -3,7 +3,7 @@
   <?php if(SALE_ENABLED):?>
   <?php if(_User::is_logged()):?>
   <a class='dropdown-trigger right' style="margin-right:2em" href='#' data-target='joinus'>
-  	<i class="material-icons dp48">face</i><span class="v_i_super"><?php echo _User::current("uname");?></span>
+  	<i class="material-icons">person_outline</i><span class="v_i_super"><?php echo _User::current("uname");?></span>
   </a>
   <ul id='joinus' class='dropdown-content' style="min-width:10%">
     <li><a href="/user/dashboard/"><i class="material-icons dp48">dashboard</i><span>Dashboard</span></a></li>
