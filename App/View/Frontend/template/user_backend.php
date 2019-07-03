@@ -7,7 +7,7 @@ _Page::Block("block/user_backend");
     <li>
     <div class="user-view p-3">
       <a href="#name"><span class="name">Username: <span class="right"><?php echo _User::current("uname");?></span></span></a>
-      <a href="#email"><span class="email">My Email <span class="right">:<?php echo _User::current("email");?></span></span></a>
+      <a href="#email"><span class="email">My Email: <span class="right"><?php echo _User::current("email");?></span></span></a>
     </div>
     </li>
     <li class="<?php echo parse_url($_SERVER['REQUEST_URI'])['path']=="/user/dashboard/profile"? "active":""; ?>">
@@ -21,7 +21,7 @@ _Page::Block("block/user_backend");
     <li class="<?php echo parse_url($_SERVER['REQUEST_URI'])['path']=="/user/dashboard/reviews/"? "active":""; ?>">
       <a class="waves-effect" href="/user/dashboard/reviews/"><i class="material-icons">comments</i>Reviews</a></li>
     <li class="<?php echo parse_url($_SERVER['REQUEST_URI'])['path']=="/user/dashboard/logout/"? "active":""; ?>">
-      <a class="waves-effect" href="/user/logout"><i class="material-icons">exit_to_app</i>Log out</a></li>
+      <a class="waves-effect" href="/logout"><i class="material-icons">exit_to_app</i>Log out</a></li>
   </ul>
 <!-- Page Layout here -->
 <div class="content" style="margin-left:300px">

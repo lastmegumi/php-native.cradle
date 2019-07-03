@@ -74,26 +74,5 @@ class _Product extends _Base{
 		$contents[] = $this->cache("grid_view");
 		$this->show($contents);
 	}
-
-	function save($data = array()){
-		foreach ($this->_attr as $k => $v) {
-			if(!_P($v)){continue;}
-			$data[$v] = _P($v);
-		}
-		if(@$_POST['categorys']){
-			$data['category_ids'] = implode(',', @$_POST['categorys']);
-		}
-		try{
-			_DB::init()->conn->beginTransaction();
-			$product = new Product();
-			$product->build($data)->save();
-			_DB::init()->conn->commit();
-		}catch(Exception $e){			
-			_DB::init()->conn->rollBack();
-			echo $e->getMessage();
-		}
-	}
-
-
 }
 ?>

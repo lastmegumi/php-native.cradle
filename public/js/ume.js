@@ -123,7 +123,7 @@ class ume{
 	register(data){
 		return $.ajax({
 			type: "POST",//方法类型
-			dataType: "HTML",//预期服务器返回的数据类型
+			dataType: "JSON",//预期服务器返回的数据类型
 			url: "register_new",//url
 			data : data,
 		});

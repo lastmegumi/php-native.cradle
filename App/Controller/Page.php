@@ -13,15 +13,14 @@ class _Page extends _Base{
 
 	function __construct(){
 		$name = "Page";
-		$this->template_dir = APP_DIR . "view/" . $name . '/';
+		@$this->template_dir = APP_DIR . "view/" . $name . '/';
 	}
 
 	public function __clone(){
         //throw error
         trigger_error("Can't clone object",E_USER_ERROR);
     }    
-
-	//public static function getInstance()
+    
 	public static function init()
 	{
 		if (self::$instance == null)

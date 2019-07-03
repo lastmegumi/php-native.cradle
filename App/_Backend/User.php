@@ -1,5 +1,5 @@
 <?php
-class _User extends _Controller{
+class _User extends _Base{
 	protected $_attr = ["id", "main_id", "product_ids", "user","created", "status", "updated"];
 	protected $_table = "user";
 	private $main_key = "id";
@@ -30,6 +30,7 @@ class _User extends _Controller{
 	}
 
 	function dashboard(){
+		$this->show(@$contents);
 
 	}
 
@@ -52,6 +53,7 @@ class _User extends _Controller{
 	function newsletters(){
 
 	}
+
 
 	function new(){
 		$this->display('form');
