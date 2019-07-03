@@ -30,7 +30,8 @@ class _User extends _Base{
 	}
 
 	function dashboard(){
-		$this->show(@$contents);
+		$contents[] = $this->cache("dashboard");
+		$this->show($contents);
 
 	}
 
