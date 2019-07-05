@@ -7,7 +7,7 @@ $con_arr[] = array("title" => "category", "type" => "checkbox_arr", "key" => "ca
 $con_arr[] = array("title" => "Short Description", "type" => "text-area", "key" => "short_description", "class" => "");
 $con_arr[] = array("title" => "Description", "type" => "text-area", "key" => "description", "class" => "editor");
 ?>
-	<form id="save_product">
+	<form id="save_product" class="white p-3">
 		  <div class="row">
 		    <div class="col s12">
 		      <ul class="tabs">

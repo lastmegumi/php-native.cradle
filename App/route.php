@@ -33,9 +33,11 @@ foreach($cons as $c)
 
 if(_U(1) === "admin" && ALLOWED_BACKEND){
 	define("APP_DIR" , APP . "View/Backend/");
+	define("BACKEND_ACCESS", true);
 	$directory = APP . "_Backend/";
 }else{
 	define("APP_DIR" , APP . "View/Frontend/");
+	define("BACKEND_ACCESS", false);
 	$directory = APP . "_Frontend/";
 }
 
@@ -45,35 +47,37 @@ foreach($cons as $c)
   require_once($c);
 }
 
-
-// if(!in_array(_U($_u), ALLOWED_CON) && ROUTE_CONTROL){
-// 	//_Page::Page_Not_Found();
-// 	die();
-// }
-
-
 Route::staticPage();
 
-Route::route(BACKEND."/dashboard", "_User.dashboard");
-Route::route(BACKEND."/product/list", "_Product.list");
-Route::route(BACKEND."/product/edit", "_Product.edit");
-Route::route(BACKEND."/product/save", "_Product.save");
-Route::route(BACKEND."/product/delete", "_Product.delete");
-Route::route(BACKEND."/product/upload_image", "_Product.upload_image");
-Route::route(BACKEND."/product/deletePhoto", "_Product.deletePhoto");
-Route::route(BACKEND."/product/backend_image_block", "_Product.backend_image_block");
+Route::route(BACKEND."/login", "_Admin.login");
+Route::route(BACKEND."/logout", "_Admin.logout");
+Route::verify()::route(BACKEND."/dashboard", "_Admin.dashboard");
+Route::verify()::route(BACKEND."/product/list", "_Product.list");
+Route::verify()::route(BACKEND."/product/edit", "_Product.edit");
+Route::verify()::route(BACKEND."/product/save", "_Product.save");
+Route::verify()::route(BACKEND."/product/delete", "_Product.delete");
+Route::verify()::route(BACKEND."/product/upload_image", "_Product.upload_image");
+Route::verify()::route(BACKEND."/product/deletePhoto", "_Product.deletePhoto");
+Route::verify()::route(BACKEND."/product/backend_image_block", "_Product.backend_image_block");
 
 
-Route::route(BACKEND."/order/", "_order._route");
-Route::route(BACKEND."/order/list", "_Order.list");
-Route::route(BACKEND."/order/shipped", "_Order.shipped");
-Route::route(BACKEND."/order/delivered", "_Order.delivered");
-Route::route(BACKEND."/order/refund", "_Order.refund");
-Route::route(BACKEND."/order/cancel", "_Order.cancel");
+Route::verify()::route(BACKEND."/category/list", "_Category.list");
+Route::verify()::route(BACKEND."/category/edit", "_Category.edit");
+Route::verify()::route(BACKEND."/category/save", "_Category.save");
 
-Route::route(BACKEND."/shipping/", "_Shipping._route");
-Route::route(BACKEND."/invoice/", "_Invoice._route");
-Route::route(BACKEND."/invoice/sendemail", "_Invoice.sendemail");
+Route::verify()::route(BACKEND."/order/", "_Order._route");
+Route::verify()::route(BACKEND."/order/list", "_Order.list");
+Route::verify()::route(BACKEND."/order/shipped", "_Order.shipped");
+Route::verify()::route(BACKEND."/order/delivered", "_Order.delivered");
+Route::verify()::route(BACKEND."/order/refund", "_Order.refund");
+Route::verify()::route(BACKEND."/order/cancel", "_Order.cancel");
+
+Route::verify()::route(BACKEND."/shipping/", "_Shipping._route");
+Route::verify()::route(BACKEND."/invoice/", "_Invoice._route");
+Route::verify()::route(BACKEND."/invoice/sendemail", "_Invoice.sendemail");
+
+Route::verify()::route(BACKEND."/store/setting", "_Store.setting");
+Route::verify()::route(BACKEND."/store/save", "_Store.save");
 
 
 
@@ -123,6 +127,23 @@ class Route{
 
 	}
 
+	static function verify(){
+		if(self::$routed){
+			return @Route;}
+		if(BACKEND_ACCESS && !_Admin::isloggedin()){
+			//self::view("_Admin.login");
+			_H(HOME . "admin/login");
+		}
+		return @Route;
+	}
+
+	static function view($str, $arg = null){
+		$c = explode('.', $str)[0];
+		$con = new $c();
+		$met = explode('.', $str)[1];
+		$con->$met();
+	}
+
 	static function staticPage(){		
 		$uri_arr = array_values(array_filter(explode('/', strtok($_SERVER["REQUEST_URI"],'?'))));
 		if(@$uri_arr[0]){
@@ -141,6 +162,7 @@ class Route{
 	}
 
 	static function route($uri, $str = null){
+		if(self::$routed){return;}
 		$uri_arr = array_values(array_filter(explode('/', strtok($_SERVER["REQUEST_URI"],'?'))));
 		$route_arr = array_values(array_filter(explode('/', $uri)));
 		if($uri_arr != $route_arr){return;}
@@ -215,7 +237,6 @@ class Route{
 	}
 
 	static function not_found(){
-		print_r(self::$routed);
 		if(self::$routed){return;}
 		//_Page::Page_Not_Found();
 	}

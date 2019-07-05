@@ -1,4 +1,4 @@
-<section class="p-3 white">
+<section class="p-3 white clearfix">
 <h6>Shipping</h6>
 	<p class="clearfix"><span class="left">Shipping Cost</span>
 		<span class="right"><?php echo Product::getCurrency() . $shipping->getCost();?></span>

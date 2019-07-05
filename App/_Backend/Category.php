@@ -16,19 +16,17 @@ class _Category extends _Base{
 	function new(){
 		$category = new _Category();
 		$c =  $category->findAll(['status'	=>	["eq" => 0]]);
-		$this->assign("category",$c);
+		$this->assign("category", $c);
 		$contents[] = $this->cache('form');
 		$this->show($contents);
 	}
 
 
 	function edit(){
-		$category = new _Category();
-		$c =  $category->findAll(['status'	=>	["eq" => 0]]);
+		$c =  Category::findAll(['status'	=>	["eq" => 0]]);
 		$this->assign("category",$c);
-		$d = $this->find(['id'	=>	["eq" => _G('id')]]);
-		$this->build($d);
-		$this->assign("data", $this->model);
+		$d = Category::find(['id'	=>	["eq" => _G('id')]]);
+		$this->assign("data", $d);
 		$contents[] = $this->cache('form');
 		$this->show($contents);
 	}
@@ -44,12 +42,20 @@ class _Category extends _Base{
 	}
 
 	function save($data = array()){
-		foreach ($this->_attr as $k => $v) {
-			if(!_P($v)){continue;}
-			$data[$v] = _P($v);
+		$category = Category::find(['id'	=>['eq'	=>	_P("id")]]);
+		$category = $category? $category: new Category;
+		$category->name = _P("name");
+		$category->image = _P("image");
+		$category->updated = strtotime('now');
+		$category->parent = _P("parent_id")? _P("parent_id"):0;
+		try{
+			$category->save();
+			$this->response['status'] = 1;
+			$this->response['message']	= "Success";
+			$this->json_return();
+		}catch(Exception $e){
+			$this->json_return($e->getMessage());
 		}
-		$category = new category();
-		$category->build($data)->save();
 	}
 
 }

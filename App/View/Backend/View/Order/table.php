@@ -1,4 +1,4 @@
-<table class="responsive-table striped">
+<table class="responsive-table striped white">
   <thead>
     <tr>
       <th>Id</th>

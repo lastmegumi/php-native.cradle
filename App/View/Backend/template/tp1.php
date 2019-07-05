@@ -4,12 +4,28 @@ getheader();
 <div class="wrapper">
 <!-- Page Layout here -->
   <ul id="slide-out" class="sidenav" style="transform: translateX(0);">
-    <li><div class="user-view">
-      <div class="background">
-        <img src="images/office.jpg">
+    <li><div class="row">
+      <div class="col s3">
+          <div class="background">
+          <img class="w-100 img-responsive" src="<?php echo Admin::store()->small_logo();?>">
+        </div>
       </div>
-    </div></li>
-    <li><p><?php echo store::Name();?></p></li>
+      <div class="col s9">
+        <p><?php echo Admin::store()->Name();?></p>
+      </div>
+
+      <div>
+    </li>
+    <li>
+    <div class="user-view p-0">
+      <a href="#name"><span class="name">Username: <span class="right"><?php echo _Admin::current("name");?></span></span></a>
+      <a href="#email"><span class="email">My Email: <span class="right"><?php echo _Admin::current("email");?></span></span></a>
+    </div>
+    </li>
+      <li class="<?php echo strpos(parse_url($_SERVER['REQUEST_URI'])['path'], "dashboard")? "active":"";?>">
+      <a class="waves-effect" href="/admin/dashboard">
+          <i class="material-icons">dashboard</i>
+        Dashboard</a></li>
     <li class="<?php echo strpos(parse_url($_SERVER['REQUEST_URI'])['path'], "product")? "active":"";?>">
       <a class="waves-effect" href="/admin/product/list">
           <i class="material-icons">bubble_chart</i>
@@ -33,9 +49,13 @@ getheader();
     <li><div class="divider"></div></li>
     <li><a class="subheader">Subheader</a></li>
     <li>
-      <a class="waves-effect" href="#!">        
+      <a class="waves-effect" href="/admin/store/setting">        
           <i class="material-icons">perm_data_setting</i>
         Setting</a></li>
+     <li class="red lighten-2 ">
+      <a class="waves-effect white-text" href="/admin/logout">        
+          <i class="material-icons white-text">highlight_off</i>
+        Logout</a></li>
   </ul>
 
 <div class="row" style="margin-left: 300px;">
@@ -46,7 +66,7 @@ getheader();
 if(!$c) {continue;}?>
 	<div class="row">
 		<div class="col s12">
-      <div class="p-3 white clearfix">
+      <div class="p-3 clearfix">
 			<?php print_r($c);?>
       </div>
 		</div>

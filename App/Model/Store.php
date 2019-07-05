@@ -2,10 +2,14 @@
 class Store extends _Model{
 	public $id;
 	public $name;
-	public $phone1;
-	public $phone2;
-	public $email1;
-	public $email2;
+	public $logo;
+	public $logo_small;
+	public $description;
+	public $status;
+	public $type;
+	public $created;
+	public $updated;
+	public $owner;
 
 	const _table = "store";
 
@@ -17,8 +21,12 @@ class Store extends _Model{
 		return "store";
 	}
 
-	static function Name(){
-		return "Tempest Freezer";
+	function small_logo(){
+		return $this->logo_small? $this->logo_small:"";
+	}
+
+	function Name(){
+		return $this->name? $this->name:"";
 	}
 	static function Email(){
 		return "info@tempest-freezer.com";

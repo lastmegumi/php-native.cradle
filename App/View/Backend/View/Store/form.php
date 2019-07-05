@@ -1,11 +1,14 @@
+<h6>Store Setting</h6>
 <?php
 $con_arr = array();
 $con_arr[] = array("title" => "Name", "type" => "text", "key" => "name", "required" => true, "class"  => "");
-$con_arr[] = array("title" => "Image", "type" => "text", "key" => "image", "class" => "");
+$con_arr[] = array("title" => "Logo", "type" => "text", "key" => "logo", "class" => "");
+$con_arr[] = array("title" => "Logo Small", "type" => "text", "key" => "logo_small", "class" => "");
 $con_arr[] = array("title" => "Description", "type" => "text", "key" => "description", "class" => "");
 ?>
-	<form id="form" class="p-3 white">
+	<form class="white p-3 clearfix" method="post" action="save">
 		<div class="row">
+			<div class="col s12">
 		<?php foreach($con_arr as $c):
 			if($c['type'] != "text"){ continue;}
 		?>
@@ -19,11 +22,13 @@ $con_arr[] = array("title" => "Description", "type" => "text", "key" => "descrip
 		<?php
 		foreach ($con_arr as $c):
 			if($c['type'] != "text-area"){ continue;}?>
-		<div class="form-group <?php echo $c['class']?$c['class']:'col s12'; ?>">
+		<div class="form-group col s12">
+			<div>
 			<label for="description"><?php echo $c['title'];?></label>
-			<textarea name="description" style="min-height:5rem" class="form-control"><?php 
+			<textarea style="min-height: 500px !important;" name="description" style="min-height:5rem" class="form-control" id="<?php echo $c['class']?$c['class']:''; ?>"><?php 
 			$data_key = $c['key'];
 			echo @$data->$data_key;?></textarea>
+		</div>
 		</div>
 		<?php endforeach;?>
 
@@ -35,41 +40,18 @@ $con_arr[] = array("title" => "Description", "type" => "text", "key" => "descrip
 				    <div class>
 				      <label>
 				        <input type="checkbox" name="<?php echo $c['key'];?>[]"
-				        value="<?php echo $value['id']?>"
+				        value="<?php echo $value->id?>"
 				        <?php 
 				        $data_key = $c['data_key'];
-				        echo in_array( $value['id'], explode(",", $data->$data_key))? "checked":"";?>
+				        echo in_array( $value->id, explode(",", @$data->$data_key))? "checked":"";?>
 				        />
-				        <span><?php echo @$value['name'] ?></span>
+				        <span><?php echo $value->name ?></span>
 				      </label>
 				    </div>
 			<?php endforeach;?>
 		</div>
 		<?php endforeach;?>
 	</div>
-		<input type="hidden" name="id" value="<?php echo @$data->id;?>" />
-		<button type="submit" class="btn btn-primary float-right">Save</button>
+		</div>
+		<button class="btn red lighten-2 right">Save</button>
 	</form>
-<script type="text/javascript">
-$(document).ready(() => {
-	$("form#form").submit(function(e){
-		e.preventDefault();
-		$.ajax({
-			type: "POST",//方法类型
-			dataType: "JSON",//预期服务器返回的数据类型
-			url: "/admin/category/save",//url
-			data : $(this).serializeArray(),
-			success: function (result) {
-			    alert(result.message);
-			    if(result.status){
-			    $("#modal").modal("hide");
-			    window.location.replace(result.url);}
-			},
-			error : function() {
-			    alert("异常！");
-			}
-		});
-		return false;
-	});
-})
-</script>

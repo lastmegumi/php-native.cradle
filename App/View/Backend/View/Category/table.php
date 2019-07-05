@@ -1,4 +1,4 @@
-<table class="responsive-table striped">
+<table class="responsive-table striped white">
   <thead>
     <tr>
       <th>Name</tn>
@@ -8,7 +8,7 @@
   <tbody>
       <?php
       foreach ($data as $k => $v) :?>
-    <tr class="clickable" data-href='<?php echo @$name? HOME . $name . '/edit?id=' . $v['id']:"" ?>'>
+    <tr class="clickable" data-href='<?php echo 'edit?id=' . $v->id;?>'>
       <td><?php echo $v->getName();?></td>
       <td><?php echo _T($v->updated);?></td>
     </tr>

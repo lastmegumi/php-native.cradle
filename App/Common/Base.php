@@ -203,4 +203,8 @@ Class _Base{
 		echo json_encode($this->response);
        	die();
 	}
+
+	function __call($method, $arguments){
+		return false;
+	}
 }?>

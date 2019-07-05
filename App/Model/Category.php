@@ -2,8 +2,7 @@
 class Category extends _Model{
 	public $id;
 	public $name;
-	public $iamge;
-	public $created;
+	public $image;
 	public $updated;
 	public $parent;
 
