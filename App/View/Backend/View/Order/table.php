@@ -19,7 +19,7 @@
             <td><?php echo $v->Shippingto()->getName();?></td>
             <td><?php echo $v->getStatus();?></td>
             <td><?php echo $v->getPaymentMethod();?></td>
-            <td class="right-align"><?php echo Product::getCurrency() . Product::format_Price($v->getAmount());?></td>
+            <td class="right-align"><?php echo Product::getCurrency() . Product::format_Price($v->getTotal());?></td>
             <td class="right-align"><?php echo _T($v->updated);?></td>
         </tr>
       <?php endforeach;?> 

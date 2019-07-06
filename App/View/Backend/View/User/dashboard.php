@@ -32,7 +32,7 @@
 			<p>Last 5 Orders:</p>
 			<?php $data = Order::findAll([],['order by'	=>	['created DESC'], "limit"	=>	5])?>
 			<?php $this->assign("data", $data);?>
-			<?php echo $this->cache("Backend/View/Order/table");?>
+			<?php echo $this->cache("Backend/view/Order/table");?>
 		</div>
 	</div>
 </div>
@@ -42,7 +42,7 @@
 			<p>Last 5 Reviews:</p>
 			<?php $data = Product_Review::findAll([],['order by'	=>	['timestamp DESC'], "limit"	=>	5])?>
 			<?php $this->assign("data", $data);?>
-			<?php echo $this->cache("Backend/View/Product_Review/table");?>
+			<?php echo $this->cache("Backend/view/Product_Review/table");?>
 		</div>
 	</div>
 </div>

@@ -38,7 +38,7 @@ class _Invoice extends _Base{
 			$this->assign("billing_address", $billing_address);
 			$this->assign("shipping", $shipping);
 			$this->assign("payment", $payment);
-			return $this->cache("Invoice_temp");
+			return $this->cache("invoice_temp");
 	}
 
 	function sendemail(){

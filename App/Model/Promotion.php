@@ -122,7 +122,7 @@ class Promotion extends _Model{
 				case 1:
 					return intval($this->value * 100). '%';
 				case 2:
-					return $this->value;
+					return Product::getCurrency() . $this->value;
 						break;					
 					default:
 						# code...

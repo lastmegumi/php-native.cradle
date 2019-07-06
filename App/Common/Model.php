@@ -136,8 +136,8 @@ Class _Model{
 		return $res? $res :0;
 	}
 
-	function deleteAll($filter = [], $options = ['limit' => 0]){
-		$sql = "DELETE FROM `" . $this->_table() ."` WHERE 1";
+	static function deleteAll($filter = [], $options = ['limit' => 0]){
+		$sql = "DELETE FROM `" . static::_table ."` WHERE 1";
 		//$data = array("tablestr"	=>	$this->_table);
 		if(is_array($filter)):
 		foreach($filter as $k => $v){

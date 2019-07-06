@@ -8,5 +8,5 @@
 		</div>
 	</div>
 </div>
-		<a class="btn red lighten-2" href="changepassword">Change Password</a>
+		<a class="btn red lighten-2" href="/user/dashboard/changepassword">Change Password</a>
 </section>

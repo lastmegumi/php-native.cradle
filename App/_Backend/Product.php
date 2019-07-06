@@ -84,32 +84,32 @@ class _Product extends _Base{
 				$this->response['url']	=	"edit?id=". $id;				
 			}
 
-			$product_attr = new Product_attribute();
 			$product_attrs = $_POST['attributes'];
 			if($product_attrs):
-				$product_attr->deleteAll(['product_id' => ['eq'	=>	$product->id]]);
+				Product_attribute::deleteAll(['product_id' => ['eq'	=>	$product->id]]);
 				foreach ($product_attrs as $k => $v) {				
 					if(!_F($v['name'])){continue;}
-					$product_attr->build(array("product_id"	=>	$id,
-											   "name"		=>	_F($v['name']),
-											   "value"		=>	_F($v['value']),
-											   "type"		=>	"text",
-												));
+
+					$product_attr = new Product_attribute();
+					$product_attr->product_id	=	$id;
+					$product_attr->name		=	_F($v['name']);
+					$product_attr->value		=	_F($v['value']);
+					$product_attr->type		=	"text";
 					$product_attr->save();
 				}
 			endif;
 
-			$feature = new Product_feature();
 			$features = $_POST['feature'];
 			if(true):
-				$feature->deleteAll(['product_id' => ['eq'	=>	$product->id]]);
-				foreach ($features as $k => $v) {				
+				Product_feature::deleteAll(['product_id' => ['eq'	=>	$product->id]]);
+				foreach ($features as $k => $v) {		
 					if(!_F($v['name'])){continue;}
-					$feature->build(array("product_id"	=>	$id,
-											   "name"		=>	_F($v['name']),
-											   "value"		=>	_F($v['value']),
-											   "type"		=>	"text",
-												));
+
+					$feature = new Product_feature();
+					$feature->product_id = 	$id;
+				   	$feature->name		=	_F($v['name']);
+				   	$feature->value		=	_F($v['value']);
+				   	$feature->type		=	"text";
 					$feature->save();
 				}
 			endif;

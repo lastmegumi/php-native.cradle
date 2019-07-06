@@ -78,6 +78,15 @@ class Order extends _Model{
 		return Platform::Address();
 	}
 
+	function getShippingCost(){
+		$shipping = shipping::find(['order_id'	=>	['eq'	=>	$this->id]]);
+		return $shipping? $shipping->getCost(): 0;
+	}
+
+	function getTotal(){
+		return $this->amount_base + $this->amount_tax - $this->amount_discount + $this->getShippingCost();
+	}
+
 	function Billingto(){
 		return Order_Address::find(['order_id'	=>	['eq'	=>	$this->id],
 									'type'		=>	['eq'	=> "billing"]]);

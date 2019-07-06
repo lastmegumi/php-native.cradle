@@ -17,7 +17,7 @@
     <tr class="clickable" data-href='<?php echo "?id=" . $v->id?>'>
       <td><?php echo @$v->id?></td>
       <td><?php echo @$v->getStatus()?></td>
-      <td><?php echo Product::getCurrency() . Product::format_price(@$v->getAmount())?></td>
+      <td><?php echo Product::getCurrency() . Product::format_price(@$v->getTotal())?></td>
       <td><?php echo _T(@$v->created)?></td>
     </tr>
     <?php endforeach;

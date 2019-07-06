@@ -74,7 +74,7 @@
 				<tr><td class="right-align">Shipping:</td>
 					<td class="right-align"><?php echo Product::getCurrency() . Product::format_price($shipping->cost);?></td></tr>
 				<tr><td class="right-align">Total:</td>
-					<td class="right-align"><?php echo Product::getCurrency() . Product::format_price($order->amount_base);?></td></tr>
+					<td class="right-align"><?php echo Product::getCurrency() . Product::format_price($order->getTotal());?></td></tr>
 			</table>
 		</div>
 	</div>
