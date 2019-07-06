@@ -30,9 +30,9 @@ class _Promotion extends _Base{
 		$pro->created = $pro->updated = $pro->start = $pro->end = strtotime("now");
 		$pro->priority = -1;
 		$pro->status = 0;
-
+		$pro->store_id = Admin::store()->id;
 		$pro->save();
-		_H("edit/?id=" . $pro->id);
+		_H(HOME. BACKEND . "promotion/edit/?id=" . $pro->id);
 	}
 
 	function categoryform(){
@@ -44,7 +44,7 @@ class _Promotion extends _Base{
 		$pro->status = 0;
 
 		$pro->save();
-		_H("edit/?id=" . $pro->id);
+		_H(HOME. BACKEND . "promotion/edit/?id=" . $pro->id);
 	}
 
 	function storeform(){
@@ -56,7 +56,7 @@ class _Promotion extends _Base{
 		$pro->status = 0;
 
 		$pro->save();
-		_H("/admin/promotion/edit/?id=" . $pro->id);
+		_H(HOME. BACKEND . "promotion/edit/?id=" . $pro->id);
 	}
 
 	function edit(){
@@ -105,6 +105,15 @@ class _Promotion extends _Base{
 			$pro->priority = _P("priority");
 			$pro->save();
 			_H($_SERVER['HTTP_REFERER']);
+	}
+
+	function delete(){
+		$pro = Promotion::find(['id'	=>	['eq'	=>	_G("id")],
+								'store_id'	=>	['eq'	=>	Admin::store()->id]]);
+		if($pro):
+			$pro->delete();
+		endif;
+		_H(HOME . BACKEND . "promotion");
 	}
 
 }

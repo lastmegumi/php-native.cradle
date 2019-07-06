@@ -72,6 +72,7 @@ Route::verify()::route(BACKEND."/promotion/new/category", "_Promotion.categoryfo
 Route::verify()::route(BACKEND."/promotion/new/store", "_Promotion.storeform");
 Route::verify()::route(BACKEND."/promotion/edit", "_Promotion.edit");
 Route::verify()::route(BACKEND."/promotion/save", "_Promotion.save");
+Route::verify()::route(BACKEND."/promotion/delete", "_Promotion.delete");
 
 
 Route::verify()::route(BACKEND."/order/", "_Order._route");

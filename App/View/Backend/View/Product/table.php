@@ -16,7 +16,7 @@
       <td><?php echo $v->name;?></td>
       <td><?php echo $v->sku;?></td>
       <td class="right-align"><?php echo $v->getStock();?></td>
-      <td class="right-align"><?php echo Product::getCUrrency() . Product::format_price($v->getPrice());?></td>
+      <td class="right-align"><?php echo Product::getCUrrency() . Product::format_price($v->getOriginPrice());?></td>
     </tr>
       <?php endforeach;?> 
   </tbody>
