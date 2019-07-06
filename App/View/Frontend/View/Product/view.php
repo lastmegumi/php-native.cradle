@@ -25,9 +25,13 @@
 	<div class="col s12 m8">
 		<div class="information white p-3">
 		<h4 style="margin-top:0"><?php echo $product->getTitle();?></h4>
-		<span>SKU: <?php echo $product->sku;?></span>
+		<span>SKU: <?php echo $product->sku;?></span><br/>
+		<span>Seller: <?php echo $product->getSeller()->Name();?></span>
 		<?php if($product->is_forsale()):?>
-		<h4><small><?php echo $product->getCurrency();?></small><?php echo $product->getPrice();?></h4>
+		<h4><small><?php echo $product->getCurrency();?></small><?php echo $product->finalPrice();?>
+		<?php if($product->finalPrice() != $product->getOriginPrice()):?>
+			<span class="small grey-text" style="font-size:50%;text-decoration-line: line-through;"><?php echo $product->getCurrency();?><?php echo $product->getOriginPrice();?></span>
+		<?php endif;?></h4>
 		<div class="row">
 			<div class="input-field col s2">
 			    <select class="browser-default" id="product_qty">

@@ -22,18 +22,18 @@ getheader();
     align-items: center;
 }
 </style>
-<div class="row">
+<div class="row m-0">
       <div class="col s12 m-0 grey darken-4">
         <div class="container">
-        	<div id="login-page" class="row">
+        	<div id="login-page" class="row m-0">
 			  <div class="col s12 m6 l4 z-depth-4 card-panel border-radius-6 login-card bg-opacity-8">
 			    <form class="login-form" action="/admin/login" method="post">
-			      <div class="row">
+			      <div class="row m-0">
 			        <div class="input-field col s12">
 			          <h5 class="ml-4">Sign in</h5>
 			        </div>
 			      </div>
-			      <p>
+			      <p class="red-text text-lighten-2">
 			      <?php 
 			      $msg = MSG::get();
 			      echo $msg? $msg:"";

@@ -26,24 +26,28 @@
 <table>
   <tr>
     <td class="p-0">Subtatal:</td>
+    <td></td>
     <td class="right p-0">
       <p><?php echo Product::getCUrrency() . Product::format_price($Subtotal);?></p>
     </td>
   </tr>
   <tr>
     <td class="p-0">Tax:</td>
+    <td></td>
     <td class="right p-0">
       <p><?php echo  Product::getCUrrency() . Product::format_price($Tax);?></p>
     </td>
   </tr>
   <tr>
     <td class="p-0">Discount:</td>
+    <td></td>
     <td class="right p-0">
-      <p>:<?php echo Product::getCUrrency() . Product::format_price($Discount);?></p>
+      <p><?php echo Product::getCUrrency() . Product::format_price($Discount);?></p>
     </td>
   </tr>
   <tr>
     <td class="p-0">Total:</td>
+    <td></td>
     <td class="right p-0">
       <p><?php echo Product::getCUrrency() . Product::format_price($FinalPrice);?></p>
     </td>

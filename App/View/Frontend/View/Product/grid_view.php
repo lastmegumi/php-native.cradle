@@ -23,7 +23,7 @@
             <a class="right btn-floating waves-effect waves-light red add-to-cart" id="add-to-cart" data-id="<?php echo $v->id ?>">
             <i class="material-icons">add</i></a>
         <?php endif;?>
-          <p><?php echo @$v->getCurrency();?><?php echo @$v->getPrice();?></p>
+          <p><?php echo @$v->getCurrency();?><?php echo @$v->finalPrice();?></p>
         </div>
       </div>
     </div>

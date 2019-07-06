@@ -1,6 +1,6 @@
 <?php
 class _Product extends _Base{
-	protected $_attr = ["id", "name", "description", "sku", "price", "for_sale","short_description", "enabled", "in_stock", "category_ids", "stock", "seller", "bundle", "related", "updated"];
+	protected $_attr = ["id", "name", "store_id", "description", "sku", "price", "for_sale","short_description", "enabled", "in_stock", "category_ids", "stock", "seller", "bundle", "related", "updated"];
 	protected $_table = "product";
 	private $main_key = "id";
 	public $template_dir = "product";
@@ -76,6 +76,7 @@ class _Product extends _Base{
 		try{
 			_DB::init()->conn->beginTransaction();
 			$product = new Product();
+			$product->store_id	=	Admin::store()->id;
 			$id = $product->build($data)->save();
 			if($product->id){
 				$id = $product->id;

@@ -1,5 +1,5 @@
-<seciton class="col s12 z-depth-2">
-	<div class="p-3 white">
+<seciton class="col s12 z-depth-2 white">
+	<div class="p-3">
 	<h5 class="center-align">Invoice: <?php echo $order->invoicenum();?></h5>
 	<div class="row">
 		<div class="col s6">
@@ -45,7 +45,6 @@
 					<th>Name</th>
 					<th class="right-align">Price</th>
 					<th class="right-align">Qty</th>
-					<th class="right-align">Discount</th>
 					<th class="right-align">Tax</th>
 					<th class="right-align">Subtotal</th>
 				</thead>
@@ -57,7 +56,6 @@
 							<p class="small">SKU: <?php echo $p->product_sku;?></p></td>
 						<td class="right-align"><?php echo Product::getCurrency() . $p->product_price;?></td>
 						<td class="right-align"><?php echo $p->qty;?></td>
-						<td class="right-align red-text text-darken-2">- <?php echo Product::getCurrency() . Product::format_price($p->qty * $p->product_discount);?></td>
 						<td class="right-align"><?php echo Product::getCurrency() . Product::format_price($p->qty * $p->product_tax);?></td>
 						<td class="right-align"><?php echo Product::getCurrency() . Product::format_price($p->qty * $p->product_price);?></td>
 					</tr>

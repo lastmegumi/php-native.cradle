@@ -312,7 +312,7 @@ class Product extends React.Component{
         <div>
           {this.page()}
           </div>
-          <div className="row">
+          <div className="row view_grid">
           {this.props.items.map((item, i)  =>  {
           return <div className="col s3 small" key={item.id}>  
               <div className="product_block">
@@ -321,7 +321,7 @@ class Product extends React.Component{
                     <img className="img-responsive lazy" src={item.thumbnail} />
                     <span className="card-title"></span>
                   </div>
-                  <div className="card-content">
+                  <div className="card-content pos-relative">
                   <a href={item.url}>          
                     <p className="product_name">{item.name}</p>
                   </a>

@@ -39,3 +39,21 @@ class Store extends _Model{
 	}
 
 }
+
+
+class Platform{
+
+	static function Name(){
+		return "tempest-freezer";
+	}
+
+	static function Email(){
+		return "info@tempest-freezer.com";
+	}
+	static function Phone(){
+		return "(800) 900-200-333";
+	}
+	static function Address(){
+		return "117 Industrial Avenue Hasbrouck Heights NJ 07604";
+	}
+}

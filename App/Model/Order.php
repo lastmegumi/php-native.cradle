@@ -63,19 +63,29 @@ class Order extends _Model{
 	}
 
 	function getStoreName(){
-		return Store::Name();
+		return Platform::Name();
 	}
 
 	function getStorePhone(){
-		return Store::Phone();
+		return Platform::Phone();
 	}
 
 	function getStoreEmail(){
-		return Store::Email();
+		return Platform::Email();
 	}
 
 	function getStoreAddress(){
-		return Store::Address();
+		return Platform::Address();
+	}
+
+	function Billingto(){
+		return Order_Address::find(['order_id'	=>	['eq'	=>	$this->id],
+									'type'		=>	['eq'	=> "billing"]]);
+	}
+
+	function Shippingto(){
+		return Order_Address::find(['order_id'	=>	['eq'	=>	$this->id],
+									'type'		=>	['eq'	=> "shipping"]]);
 	}
 
 	function getPaymentMethod(){
@@ -98,6 +108,7 @@ class Order_Product extends _Model{
 	public $id;
 	public $order_id;
 	public $product_id;
+	public $store_id;
 	public $product_name;
 	public $product_img;
 	public $product_sku;
@@ -117,6 +128,10 @@ class Order_Product extends _Model{
 
 	function __construct(){
 		return $this;
+	}
+
+	function getSeller(){
+		return Store::find(['id'	=>	['eq'	=>	$this->store_id]]);
 	}
 }
 

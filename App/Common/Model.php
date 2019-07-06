@@ -26,7 +26,7 @@ Class _Model{
         	throw new Exception("Can't not save empty object");
 		}
 
-		$sql = "INSERT INTO `" . $this->_table() . "` (" . implode(", ",  array_keys($data)) . ") VALUES (:" . implode(', :', array_keys($data)) .")";
+		$sql = "INSERT INTO `" . static::_table . "` (" . implode(", ",  array_keys($data)) . ") VALUES (:" . implode(', :', array_keys($data)) .")";
 		if(isset($this->id) && $this->id):
 			$sql .= " ON DUPLICATE KEY UPDATE ";
 			$arr = array();
@@ -88,8 +88,9 @@ Class _Model{
 						break;
 					case 'in':
 					case 'notin':
-						$sql  .= " " . $mark[strtolower($k2)] . " (" . implode(",", $v2) . ")";
-
+						if(is_array($v2) && count($v2) > 0):
+							$sql  .= " " . $mark[strtolower($k2)] . " (" . implode(",", $v2) . ")";
+						endif;
 						// $data[$k] = implode("','", $v2);
 						break;
 					default:

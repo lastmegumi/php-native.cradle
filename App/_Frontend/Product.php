@@ -51,7 +51,7 @@ class _Product extends _Base{
 			$table_data[] = array("id"		=>	intval($c->id),
 								  "name"	=>	$c->name,
 								  "price"	=> 	array("currency"	=>	$c->getCurrency(),
-								  				"amount"	=>	floatval($c->price)),
+								  					  "amount"	=>	$c->getPrice()),
 								  "url"		=>	HOME . "product?id=" . $c->id,
 								  "forsale"	=>	$c->for_sale?true:false,
 								  "thumbnail"	=> $c->getThumbnail(),

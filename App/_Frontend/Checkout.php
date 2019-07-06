@@ -17,7 +17,7 @@ class _Checkout extends _Base{
 		$this->template_dir = APP_DIR . "view/".$name."/";
 
 		if(!_User::is_logged()){
-			_H(HOME . 'user/login');
+			_H(HOME . '/login');
 		}
 	}
 
@@ -145,32 +145,22 @@ class _Checkout extends _Base{
 	}
 
 	private function create_orderproduct($order_id, $product_list, $cart){
-		$ReflectionClass = new ReflectionClass("Order_Product");
-		// public $order_id;
-		// public $product_id;
-		// public $product_name;
-		// public $product_img;
-		// public $product_sku;
-		// public $product_tax;
-		// public $product_discount;
-		// public $status;
-		// public $notes;
-		// public $updated;
 		foreach ($product_list as $k => $v) {
-			$p = array( "order_id"	=>	$order_id,
-						"product_id"	=>	$v->id,
-						"product_name"	=>	$v->name,
-						"product_img"	=>	@$v->img,
-						"product_sku"	=>	$v->sku,
-						"product_tax"	=>	$v->getTax(),
-						"product_discount"	=>	$v->getDiscount(),
-						"product_price"	=>	$v->getPrice(),
-						"qty"	=>	$cart[$v->id],
-						"status"	=>	1,
-						"notes"	=>	"",
-						"updated"	=>	strtotime('now'),
-				);
-			$ReflectionClass->newInstanceWithoutConstructor()->build($p)->save();
+			$op = new Order_product;
+			$op->order_id	=	$order_id;
+			$op->product_id	=	$v->id;
+			$op->product_name	=	$v->name;
+			$op->product_img	=	@$v->img;
+			$op->product_sku	=	$v->sku;
+			$op->product_tax	=	$v->getTax();
+			$op->product_discount	=	$v->getDiscount();
+			$op->product_price	=	$v->getPrice();
+			$op->qty	=	$cart[$v->id];
+			$op->status	=	1;
+			$op->notes	=	"";
+			$op->store_id = $v->store_id;
+			$op->updated	=	strtotime('now');
+			$op->save();
 		}
 	}
 

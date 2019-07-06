@@ -3,7 +3,7 @@
 	<h5 class="center-align">Invoice: <?php echo $order->invoicenum();?></h5>
 	<div class="row">
 		<div class="col s6">
-			<h6><strong>Seller</strong></h6>
+			<h6><strong>Store</strong></h6>
 			<p><?php echo $order->getStoreName();?></p>
 			<p><?php echo $order->getStoreEmail();?></p>
 			<p><?php echo $order->getStorePhone();?></p>
@@ -45,7 +45,6 @@
 					<th>Name</th>
 					<th class="right-align">Price</th>
 					<th class="right-align">Qty</th>
-					<th class="right-align">Discount</th>
 					<th class="right-align">Tax</th>
 					<th class="right-align">Subtotal</th>
 				</thead>
@@ -54,10 +53,10 @@
 					<tr>
 						<td><?php echo "image";?></td>
 						<td><?php echo $p->product_name;?>
-							<p class="small">SKU: <?php echo $p->product_sku;?></p></td>
+							<p class="small">SKU: <?php echo $p->product_sku;?></p>
+							<p class="small">Seller: <?php echo $p->getSeller()->Name();?></p></td>
 						<td class="right-align"><?php echo Product::getCurrency() . $p->product_price;?></td>
 						<td class="right-align"><?php echo $p->qty;?></td>
-						<td class="right-align red-text text-darken-2">- <?php echo Product::getCurrency() . Product::format_price($p->qty * $p->product_discount);?></td>
 						<td class="right-align"><?php echo Product::getCurrency() . Product::format_price($p->qty * $p->product_tax);?></td>
 						<td class="right-align"><?php echo Product::getCurrency() . Product::format_price($p->qty * $p->product_price);?></td>
 					</tr>

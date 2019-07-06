@@ -17,9 +17,9 @@ foreach ($data as $k => $v) :?>
 		?>" /></td>
 		<td><?php echo $v->product_name?>
 			<p class="small">SKU:<?php echo $v->product_sku;?></p></td>
-		<td>$<?php echo $v->product_price?></td>
+		<td><?php echo Product::getCurrency() . Product::format_price($v->product_price);?></td>
 		<td><?php echo $v->qty?></td>
-		<td>$<?php echo $v->product_price * $v->qty?></td>
+		<td><?php echo Product::getCurrency() . Product::format_price($v->product_price * $v->qty);?></td>
 	</tr>
 <?php
 endforeach;

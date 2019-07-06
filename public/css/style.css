@@ -98,3 +98,13 @@ a{
     overflow: hidden;
     line-height: 1.5em;
 }
+
+.pos-relative{
+    position: relative;;
+}
+
+.view_grid .add-to-cart{
+    position: absolute; 
+    right: 20px; 
+    top: -20px;
+}

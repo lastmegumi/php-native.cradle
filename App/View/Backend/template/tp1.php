@@ -48,7 +48,7 @@ getheader();
         Report</a></li>
     <li><div class="divider"></div></li>
     <li><a class="subheader">Subheader</a></li>
-    <li>
+    <li class="<?php echo strpos(parse_url($_SERVER['REQUEST_URI'])['path'], "setting")? "active":"";?>">
       <a class="waves-effect" href="/admin/store/setting">        
           <i class="material-icons">perm_data_setting</i>
         Setting</a></li>

@@ -35,6 +35,10 @@ class Cart extends _Model{
 		return  $c;
 	}
 
+	static function getDiscount(){
+		return 0;
+	}
+
 	static function Calculate($data){
 		$subtotal = 0;
 		$tax = 0;
@@ -45,14 +49,13 @@ class Cart extends _Model{
 			$p = Product::find(['id'	=>	["eq" => $k]], ['class'	=>	true]);
 			$product_list[]	= $p;
 			$subtotal += $p->getPrice($v);
-			$discount += $p->getDiscount($v);
 			$tax += $p->getTax($v);
 		}
 
 		return array("product_list"	=>	$product_list, 
 					 "subtotal"	=>	$subtotal,
 					 "tax"	=>	$tax,
-					 "discount"	=>	$discount,
-					 "final_price"	=>	$subtotal + $tax - $discount);
+					 "discount"	=>	self::getdiscount(),
+					 "final_price"	=>	$subtotal + $tax);
 	}
 }

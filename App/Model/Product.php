@@ -16,6 +16,7 @@ class Product extends _Model{
 	public $in_stock;
 	public $review_open;
 	public $short_description;
+	public $store_id;
 
 	const _table = "product";
 
@@ -53,6 +54,15 @@ class Product extends _Model{
 
 	function getPrice($qty = 1){
 
+		return number_format(($this->getOriginPrice() - $this->getDiscount()) * $qty, 2, '.', '');
+	}
+
+	function finalPrice($qty = 1){		
+		return number_format(($this->getOriginPrice() - $this->getDiscount()) * $qty, 2, '.', '');
+	}
+
+	function getOriginPrice($qty = 1){
+
 		return number_format($this->price * $qty, 2, '.', '');
 	}
 
@@ -62,8 +72,16 @@ class Product extends _Model{
 	}
 	
 	function getDiscount($qty = 1){
-		$discount = 0.5;
+		$discount = Promotion::discountValue($this);
 		return number_format($discount * $qty, 2, '.', '');
+	}
+
+	function getStoreID(){
+		return $this->store_id;
+	}
+
+	function getSeller(){
+		return Store::find(['id'	=>	['eq'	=>	$this->store_id]]);
 	}
 
 	static function getCurrency(){

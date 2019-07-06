@@ -111,7 +111,7 @@ class _Cart extends _Base{
 		foreach ($cartinfo['product_list'] as $key => $value) {
 			$d[] = array("id"	=>	$value->id,
 						 "name"		=>	$value->name,
-						 "price"	=>	$value->price,
+						 "price"	=>	$value->getPrice(),
 						 "thumbnail"	=>	$value->getThumbnail(),
 						 "qty"	=>	$c[$value->id]
 						 );
@@ -159,7 +159,7 @@ class _Cart extends _Base{
 			$p = Product::find(['id'	=>	["eq" => $k]], ['class'	=>	true]);
 			$product_list[]	= $p;
 			$subtotal += $p->getPrice($v);
-			$discount += $p->getDiscount($v);
+			$discount += cart::getDiscount($v);
 			$tax += $p->getTax($v);
 		}
 

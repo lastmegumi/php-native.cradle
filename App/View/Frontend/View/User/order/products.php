@@ -16,7 +16,9 @@ foreach ($data as $k => $v) :?>
 		//echo
 		?>" /></td>
 		<td><?php echo $v->product_name?>
-			<p class="small">SKU:<?php echo $v->product_sku;?></p></td>
+			<p class="small">SKU:<?php echo $v->product_sku;?></p>
+			<p class="small">SKU:<?php echo $v->getSeller()->Name();?></p>
+		</td>
 		<td>$<?php echo $v->product_price?></td>
 		<td><?php echo $v->qty?></td>
 		<td>$<?php echo $v->product_price * $v->qty?></td>

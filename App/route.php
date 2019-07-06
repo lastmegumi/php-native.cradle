@@ -65,6 +65,15 @@ Route::verify()::route(BACKEND."/category/list", "_Category.list");
 Route::verify()::route(BACKEND."/category/edit", "_Category.edit");
 Route::verify()::route(BACKEND."/category/save", "_Category.save");
 
+
+Route::verify()::route(BACKEND."/promotion/", "_Promotion._route");
+Route::verify()::route(BACKEND."/promotion/new/simple", "_Promotion.simpleform");
+Route::verify()::route(BACKEND."/promotion/new/category", "_Promotion.categoryform");
+Route::verify()::route(BACKEND."/promotion/new/store", "_Promotion.storeform");
+Route::verify()::route(BACKEND."/promotion/edit", "_Promotion.edit");
+Route::verify()::route(BACKEND."/promotion/save", "_Promotion.save");
+
+
 Route::verify()::route(BACKEND."/order/", "_Order._route");
 Route::verify()::route(BACKEND."/order/list", "_Order.list");
 Route::verify()::route(BACKEND."/order/shipped", "_Order.shipped");

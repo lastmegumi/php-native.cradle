@@ -50,9 +50,8 @@ class _Admin extends _Base{
 
 						_H(HOME . BACKEND ."dashboard");						
 					endif;
-					MSG::add("Wrong password");
 				endif;
-					MSG::add("Wrong username");
+					MSG::add("Wrong username or password");
 			default:
 				$this->show([], $temp = "login");
 				break;
