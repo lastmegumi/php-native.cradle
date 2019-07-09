@@ -12,7 +12,8 @@
   </thead>
   <tbody>
       <?php
-      foreach ($data as $k => $v) :?>
+      foreach ($data as $k => $v) :
+      ?>
         <tr class="clickable" data-href='<?php echo  HOME . BACKEND .'order/?id=' . $v->id ?>'>
             <td><?php echo $v->id;?></td>
             <td><?php echo $v->Billingto()->getName();?></td>

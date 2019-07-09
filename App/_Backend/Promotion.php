@@ -6,6 +6,7 @@ class _Promotion extends _Base{
 	function __construct(){
 		$name = "Promotion";
 		$this->template_dir = APP_DIR . "view/".$name."/";
+
 		//print_r($this->build(array("title" => "abcde", "price" => 1.22)));
 		//print_r($this->save());
 		//print_r($this->deleteAll());
@@ -16,7 +17,7 @@ class _Promotion extends _Base{
 	}
 
 	function _route(){
-		$pro = Promotion::findAll([],['order by'	=>	['updated DESC']]);
+		$pro = Promotion::findAll(['store_id'	=>	['eq'	=>	Admin::store()->id]],['order by'	=>	['updated DESC']]);
 		$this->assign("data", $pro);
 		$contents[] = $this->cache("index");
 		$contents[] = $this->cache("action_bar");

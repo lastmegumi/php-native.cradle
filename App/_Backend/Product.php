@@ -1,6 +1,6 @@
 <?php
 class _Product extends _Base{
-	protected $_attr = ["id", "name", "store_id", "description", "sku", "price", "for_sale","short_description", "enabled", "in_stock", "category_ids", "stock", "seller", "bundle", "related", "updated"];
+	protected $_attr = ["id", "name", "store_id", "description", "sku", "price", "for_sale","short_description", "enabled", "in_stock", "inventory", "category_ids", "stock", "seller", "bundle", "related", "updated"];
 	protected $_table = "product";
 	private $main_key = "id";
 	public $template_dir = "product";
@@ -47,9 +47,9 @@ class _Product extends _Base{
 		$options = ['class'	=>	true, 
 					'order by'	=>	['id DESC'], 
 					'limit'	=>	$page_index * $page_size . ',' . $page_size];
-
-		$data = Product::findAll([], $options);
-		$total = Product::total();
+		$filter = ['store_id'	=>	['eq'	=>	Admin::store()->id]];
+		$data = Product::findAll($filter, $options);
+		$total = Product::total($filter);
 
 		$contents[] = $this->cache("action_bar");
 		$this->assign("data", $data);

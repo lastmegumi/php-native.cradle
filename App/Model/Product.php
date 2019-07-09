@@ -14,6 +14,7 @@ class Product extends _Model{
 	public $for_sale;
 	public $enabled;
 	public $in_stock;
+	public $inventory;
 	public $review_open;
 	public $short_description;
 	public $store_id;

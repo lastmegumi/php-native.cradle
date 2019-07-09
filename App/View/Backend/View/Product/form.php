@@ -150,13 +150,17 @@ $con_arr[] = array("title" => "Description", "type" => "text-area", "key" => "de
 				    </select>
 				    <label>Status</label>
 				</div>
-		    	<div class="input-field col s12">
+				<div class="input-field col s6">
+					<input type="number" class="form-control" name="inventory" value="<?php echo $data->inventory;?>" />
+				    <label>Inventory</label>
+				</div>
+		    	<div class="input-field col s6">
 				  <select name="in_stock">
 				      <option value="" disabled selected>Choose your option</option>
 				      <option value="1" <?php echo $data->in_stock == 1? "selected" : ""?>>Out of stock</option>
 				      <option value="0" <?php echo $data->in_stock == 0? "selected" : ""?>>Instock</option>
 				    </select>
-				    <label>Inventory</label>
+				    <label>Instock</label>
 				</div>
 		  </div>
 		<input type="hidden" name="id" value="<?php echo @$data->id;?>" />

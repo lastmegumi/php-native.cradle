@@ -46,6 +46,13 @@
     </td>
   </tr>
   <tr>
+    <td class="p-0">Shipping:</td>
+    <td></td>
+    <td class="right p-0">
+      <p><?php echo Product::getCUrrency() . Product::format_price($Shipping);?></p>
+    </td>
+  </tr>
+  <tr>
     <td class="p-0">Total:</td>
     <td></td>
     <td class="right p-0">

@@ -39,7 +39,9 @@ class _Order extends _Base{
 			$contents[]	= $this->cache("status_card");
 
 			$billing = order_address::find(['order_id'	=>	["eq" => $order->id],'type'	=>	["eq" => "billing"]],['class'	=>	true]);
+			$billing = $billing? $billing: new order_address();
 			$shipping = order_address::find(['order_id'	=>	["eq" => $order->id],'type'	=>	["eq" => "shipping"]],['class'	=>	true]);
+			$shipping = $billing? $billing: new order_address();
 			$this->assign("billing", $billing);
 			$this->assign("shipping", $shipping);
 
@@ -49,7 +51,8 @@ class _Order extends _Base{
 			$this->assign("shipping", $shipping);			
 			$contents[]	= $this->cache("shipping_card");
 
-			$Order_Product = Order_Product::findAll(['order_id'	=>	["eq" => $order->id]],['class'	=>	true]);
+			$Order_Product = Order_Product::findAll(['order_id'	=>	["eq" => $order->parent],
+													 'store_id'	=>	["eq"	=>	Admin::Store()->id]],['class'	=>	true]);
 			$this->assign("data", $Order_Product);			
 			$contents[]	= $this->cache("products");
 			$this->show($contents);
@@ -57,16 +60,15 @@ class _Order extends _Base{
 	}
 
 	function list(){
-
 		$page_size = 20;
 		$page_index = _G("page") && is_numeric(_G("page")) ? _G("page") - 1 : 0;
 
 		$options = ['class'	=>	true, 
-					'order by'	=>	['id DESC'], 
+					'order by'	=>	['id DESC'],
 					'limit'	=>	$page_index * $page_size . ',' . $page_size];
 
-		$data = Order::findAll([],$options);
-		$total = Order::total();
+		$data = Order::findAll(['store_id'	=>	['eq'	=>	Admin::store()->id]],$options);
+		$total = Order::total(['store_id'	=>	['eq'	=>	Admin::store()->id]]);
 		$this->assign("data", $data);
 		$contents[] = $this->cache("table");
 
@@ -82,40 +84,74 @@ class _Order extends _Base{
 
 	function shipped(){
 		$id = _P('order_id');
-		$order = Order::find(['id'	=>	['eq'	=>	$id]],['class'	=>	true]);
-		$order->status = 2;
-		$order->save();
-		$shipping = Shipping::find(['order_id'	=>	['eq'	=>	$order->id]],['class'	=>	true]);
-		$shipping->status = 1;
-		$shipping->updated = strtotime('now');
-		$shipping->save();
-		$this->response['url']	= $_SERVER['HTTP_REFERER'];
-		$this->response['status']	=	1;
-		$this->json_return();
+		try{
+			_DB::init()->conn->beginTransaction();
+
+			$order = Order::find(['id'	=>	['eq'	=>	$id]],['class'	=>	true]);
+			$order->status = 2;
+			$order->save();
+			$shipping = Shipping::find(['order_id'	=>	['eq'	=>	$order->id]],['class'	=>	true]);
+			$shipping->status = 1;
+			$shipping->updated = strtotime('now');
+			$shipping->save();
+
+			$sql = "UPDATE order_Product SET status = 2 WHERE order_id = :order_id AND store_id = :store_id";
+			$data = ['order_id'	=> $order->parent, "store_id"	=>	Admin::store()->id];
+			_DB::init()->update($data, $sql);
+			_DB::init()->conn->commit();
+			$this->response['url']	= $_SERVER['HTTP_REFERER'];
+			$this->response['status']	=	1;
+			$this->json_return();
+		}catch(Exception $e){
+			_DB::init()->conn->rollBack();
+			$this->json_return($e->getMessage());
+		}
 	}
 
 	function delivered(){
 		$id = _P('order_id');
-		$order = Order::find(['id'	=>	['eq'	=>	$id]],['class'	=>	true]);
-		$order->status = 3;
-		$order->save();
-		$shipping = Shipping::find(['order_id'	=>	['eq'	=>	$order->id]],['class'	=>	true]);
-		$shipping->status = 2;
-		$shipping->updated = strtotime('now');
-		$shipping->save();
-		$this->response['url']	= $_SERVER['HTTP_REFERER'];
-		$this->response['status']	=	1;
-		$this->json_return();
+		try{
+			_DB::init()->conn->beginTransaction();
+
+			$order = Order::find(['id'	=>	['eq'	=>	$id]],['class'	=>	true]);
+			$order->status = 3;
+			$order->save();
+			$shipping = Shipping::find(['order_id'	=>	['eq'	=>	$order->id]],['class'	=>	true]);
+			$shipping->status = 2;
+			$shipping->updated = strtotime('now');
+			$shipping->save();
+
+			$sql = "UPDATE order_Product SET status = 3 WHERE order_id = :order_id AND store_id = :store_id";
+			$data = ['order_id'	=> $order->parent, "store_id"	=>	Admin::store()->id];
+			_DB::init()->update($data, $sql);
+			_DB::init()->conn->commit();
+			$this->response['url']	= $_SERVER['HTTP_REFERER'];
+			$this->response['status']	=	1;
+			$this->json_return();
+		}catch(Exception $e){
+			_DB::init()->conn->rollBack();
+			$this->json_return($e->getMessage());
+		}
+
 	}
 
 	function refund(){
 		$id = _G("id");
 		$order = Order::find(['id'	=>	['eq'	=>	$id]], ['class'	=>	true]);
 		try{
-			$payment = Payment::find(['order_id'	=>	['eq'	=>	$order->id],'status'	=>	['eq'	=>	1]], ['class'	=>	true]);
-			if($payment->refund());
-			$order->status = -1;
-			$order->save();
+			if($order->status != -1):
+				$payment = Payment::find(['order_id'	=>	['eq'	=>	$order->parent],'status'	=>	['eq'	=>	1]], ['class'	=>	true]);
+				if($payment->refund($order->getTotal()));
+				$order->status = -1;
+				$order->save();
+
+				$sql = "UPDATE order_Product SET status = -1 WHERE order_id = :order_id AND store_id = :store_id";
+				$data = ['order_id'	=> $order->parent, "store_id"	=>	Admin::store()->id];
+				_DB::init()->update($data, $sql);
+				_DB::init()->conn->commit();
+				$this->response['url']	= $_SERVER['HTTP_REFERER'];
+				$this->response['status']	=	1;
+			endif;
 		}catch(Exception $e){
 		}
 		header('Location: ' .  $_SERVER['HTTP_REFERER']);

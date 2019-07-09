@@ -46,29 +46,30 @@ class Promotion extends _Model{
 		}
 		endif;
 
-		$cat = Promotion::find([
-								 'end'		=> ['gt'	=>	strtotime("now")],
-								 'start'	=> ['st'	=>	strtotime("now")],
-								 'status'	=>	['eq'	=>	1],
-								 'store_id'	=>	['eq'	=>	$p->getStoreID()],
-								 'target'		=> ['eq'	=>	2],
-								 'target_value'	=>	['in'	=>	explode(',', $p->category_ids)],
-								 'priority'	=>	['gt'	=>	0],
-										],[
-								 'order by'	=>	['priority ASC'],
-									]);
-		if($cat):
-		switch ($cat->type) {
-			case 1:
-				$dis[]	=	$p->getOriginPrice() * floatval($cat->value);
-				break;
-			case 2:					
-				$dis[]	=	floatval($cat->value);
-				break;
-			default:
-				# code...
-				break;
-		}
+		if($p->category_ids):
+			$filter = ['end'		=> ['gt'	=>	strtotime("now")],
+					 'start'	=> ['st'	=>	strtotime("now")],
+					 'status'	=>	['eq'	=>	1],
+					 'store_id'	=>	['eq'	=>	$p->getStoreID()],
+					 'target'		=> ['eq'	=>	2],
+					 'target_value'	=>	['in'	=>	explode(',', $p->category_ids)],
+					 'priority'	=>	['gt'	=>	0],	];
+			$cat = Promotion::find($filter ,[
+									 'order by'	=>	['priority ASC'],
+										]);
+			if($cat):
+			switch ($cat->type) {
+				case 1:
+					$dis[]	=	$p->getOriginPrice() * floatval($cat->value);
+					break;
+				case 2:					
+					$dis[]	=	floatval($cat->value);
+					break;
+				default:
+					# code...
+					break;
+			}
+			endif;
 		endif;
 		$dis[]	=	0;
 		return max($dis);

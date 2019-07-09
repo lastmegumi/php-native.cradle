@@ -18,8 +18,8 @@ class Payment extends _Model{
 		return "order_payment";
 	}
 
-	function refund(){
-		$data = stripe::init()->refund($this->tb_obj()->id);
+	function refund($amount){
+		$data = stripe::init()->refund($this->tb_obj()->id, $amount * 100);
 		if($data['status']):
 				$p = new Payment();
 				$p->order_id = $this->order_id;

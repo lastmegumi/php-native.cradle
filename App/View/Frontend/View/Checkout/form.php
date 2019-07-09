@@ -64,7 +64,8 @@ $card_arr[] = array("title" => "CVC/CSC", "type" => "text", "key" => "cvc", "cla
 		$this->assign("Subtotal", $cartinfo['subtotal']);
 		$this->assign("Tax", $cartinfo['tax']);
 		$this->assign("Discount", $cartinfo['discount']);
-		$this->assign("FinalPrice", $cartinfo['subtotal'] + $cartinfo["tax"] - $cartinfo['discount']);
+		$this->assign("Shipping", $cartinfo['shipping']);
+		$this->assign("FinalPrice", $cartinfo['subtotal'] + $cartinfo["tax"] + $cartinfo['shipping'] - $cartinfo['discount']);
 		$this->assign("cart", $c);
 		echo $this->cache('cart_status');
 		?>

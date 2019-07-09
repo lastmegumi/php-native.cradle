@@ -15,7 +15,7 @@ class _Store extends _Base{
 	}
 	
 	function setting(){
-		$store = Store::find(['id'	=>	['eq'	=>	Admin::getStoreID()]]);
+		$store = Store::find(['id'	=>	['eq'	=>	Admin::store()->id]]);
 		$store = $store? $store: new Store();
 		$this->assign("data", $store);
 		$contents[] = $this->cache("form");
@@ -23,9 +23,16 @@ class _Store extends _Base{
 	}
 
 	function save(){
-		$store = Store::find(['id'	=>	['eq'	=>	Admin::getStoreID()]]);
+		$store = Store::find(['id'	=>	['eq'	=>	Admin::store()->id]]);
 
 		$store->name = _P("name");
+
+		$store->phone = check_phone(_P("phone"));
+		$store->phone2 = check_phone(_P("phone2"));
+		$store->email = _P("email");
+		$store->email2 = _P("email2");
+		$store->address = _P("address");
+
 		$store->logo = _P("logo");
 		$store->logo_small = _P("logo_small");
 		$store->description = _P("description");

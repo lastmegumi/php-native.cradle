@@ -13,6 +13,9 @@ class Order extends _Model{
 	public $description;
 	public $message;
 	public $payment_method;
+	public $type;
+	public $store_id;
+	public $parent;
 	public $status;
 	public $created;
 	public $updated;
@@ -88,13 +91,15 @@ class Order extends _Model{
 	}
 
 	function Billingto(){
-		return Order_Address::find(['order_id'	=>	['eq'	=>	$this->id],
+		$res =  Order_Address::find(['order_id'	=>	['eq'	=>	$this->id],
 									'type'		=>	['eq'	=> "billing"]]);
+		return $res? $res: new Order_Address();
 	}
 
 	function Shippingto(){
-		return Order_Address::find(['order_id'	=>	['eq'	=>	$this->id],
+		$res =  Order_Address::find(['order_id'	=>	['eq'	=>	$this->id],
 									'type'		=>	['eq'	=> "shipping"]]);
+		return $res? $res: new Order_Address();
 	}
 
 	function getPaymentMethod(){
@@ -141,6 +146,23 @@ class Order_Product extends _Model{
 
 	function getSeller(){
 		return Store::find(['id'	=>	['eq'	=>	$this->store_id]]);
+	}
+
+	function getStatus(){
+		switch ($this->status) {
+			case 1:
+				return "Waiting for shipping";
+				break;
+			case 2:
+				return "Shipped";
+			case 3:
+				return "Delivered";
+			case -1:
+				return "Refunded";
+			default:
+				return "N/A";
+				break;
+		}
 	}
 }
 

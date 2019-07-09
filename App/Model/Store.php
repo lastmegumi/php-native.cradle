@@ -2,6 +2,11 @@
 class Store extends _Model{
 	public $id;
 	public $name;
+	public $phone;
+	public $phone2;
+	public $email;
+	public $email2;
+	public $address;
 	public $logo;
 	public $logo_small;
 	public $description;
@@ -36,6 +41,30 @@ class Store extends _Model{
 	}
 	static function Address(){
 		return "117 Industrial Avenue Hasbrouck Heights NJ 07604";
+	}
+
+	static function TotalSoldAmount(){
+		$sql = "SELECT SUM(amount_base) as base, SUM(amount_tax) as tax, SUM(amount_discount) as discount
+				FROM `order` WHERE store_id = :store_id";
+		$data = ['store_id'	=>	Admin::store()->id];
+
+		$sale = _DB::init()->selectone($data, $sql);
+		$shipping_sql = "SELECT SUM(cost) as cost
+						FROM order_shipping
+						WHERE store_id = :store_id";
+		$shipping = _DB::init()->selectone($data, $sql);
+
+		return Product::getCurrency().Product::format_price($sale["base"]);
+
+	}
+
+	static function TotalSoldProduct(){
+		$sql = "SELECT SUM(qty) as qty
+				FROM `order_product` WHERE store_id = :store_id";
+		$data = ['store_id'	=>	Admin::store()->id];
+		$res = _DB::init()->selectone($data, $sql);
+
+		return $res['qty'] ? $res['qty']:0;
 	}
 
 }

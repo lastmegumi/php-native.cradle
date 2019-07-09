@@ -52,10 +52,32 @@ class Cart extends _Model{
 			$tax += $p->getTax($v);
 		}
 
+
+		$data = ['user_id'	=>	_User::current("id")];
+		$store_sql = "SELECT DISTINCT store_id FROM cart
+				   INNER JOIN product ON product.id = cart.product_id
+				   WHERE 1
+				    AND user_id = :user_id 
+				    group by product_id, session_id 
+				    ORDER BY product_id DESC";
+		$stores = _DB::init()->select($data, $store_sql);
+
+		$shipping	= self::CalculateShpping($stores, $product_list);
+
 		return array("product_list"	=>	$product_list, 
 					 "subtotal"	=>	$subtotal,
 					 "tax"	=>	$tax,
+					 "shipping"	=>	$shipping,
 					 "discount"	=>	self::getdiscount(),
 					 "final_price"	=>	$subtotal + $tax);
 	}
+
+	static function CalculateShpping($store, $products){
+		$shipping = 0;
+		foreach ($store as $key => $value) {
+			$shipping += _Shipping::Cost($products, $value, new Order_Address());
+		}
+		return $shipping;
+	}
+
 }

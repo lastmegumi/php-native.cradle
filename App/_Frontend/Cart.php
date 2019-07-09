@@ -53,10 +53,20 @@ class _Cart extends _Base{
 
 	function mycart(){
 		$cart = new Cart();
-		$sql = "SELECT sum(qty) as qty, product_id, session_id 
+		$sql = "SELECT sum(qty) as qty, product_id, session_id , store_id
 				FROM cart
 				INNER JOIN product ON product.id = cart.product_id
 				WHERE 1";
+
+		$data = ['user_id'	=>	_User::current("id")];
+		$store_sql = "SELECT DISTINCT store_id FROM cart
+				   INNER JOIN product ON product.id = cart.product_id
+				   WHERE 1
+				    AND user_id = :user_id 
+				    group by product_id, session_id 
+				    ORDER BY product_id DESC";
+		$stores = _DB::init()->select($data, $store_sql);
+
 		if(_User::is_logged()){
 			$sql .= " AND user_id = :user_id group by product_id ORDER BY product_id DESC";
 			$data = ['user_id'	=>	_User::current("id")];
@@ -79,9 +89,22 @@ class _Cart extends _Base{
 		$this->assign("Subtotal", $cartinfo['subtotal']);
 		$this->assign("Tax", $cartinfo['tax']);
 		$this->assign("Discount", $cartinfo['discount']);
-		$this->assign("FinalPrice", $cartinfo['subtotal'] + $cartinfo["tax"] - $cartinfo['discount']);
+		$cartinfo['shipping']	=	 $this->CalculateShpping($stores, $cartinfo["product_list"]);
+		$this->assign("FinalPrice", $cartinfo['subtotal'] + $cartinfo["tax"] + $cartinfo['shipping'] - $cartinfo['discount']);
+
+
+		$this->assign("Shipping", $cartinfo['shipping']);
 		$contents[] = $this->cache('mycart');
 		$this->show($contents);
+	}
+
+	function CalculateShpping($store, $products){
+		$shipping = 0;
+		foreach ($store as $key => $value) {
+			$shipping += _Shipping::Cost($products, $value, new Order_Address());
+		}
+		return $shipping;
+
 	}
 
 	function get(){

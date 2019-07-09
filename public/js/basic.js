@@ -167,7 +167,6 @@ $(document).ready(()  =>  {
 	    window.location = $(this).data("href");
 	});
 	$('select').formSelect();
-
 	$(function() {
 		$('img.lazy').lazy();
 	}); // lazyload

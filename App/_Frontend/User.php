@@ -163,7 +163,9 @@ class _User extends _Base{
 		if(_G("id")):
 			$id = _G("id");
 			$order = Order::find(['user_id'	=>	['eq'	=>	self::current("id")],
-									"id"	=>	['eq'	=>	$id]],['class'	=>	true]);
+								  "id"	=>	['eq'	=>	$id]],['class'	=>	true]);
+			$sub = Order::findAll(['user_id'	=>	['eq'	=>	self::current("id")],
+								  "parent"	=>	['eq'	=>	$id]],['class'	=>	true]);
 
 			$contents[] = $this->cache("status");
 			$user = User::find(['id'	=>	["eq" => $order->user_id]]);
@@ -178,14 +180,15 @@ class _User extends _Base{
 
 			$billing = Order_Address::find(['order_id'	=>	["eq" => $order->id],'type'	=>	["eq" => "billing"]],['class'	=>	true]);
 			$shipping = Order_Address::find(['order_id'	=>	["eq" => $order->id],'type'	=>	["eq" => "shipping"]],['class'	=>	true]);
-
 			$this->assign("billing", $billing);
 			$this->assign("shipping", $shipping);
 			$contents[]	= $this->cache("order/billing_shipping");
 
-			$shipping = Shipping::find(['order_id'	=>	["eq" => $order->id]],['class'	=>	true]);
-			$this->assign("shipping", $shipping);			
-			$contents[]	= $this->cache("order/shipping_card");
+			foreach ($sub as $key => $value) {
+				$shipping = Shipping::find(['order_id'	=>	["eq" => $value->id]],['class'	=>	true]);
+				$this->assign("shipping", $shipping);			
+				$contents[]	= $this->cache("order/shipping_card");
+			}
 
 			$products = Order_Product::findAll(['order_id'	=>	["eq" => $order->id]],['class'	=>	true]);
 			$this->assign("data", $products);			
@@ -194,7 +197,10 @@ class _User extends _Base{
 			$contents[] = $this->cache("order/action_bar");
 			//$this->show($contents, $temp = "user_backend");
 		else:			
-			$data = Order::findAll(['user_id'	=>	['eq'	=>	self::current("id")]],['order by'	=>['created DESC'], 'class'	=>	true]);
+			$data = Order::findAll(['user_id'	=>	['eq'	=>	self::current("id")],
+									'parent'	=>	['eq'	=>	0],
+									],
+									['order by'	=>['created DESC'], 'class'	=>	true]);
 			$this->assign("data", @$data);
 			$contents[] = $this->cache("orders");		
 		endif;

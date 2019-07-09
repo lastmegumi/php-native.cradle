@@ -13,7 +13,8 @@
       <td width="10%"><img class="img-responsive" src="<?php echo $v->getThumbnail();?>" /></td>
       <td><a href="<?php echo @$v->getLink()?>" title="<?php echo @$v->name?>" target="_blank">
         <?php echo @$v->name?></a>
-        <p class="text-grey text-lighten-2 small">SKU: <?php echo @$v->sku;?></p></td>
+        <p class="text-grey text-lighten-2 small">SKU: <?php echo @$v->sku;?></p>
+        <p class="text-grey text-lighten-2 small">Seller: <?php echo @$v->getSeller()->Name();?></p></td>
       <td><?php echo @$cart[$v->id]?></td>
       <td><?php echo Product::getCUrrency() . $v->getPrice();?></td>      
       <td><?php echo Product::getCUrrency() . $v->getPrice($cart[$v->id])?></td>
@@ -44,6 +45,13 @@
     <td></td>
     <td class="right p-0">
       <p><?php echo Product::getCurrency() . Product::format_price($Discount);?></p>
+    </td>
+  </tr>
+  <tr>
+    <td class="p-0 small">Shipping:</td>
+    <td></td>
+    <td class="right p-0">
+      <p><?php echo Product::getCurrency() . Product::format_price($Shipping);?></p>
     </td>
   </tr>
   <tr>

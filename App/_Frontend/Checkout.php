@@ -53,31 +53,21 @@ class _Checkout extends _Base{
 						 "notes"		=>	"notes",
 						 "type"		=>	"shipping"));
 
-		$cart = new Cart();
-		$cart_c = new _Cart();
-		$sql = "SELECT sum(qty) as qty, product_id, session_id 
-				FROM cart
-				INNER JOIN product ON product.id = cart.product_id
-				WHERE 1";
-		$sql .= " AND user_id = :user_id group by product_id, session_id ORDER BY product_id DESC";
+
 		$data = ['user_id'	=>	_User::current("id")];
-		$data = _DB::init()->select($data, $sql);
+		$store_sql = "SELECT DISTINCT store_id FROM cart
+				   INNER JOIN product ON product.id = cart.product_id
+				   WHERE 1
+				    AND user_id = :user_id 
+				    group by product_id, session_id 
+				    ORDER BY product_id DESC";
+		$stores = _DB::init()->select($data, $store_sql);
 
-		if(!$data){
-			$this->json_return("noitem");
-		return;}
+		try{
+			_DB::init()->conn->beginTransaction();
 
-		$c = array_column($data, "qty", "product_id");
-		$cartinfo = $cart_c->Calculate($c);
-		$cartinfo['session_id'] = $data[0]['session_id'];
-
-		$shipping_cost = _Shipping::Cost($cartinfo['product_list'], $c, $shipping);
-
-		$user = new User();
-		$user->build($user->find(['id'	=>	['eq'	=>	_User::current("id")]]));
-
-		$data = [
-			    "number"		=> _P('card'),
+			$user = User::find(['id'	=>	['eq'	=>	_User::current("id")]]);			
+			$data = ["number"		=> _P('card'),
 			    "exp_month" 	=> explode("/", _P('expiration'))[0],
 			    "exp_year" 		=> explode("/", _P('expiration'))[1],
 			    "cvc" 			=> _P('cvc'),
@@ -87,55 +77,111 @@ class _Checkout extends _Base{
 			    "address_city"	=> _P('city'),
 			    "address_state"	=> _P('state'),
 			    "address_zip"	=> _P('zipcode'),
-			    //"address_line1"	=> $obj['address_line1'],
 			  ];
-		$token = $this->check_card($data);
 
-		$FINAL_AMOUNT = $cartinfo['final_price'] + $shipping_cost;
-		try{
-			_DB::init()->conn->beginTransaction();
+			$token = $this->check_card($data);
 			if(!$token['status']){return; $this->json_return("notoken");}
 			$token = $token['data']->id;
+			
+
+			$User_order = new Order();
+			$User_order->buyer_email		=	$user->uemail;
+			$User_order->user_id			=	$user->id;
+			$User_order->buyer_name			=	$billing->last_name . ' ' . $billing->first_name;
+			$User_order->buyer_phone		=	$billing->phone;
+			$User_order->token				=	$token;
+			$User_order->amount_base		=	0;
+			$User_order->amount_discount	=	0;
+			$User_order->amount_paid		=	0;
+			$User_order->amount_tax			=	0;
+			$User_order->amount_shipping	=	0;
+			$User_order->description		=	"description";
+			$User_order->message			=	"message";
+			$User_order->payment_method		=	"credit_strpie";
+			$User_order->status				=	"1";
+			$User_order->created			=	strtotime("now");
+			$User_order->updated			=	strtotime('now');
+			$User_order->type				=	0;
+			$User_order->store_id			=	-1;
+			$User_order->parent				=	0;
+			$User_order->save();
+			$FINAL_AMOUNT = 0;
+			$TOTAL_SHIPPING = 0;
+			foreach ($stores as $store):
+				$cart = new Cart();
+				$cart_c = new _Cart();
+				$sql = "SELECT sum(qty) as qty, product_id, session_id, store_id
+						FROM cart
+						INNER JOIN product ON product.id = cart.product_id
+						WHERE 1";
+				$sql .= " AND user_id = :user_id 
+						AND store_id = :store_id GROUP BY product_id, session_id ORDER BY product_id DESC";
+
+				$data = ['user_id'	=>	_User::current("id"), 'store_id'	=>	$store['store_id']];
+				$data = _DB::init()->select($data, $sql);
+
+				if(!$data){$this->json_return("noitem");return;}
+
+				$c = array_column($data, "qty", "product_id");
+				$cartinfo = $cart_c->Calculate($c);
+				$cartinfo['session_id'] = $data[0]['session_id'];
+
+				$shipping_cost = _Shipping::Cost($cartinfo['product_list'], $c, $shipping);
+				$TOTAL_SHIPPING += $shipping_cost;
+				$FINAL_AMOUNT += $cartinfo['final_price'] + $shipping_cost;
+
+				$obj = array(
+						"buyer_email"	=>	$user->uemail,
+						"buyer_name"	=>	$billing->last_name . ' ' . $billing->first_name,
+						"buyer_phone"	=>	$billing->phone,
+						"token"			=>	$token,
+						"amount_base"	=>	$cartinfo['subtotal'],
+						"amount_discount"	=>	$cartinfo['discount'],
+						"amount_paid"	=>	0,
+						"amount_tax"	=>	$cartinfo['tax'],
+						"amount_shipping"	=>	@$cartinfo['shipping']?	$cartinfo['shipping']:0,
+						"description"	=>	"description",
+						"message"	=>	"message",
+						"payment_method"	=>	"credit_strpie",
+						"status"	=>	"1",
+						"type"		=>	1,
+						"parent"	=>	$User_order->id,
+						"store_id"	=>	$store['store_id'],
+						"created"	=>	strtotime("now"),
+						"updated"	=>	strtotime('now'),
+					);				
+				$order = $this->create_order($obj);
+
+				$User_order->amount_base		+=	$cartinfo['subtotal'];
+				$User_order->amount_discount	+=	$cartinfo['discount'];
+				$User_order->amount_paid		+=	0;
+				$User_order->amount_tax			+=	$cartinfo['tax'];
+				$User_order->amount_shipping	+=	@$cartinfo['shipping']?	$cartinfo['shipping']:0;
+				$this->create_address($order->id, $billing, $shipping);			
+				$this->create_shipping($order->id, $shipping_cost);
+
+				$this->create_orderproduct($User_order->id, $cartinfo['product_list'], $c);
+
+			endforeach;
+			$User_order->save();
+			$this->create_address($User_order->id, $billing, $shipping);			
+			$this->create_shipping($User_order->id, $TOTAL_SHIPPING);
+
 			$FINAL_AMOUNT = $FINAL_AMOUNT * 100;
 			$description  = 'test';
+
 			$charge = $this->charge($token, $FINAL_AMOUNT, $description);
-			if(!$charge['status']){throw new Exception("Error Processing Request", 1);
-			}
+			if(!$charge['status']){throw new Exception("Error Processing Request", 1);}
 
-
-			$obj = array(
-					"buyer_email"	=>	$user->uemail,
-					"buyer_name"	=>	$billing->last_name . ' ' . $billing->first_name,
-					"buyer_phone"	=>	$billing->phone,
-					"token"			=>	$token,
-					"amount_base"	=>	$cartinfo['subtotal'],
-					"amount_discount"	=>	$cartinfo['discount'],
-					"amount_paid"	=>	0,
-					"amount_tax"	=>	$cartinfo['tax'],
-					"amount_shipping"	=>	@$cartinfo['shipping']?	$cartinfo['shipping']:0,
-					"description"	=>	"description",
-					"message"	=>	"message",
-					"payment_method"	=>	"credit_strpie",
-					"status"	=>	"1",
-					"created"	=>	strtotime("now"),
-					"updated"	=>	strtotime('now'),
-				);
-				
-			$order = $this->create_order($obj);
-			$order_id = $order->id;
-
-			$this->create_address($order_id, $billing, $shipping);			
-			$this->create_shipping($order_id, $shipping_cost);
-
-			$this->create_payment($order_id, $FINAL_AMOUNT, $charge['data']);
-			$this->create_orderproduct($order_id, $cartinfo['product_list'], $c);
+			$this->create_payment($User_order->id, $FINAL_AMOUNT, $charge['data']);
 
 			$cart->deleteAll(["session_id" =>	['eq'	=>	$cartinfo['session_id']]]);
 			_DB::init()->conn->commit();
 
 			$this->response['status'] =	 1;
-			$this->response['url']	=	"/user/dashboard/orders?id=" . $order_id;
+			$this->response['url']	=	"/user/dashboard/orders?id=" . $User_order->id;
 			$this->json_return();
+
 		}catch(Exception $e){
 			_DB::init()->conn->rollBack();
 			#$this->json_return("failed");
@@ -161,10 +207,18 @@ class _Checkout extends _Base{
 			$op->store_id = $v->store_id;
 			$op->updated	=	strtotime('now');
 			$op->save();
+
+			$v->inventory = $v->inventory - $op->qty;
+			if($v->inventory < 0):
+				throw new Exception("Product[". $v->getTitle() ."] out of stock", 1);				
+			endif;
+			$v->save();
 		}
 	}
 
 	private function create_address($order_id, $billing, $shipping){
+		$billing = clone $billing;
+		$shipping = clone $shipping;
 		$billing->order_id = $order_id;
 		$billing->save();
 
@@ -188,12 +242,21 @@ class _Checkout extends _Base{
 		$order->status	=	$obj['status'];		
 		$order->created	=	$obj['created'];
 		$order->updated	=	$obj['updated'];
+		$order->type	=	1;
+		$order->parent	=	$obj["parent"];
+		$order->store_id	=	$obj["store_id"];
 		$order->user_id	=	_User::current("id");
 		$res = $order->save();
+
 		if(!$res):
 			throw new Exception("Error on create order", 1);
 		endif;
 		return $res;		
+	}
+
+	private function Split_order(Order $order){
+
+
 	}
 
 	private function create_shipping($order_id, $cost){
@@ -211,9 +274,11 @@ class _Checkout extends _Base{
 
 	private function create_payment($order_id, $final_price, $data){
 		// print_r($final_price);
-		if(intval($final_price) != intval($data['amount']) || $data['captured'] != 1 || $data['paid'] != 1){
+		$is_paid = ($final_price != $data['amount']) || $data['captured'] != 1 || $data['paid'] != 1;
+		$is_paid = $data['captured'] != 1 || $data['paid'] != 1;
+		if($is_paid){
 			stripe::init()::refund($data['id'], $data['amount']);
-			throw new Exception("Error Processing Card Payment", 1);
+			throw new Exception("Error Processing Card Payment. Payment not match", 1);
 			return;			
 		}
 		$payment = new Payment();

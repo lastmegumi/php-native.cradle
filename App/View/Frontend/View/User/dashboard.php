@@ -5,7 +5,7 @@
 		<h6>Recent Orders
 		<a class="right" href="orders/">View all</a></h6>
 		<?php
-		$orders = Order::findAll(["user_id"	=>	['eq' => _USER::current("id")]], ['class'	=>	true,'order by'	=>	['created DESC'], 'limit'	=>	5]);
+		$orders = Order::findAll(["user_id"	=>	['eq' => _USER::current("id")], 'parent'	=>	['eq'	=>	0]], ['class'	=>	true,'order by'	=>	['created DESC'], 'limit'	=>	5]);
 		$this->assign("data", $orders);
 		echo $this->cache("orders");
 		?>

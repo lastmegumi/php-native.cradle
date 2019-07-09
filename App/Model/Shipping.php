@@ -35,6 +35,12 @@ class Shipping extends _Model{
 		}
 	}
 
+	function getStoreName(){
+		$order = Order::find(['id'	=>	['eq'	=>	$this->order_id]]);
+		$store = Store::find(['id'	=>	['eq'	=>	$order->store_id]]);
+		return $store->Name();
+	}
+
 	function getTracking(){
 		return $this->tracking;
 	}

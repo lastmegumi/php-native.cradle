@@ -2,6 +2,11 @@
 <?php
 $con_arr = array();
 $con_arr[] = array("title" => "Name", "type" => "text", "key" => "name", "required" => true, "class"  => "");
+$con_arr[] = array("title" => "Phone", "type" => "text", "key" => "phone", "required" => true, "class"  => "");
+$con_arr[] = array("title" => "Second Phone", "type" => "text", "key" => "phone2", "required" => true, "class"  => "");
+$con_arr[] = array("title" => "Email", "type" => "text", "key" => "email", "required" => true, "class"  => "");
+$con_arr[] = array("title" => "Second Email", "type" => "text", "key" => "email2", "required" => true, "class"  => "");
+$con_arr[] = array("title" => "Address", "type" => "text", "key" => "address", "required" => true, "class"  => "");
 $con_arr[] = array("title" => "Logo", "type" => "text", "key" => "logo", "class" => "");
 $con_arr[] = array("title" => "Logo Small", "type" => "text", "key" => "logo_small", "class" => "");
 $con_arr[] = array("title" => "Description", "type" => "text", "key" => "description", "class" => "");

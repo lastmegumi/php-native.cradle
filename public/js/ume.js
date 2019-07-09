@@ -55,14 +55,14 @@ class ume{
 			dataType: "JSON",//预期服务器返回的数据类型
 			url: "delivered",//url
 			data : data,
-			             //    beforeSend: function(result){
-                //     //$(".progress").show();
-                //     //$("form#upload_photo").html("Uploading...");
-                // },
-                // success: function (result) {
-                // },
-                // error : function(err) {
-                // }
+	                beforeSend: function(result){
+            //$(".progress").show();
+            //$("form#upload_photo").html("Uploading...");
+        },
+        success: function (result) {
+        },
+        error : function(err) {
+        }
 		});
 	}
 	deleteProduct(data){
@@ -134,6 +134,12 @@ class ume{
 			dataType: "JSON",//预期服务器返回的数据类型
 			url: "/checkout/placeorder",//url
 			data : data,
+			success:function(res){
+
+			},
+			error:function(err){
+				
+			}
 		});
 	}
 	getReview(data){
