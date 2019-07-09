@@ -26,7 +26,7 @@
 		<div class="information white p-3">
 		<h4 style="margin-top:0"><?php echo $product->getTitle();?></h4>
 		<span>SKU: <?php echo $product->sku;?></span><br/>
-		<span>Seller: <?php echo $product->getSeller()->Name();?></span>
+		<span><a href="<?php echo $product->getSeller()->getLink();?>">Seller: <?php echo $product->getSeller()->Name();?></a></span>
 		<?php if($product->is_forsale()):?>
 		<h4><small><?php echo $product->getCurrency();?></small><?php echo $product->finalPrice();?>
 		<?php if($product->finalPrice() != $product->getOriginPrice()):?>

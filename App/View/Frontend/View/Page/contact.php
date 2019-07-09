@@ -28,7 +28,7 @@
                 <div class="sidebar-list-padding app-sidebar contact-app-sidebar" id="contact-sidenav">
                   <ul class="contact-list display-grid">
                     <li>
-                      <h5 class="m-0">Tempest</h5>
+                      <h5 class="m-0"><?php echo Platform::Name();?></h5>
                     </li>
                     <li>
                       <hr class="mt-5">
@@ -57,7 +57,7 @@
                     <div class="col s12 mail mt-4 p-0">
                       <div class="col s2 m2 l2"><i class="material-icons"> mail_outline </i></div>
                       <div class="col s10 m10 l10">
-                        <p class="m-0">info@tempest-freezer.com</p>
+                        <p class="m-0"><?php echo Platform::Email();?></p>
                       </div>
                     </div>
                   </div>

@@ -53,7 +53,7 @@ class _Product extends _Base{
 								  "price"	=> 	array("currency"	=>	$c->getCurrency(),
 								  					  "amount"	=>	$c->getPrice()),
 								  "url"		=>	HOME . "product?id=" . $c->id,
-								  "seller"	=>	["name"	=>	$c->getSeller()->Name()],
+								  "seller"	=>	["name"	=>	$c->getSeller()->Name(), "url"	=>	$c->getSeller()->getLink()],
 								  "forsale"	=>	$c->for_sale?true:false,
 								  "thumbnail"	=> $c->getThumbnail(),
 								);

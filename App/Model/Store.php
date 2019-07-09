@@ -33,6 +33,27 @@ class Store extends _Model{
 	function Name(){
 		return $this->name? $this->name:"";
 	}
+
+	function logo(){
+		return $this->logo? $this->logo:"";
+	}
+
+	function getPhone(){
+		return $this->phone;
+	}
+
+	function getEmail(){
+		return $this->email;
+	}
+
+	function getAddress(){
+		return $this->address;
+	}
+
+	function getLink(){
+		return "/store?id=" . $this->id;
+	}
+
 	static function Email(){
 		return "info@tempest-freezer.com";
 	}
@@ -73,16 +94,20 @@ class Store extends _Model{
 class Platform{
 
 	static function Name(){
-		return "tempest-freezer";
+		return "Raptor NJ Trading";
 	}
 
 	static function Email(){
-		return "info@tempest-freezer.com";
+		return "raptortradingnj@gmail.com";
 	}
 	static function Phone(){
 		return "(800) 900-200-333";
 	}
 	static function Address(){
 		return "117 Industrial Avenue Hasbrouck Heights NJ 07604";
+	}
+
+	static function Discription(){
+		return "Tempest™ Freezers are designed with the combination of quick-freeze technology and ultra-mobile stability in refrigeration systems. Manufactured by enthusiasts for enthusiasts, we ensure the highest quality at the best prices. All our products satisfy industry standards for Polypropylene Plastic as well as safety standards for voltage protection.";
 	}
 }

@@ -4,7 +4,7 @@
     <div class="col s12">
       <div id="search" class="card z-depth-0 search-image center-align p-35">
         <div class="card-content">
-          <h5 class="center-align mb-3">Raptor NJ Trading</h5>
+          <h5 class="center-align mb-3"><?php echo Platform::Name();?></h5>
         </div>
       </div>
     </div>

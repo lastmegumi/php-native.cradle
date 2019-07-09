@@ -331,7 +331,7 @@ class Product extends React.Component{
                       <i className="material-icons">add</i></a>
                     }
                     <p>{item.price.currency} {item.price.amount}</p>
-                    <span className="grey-text text-darken-3">Seller: {item.seller.name}</span>
+                    <a href={item.seller.url}><span className="grey-text text-darken-3">Seller: {item.seller.name}</span></a>
                   </div>
                 </div>
               </div>

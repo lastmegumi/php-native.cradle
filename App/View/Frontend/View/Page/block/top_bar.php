@@ -1,5 +1,9 @@
-<header class="clearfix container">
-  <a class="left" href="/"><img class="img-responsive" src="<?php echo HOME;?>imgs/logo-large.jpg" /></a>
+<header class="clearfix p-3">
+  <div class="left">
+    <h6>
+    <?php echo Platform::Name();?></h6>
+      <a href="/admin/login" style="font-size:small">Become a seller>></a>
+  </div>
   <?php if(SALE_ENABLED):?>
   <?php if(_User::is_logged()):?>
   <a class='dropdown-trigger right' style="margin-right:2em" href='#' data-target='joinus'>

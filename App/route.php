@@ -111,6 +111,8 @@ Route::route("/user/verify", "_User.verify");
 Route::route("/register", "_User.register");
 Route::route("/register_new", "_User.register_new");
 
+Route::route("/store/", "_Store._route");
+
 Route::route("/user/dashboard/", "_User.dashboard");
 Route::route("/user/dashboard/orders", "_User.dashboard");
 Route::route("/user/dashboard/reviews", "_User.dashboard");

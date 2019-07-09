@@ -7,16 +7,17 @@ _Page::Block("block/nav");
 <div class="wrapper">
 <!-- Page Layout here -->
 <div class="row">
-<div class="col s12">
+<div class="col s3">
 <!-- Teal page content  -->
-<?php foreach ($contents as $c) :
-if(!$c) {continue;}?>
-	<div class="row">
-		<div class="col s12" style="padding:15px;">
-			<?php print_r($c);?>
-		</div>
-	</div>
-<?php endforeach;?>
+<?php
+print_r($contents['store']);
+?>
+</div>
+<div class="col s9">
+<!-- Teal page content  -->
+<?php
+print_r($contents['product']);
+?>
 </div>
 </div>
 </div>
